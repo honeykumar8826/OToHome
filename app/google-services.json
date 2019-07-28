@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "97123709087",
+    "firebase_url": "https://otohome-25109.firebaseio.com",
+    "project_id": "otohome-25109",
+    "storage_bucket": "otohome-25109.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:97123709087:android:0cbcb7bc524d0865",
+        "android_client_info": {
+          "package_name": "com.travel.cab.service"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "97123709087-nej1n5uoc9cvdaso15ndge68fu40prit.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.travel.cab.service",
+            "certificate_hash": "76dd1f039b44f84e004e53f55ac0cdc40a82d5a1"
+          }
+        },
+        {
+          "client_id": "97123709087-opqodhujathdflji5fk5gnm83rdgqnme.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBX7ENwp9qbq3eFHymXnNYaR4jN3p05u54"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "97123709087-opqodhujathdflji5fk5gnm83rdgqnme.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
