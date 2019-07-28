@@ -8,6 +8,7 @@ public class SharedPreference {
     private static final String TAG = "SharedPreference";
     private static final String IS_FIRST_TIME_LAUNCH="IS_FIRST_TIME_LAUNCH" ;
     private static final String IS_FIRST_TIME_LAUNCH_FOR_PHONE="IS_FIRST_TIME_LAUNCH_FOR_PHONE" ;
+    private static final String USER_ID="USER_ID" ;
     private static SharedPreference instance;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
@@ -47,4 +48,16 @@ public class SharedPreference {
         editor.putBoolean(IS_FIRST_TIME_LAUNCH_FOR_PHONE, isFirstTimeForPhone);
         editor.commit();
     }
+
+    public String getUserId()
+    {
+        String userId = sharedPreferences.getString(USER_ID,"");
+        return userId;
+    }
+    public void setUserId(String userId) {
+        editor = sharedPreferences.edit();
+        editor.putString(USER_ID, userId);
+        editor.commit();
+    }
+
 }

@@ -5,26 +5,37 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/pink_800"
+            android:background="@color/black_color"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:contentInsetStartWithNavigation="0dp"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-    </android.support.design.widget.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
-    <android.support.design.widget.CoordinatorLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v4.widget.NestedScrollView
+        <ProgressBar
+            android:id="@+id/show_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/linear_layout_otp_send"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/spacing_16"
+            android:indeterminate="true"
+            android:layout_gravity="center_horizontal"
+            />
+
+        <androidx.core.widget.NestedScrollView
             android:id="@+id/nested_scroll_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -79,17 +90,19 @@
                             android:layout_width="@dimen/spacing_large"
                             android:layout_height="match_parent" />
 
-                        <android.support.design.widget.TextInputLayout
+                        <com.google.android.material.textfield.TextInputLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textColorHint="@color/grey_40">
 
-                            <android.support.v7.widget.AppCompatEditText
+                            <androidx.appcompat.widget.AppCompatEditText
+                                android:id="@+id/et_name"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:hint="Name" />
+                                android:hint="Name"
+                                android:text="aa"/>
 
-                        </android.support.design.widget.TextInputLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
 
                     </LinearLayout>
 
@@ -120,17 +133,19 @@
                                 android:layout_width="@dimen/spacing_large"
                                 android:layout_height="match_parent" />
 
-                            <android.support.design.widget.TextInputLayout
+                            <com.google.android.material.textfield.TextInputLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:textColorHint="@color/grey_40">
 
-                                <android.support.v7.widget.AppCompatEditText
+                                <androidx.appcompat.widget.AppCompatEditText
+                                    android:id="@+id/et_mobile_number"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:hint="Phone Number" />
+                                    android:hint="Phone Number"
+                                    android:text="aa"/>
 
-                            </android.support.design.widget.TextInputLayout>
+                            </com.google.android.material.textfield.TextInputLayout>
 
                         </LinearLayout>
 
@@ -163,17 +178,19 @@
                                 android:layout_width="@dimen/spacing_large"
                                 android:layout_height="match_parent" />
 
-                            <android.support.design.widget.TextInputLayout
+                            <com.google.android.material.textfield.TextInputLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:textColorHint="@color/grey_40">
 
-                                <android.support.v7.widget.AppCompatEditText
+                                <androidx.appcompat.widget.AppCompatEditText
+                                    android:id="@+id/et_email"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:hint="Email" />
+                                    android:hint="Email"
+                                    android:text="aa"/>
 
-                            </android.support.design.widget.TextInputLayout>
+                            </com.google.android.material.textfield.TextInputLayout>
 
                         </LinearLayout>
 
@@ -195,23 +212,26 @@
                             android:layout_marginTop="@dimen/spacing_25"
                             android:background="@android:color/transparent"
                             android:tint="@color/grey_60"
-                            app:srcCompat="@drawable/ic_location" />
+                            app:srcCompat="@drawable/ic_location"
+                            android:text="aa"/>
 
                         <View
                             android:layout_width="@dimen/spacing_large"
                             android:layout_height="match_parent" />
 
-                        <android.support.design.widget.TextInputLayout
+                        <com.google.android.material.textfield.TextInputLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textColorHint="@color/grey_40">
 
-                            <android.support.v7.widget.AppCompatEditText
+                            <androidx.appcompat.widget.AppCompatEditText
+                                android:id="@+id/et_address"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:hint="Address" />
+                                android:hint="Address"
+                                android:text="aa"/>
 
-                        </android.support.design.widget.TextInputLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
                     </LinearLayout>
 
                     <View
@@ -240,17 +260,19 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical">
 
-                            <android.support.design.widget.TextInputLayout
+                            <com.google.android.material.textfield.TextInputLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:textColorHint="@color/grey_40">
 
-                                <android.support.v7.widget.AppCompatEditText
+                                <androidx.appcompat.widget.AppCompatEditText
+                                    android:id="@+id/et_company_name"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:hint="Company" />
+                                    android:hint="Company"
+                                    android:text="aa"/>
 
-                            </android.support.design.widget.TextInputLayout>
+                            </com.google.android.material.textfield.TextInputLayout>
 
                         </LinearLayout>
 
@@ -259,14 +281,22 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/spacing_large" />
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_save_record"
+                        android:layout_width="200dp"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/btn_rounded_red"
+                        android:text="Save"
+                        android:textColor="@android:color/white"
+                        android:layout_gravity="center_horizontal"/>
 
                 </LinearLayout>
 
             </LinearLayout>
 
-        </android.support.v4.widget.NestedScrollView>
+        </androidx.core.widget.NestedScrollView>
 
-        <android.support.design.widget.FloatingActionButton
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/spacing_18"
@@ -279,5 +309,5 @@
             app:rippleColor="@android:color/white"
             app:srcCompat="@drawable/ic_photo_camera" />
 
-    </android.support.design.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </LinearLayout>
