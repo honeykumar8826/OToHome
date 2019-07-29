@@ -23,6 +23,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 import com.travel.cab.service.R;
 import com.travel.cab.service.utils.preference.SharedPreference;
 
@@ -116,6 +118,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 user_profile.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
+                        Toast.makeText(context, "Image Uploaded", Toast.LENGTH_SHORT).show();
                         uploadUserDetail(uri);
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -163,6 +166,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.img_user) {
+            // start picker to get image for cropping and then use the image in cropping activity
+          /*  CropImage.activity()
+                    .setGuidelines(CropImageView.Guidelines.ON)
+                    .start(getActivity());*/
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             startActivityForResult(intent, PICK_IMG);
         }
@@ -171,6 +178,18 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+    /*    if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == Activity.RESULT_OK) {
+                imageUri = result.getUri();
+                if(imageUri !=null)
+                {
+                    imageView.setImageURI(imageUri);
+                }
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+            }
+        }*/
         if (resultCode == Activity.RESULT_OK)
             if (requestCode == PICK_IMG) {
                 if (data.getData() != null) {

@@ -44,6 +44,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:18.1.0'
     implementation 'com.google.firebase:firebase-storage:18.1.0'
     implementation 'com.google.firebase:firebase-database:18.0.0'
+    implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
+    implementation 'com.google.android.libraries.places:places:2.0.0'
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
 
 
 }
