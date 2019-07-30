@@ -12,6 +12,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".MapsActivity" />
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/pin"
+        android:layout_centerInParent="true"/>
 
     <TextView
         android:id="@+id/textView"
@@ -20,9 +25,44 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:text="TextView" />
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/pin"
-        android:layout_centerInParent="true"/>
+
+    <LinearLayout
+        android:id="@+id/ll_pickup"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginTop="?actionBarSize"
+        android:layout_marginStart="@dimen/spacing_18"
+        android:layout_marginEnd="@dimen/spacing_18"
+        android:background="@drawable/background_location_pickup">
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enter pickup point"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/spacing_16"
+            android:layout_marginEnd="@dimen/spacing_16"
+            android:drawableStart="@drawable/ic_location_green"
+            android:textSize="16sp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/ll_drop"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginStart="@dimen/spacing_18"
+        android:layout_marginEnd="@dimen/spacing_18"
+        android:layout_below="@+id/ll_pickup"
+        android:background="@drawable/background_location_drop">
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enter drop point"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/spacing_16"
+            android:layout_marginEnd="@dimen/spacing_16"
+            android:drawableStart="@drawable/ic_location_red"
+            android:textSize="16sp"/>
+    </LinearLayout>
 </RelativeLayout>

@@ -28,7 +28,8 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="icon" />
+                            <entry key="color" value="d32f2f" />
+                            <entry key="outputName" value="ic_location_red" />
                             <entry key="overrideSize" value="true" />
                             <entry key="sourceFile" value="C:\Users\ABHISHEK PAHARWA" />
                           </map>
