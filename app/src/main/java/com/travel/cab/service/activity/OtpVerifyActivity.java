@@ -4,6 +4,8 @@ import android.content.Intent;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,6 +35,7 @@ public class OtpVerifyActivity extends AppCompatActivity {
         setContentView(R.layout.activity_otp_verify);
         inItId();
         getValueFromIntent();
+        puttingTextWatcherOnOtp();
         verifyOtp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -56,6 +59,124 @@ public class OtpVerifyActivity extends AppCompatActivity {
                     showProgressBar.setVisibility(View.GONE);
                     Toast.makeText(OtpVerifyActivity.this, "OTP is blank", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+
+    }
+
+    private void puttingTextWatcherOnOtp() {
+
+        etOpt1.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(s.toString().length()==1)
+                {
+                    etOpt2.requestFocus();
+                }
+
+            }
+        });
+        etOpt2.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(s.toString().length()==1)
+                {
+                    etOpt3.requestFocus();
+                }
+            }
+        });
+        etOpt3.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(s.toString().length()==1)
+                {
+                    etOpt4.requestFocus();
+                }
+            }
+        });
+        etOpt4.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(s.toString().length()==1)
+                {
+                    etOpt5.requestFocus();
+                }
+            }
+        });
+        etOpt5.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(s.toString().length()==1)
+                {
+                    etOpt6.requestFocus();
+                }
+            }
+        });
+        etOpt6.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
     }
@@ -123,4 +244,5 @@ public class OtpVerifyActivity extends AppCompatActivity {
         verifyOtp = findViewById(R.id.btn_verify_otp);
         showProgressBar = findViewById(R.id.show_progress_otp_verify);
     }
+
 }

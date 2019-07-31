@@ -10,6 +10,9 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -25,7 +28,9 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
+import com.travel.cab.service.MainActivity;
 import com.travel.cab.service.R;
+import com.travel.cab.service.activity.HomeActivity;
 import com.travel.cab.service.utils.preference.SharedPreference;
 
 import java.util.HashMap;
@@ -80,6 +85,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
+        setHasOptionsMenu(true);
         mDatabase = FirebaseDatabase.getInstance();
         mDatabaseReference = mDatabase.getReference().child(SharedPreference.getInstance().getUserId());
          mStorageRef = FirebaseStorage.getInstance().getReference().child("profile_images").
@@ -100,6 +106,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        ((HomeActivity)getActivity()).setSupportActionBar(toolbar);
         toolbar.setTitle("Profile");
         btnSaveRecord.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -167,18 +174,19 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         if (view.getId() == R.id.img_user) {
             // start picker to get image for cropping and then use the image in cropping activity
-          /*  CropImage.activity()
+          Intent intent=  CropImage.activity()
                     .setGuidelines(CropImageView.Guidelines.ON)
-                    .start(getActivity());*/
-            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            startActivityForResult(intent, PICK_IMG);
+                    .getIntent(getActivity());
+            startActivityForResult(intent, CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE);
+           /* Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(intent, PICK_IMG);*/
         }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-    /*    if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == Activity.RESULT_OK) {
                 imageUri = result.getUri();
@@ -189,15 +197,19 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
             }
-        }*/
-        if (resultCode == Activity.RESULT_OK)
+        }
+        else
+        {
+            Toast.makeText(context, "", Toast.LENGTH_SHORT).show();
+        }
+   /*     if (resultCode == Activity.RESULT_OK)
             if (requestCode == PICK_IMG) {
                 if (data.getData() != null) {
                     imageUri = data.getData();
                     imageView.setImageURI(imageUri);
                     setImageFromGallery(imageUri);
                 }
-            }
+            }*/
     }
 
     private void setImageFromGallery(Uri imgUri) {
@@ -211,5 +223,24 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         selectedImagePath = cursor.getString(columnIndex);
         cursor.close();
     }
+    @Override
+    public void onCreateOptionsMenu(Menu menu,MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_options, menu);
+         super.onCreateOptionsMenu(menu,inflater);
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.edit_profile:
+                return true;
+            case R.id.logout:
+                return true;
+
+            default:
+                Toast.makeText(getContext(), "Do Right Selection", Toast.LENGTH_SHORT).show();
+                return true;
+        }
+    }
 }

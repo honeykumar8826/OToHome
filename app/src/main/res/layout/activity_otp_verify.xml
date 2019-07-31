@@ -81,6 +81,7 @@
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
                     android:textColor="@color/grey_90"
                     android:textStyle="bold"
+                    android:background="@drawable/background_otp"
                     android:imeOptions="actionNext"/>
 
                 <View
@@ -100,6 +101,7 @@
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
                     android:textColor="@color/grey_90"
                     android:textStyle="bold"
+                    android:background="@drawable/background_otp"
                     android:imeOptions="actionNext"/>
 
                 <View
@@ -119,6 +121,7 @@
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
                     android:textColor="@color/grey_90"
                     android:textStyle="bold"
+                    android:background="@drawable/background_otp"
                     android:imeOptions="actionNext"/>
 
                 <View
@@ -138,6 +141,7 @@
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
                     android:textColor="@color/grey_90"
                     android:textStyle="bold"
+                    android:background="@drawable/background_otp"
                     android:imeOptions="actionNext"/>
                 <View
                     android:layout_width="@dimen/spacing_medium"
@@ -156,6 +160,7 @@
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
                     android:textColor="@color/grey_90"
                     android:textStyle="bold"
+                    android:background="@drawable/background_otp"
                     android:imeOptions="actionNext"/>
                 <View
                     android:layout_width="@dimen/spacing_medium"
@@ -174,6 +179,7 @@
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
                     android:textColor="@color/grey_90"
                     android:textStyle="bold"
+                    android:background="@drawable/background_otp"
                     android:imeOptions="actionDone"/>
 
             </LinearLayout>

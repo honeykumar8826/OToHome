@@ -100,6 +100,9 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:hint="Name"
+                                android:inputType="text"
+                                android:maxLength="30"
+                                android:maxLines="1"
                                 android:text="aa"/>
 
                         </com.google.android.material.textfield.TextInputLayout>
@@ -143,7 +146,10 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:hint="Phone Number"
-                                    android:text="aa"/>
+                                    android:inputType="number"
+                                    android:maxLength="10"
+                                    android:maxLines="1"
+                                    android:text="7042226631"/>
 
                             </com.google.android.material.textfield.TextInputLayout>
 
@@ -188,7 +194,9 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:hint="Email"
-                                    android:text="aa"/>
+                                    android:inputType="textEmailAddress"
+                                    android:maxLines="1"
+                                    android:text="aa@gmail.com"/>
 
                             </com.google.android.material.textfield.TextInputLayout>
 
@@ -229,6 +237,8 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:hint="Address"
+                                android:inputType="text"
+                                android:maxLines="1"
                                 android:text="aa"/>
 
                         </com.google.android.material.textfield.TextInputLayout>
@@ -270,6 +280,8 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:hint="Company"
+                                    android:maxLines="1"
+                                    android:inputType="text"
                                     android:text="aa"/>
 
                             </com.google.android.material.textfield.TextInputLayout>
