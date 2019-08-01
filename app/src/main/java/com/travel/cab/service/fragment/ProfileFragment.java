@@ -1,14 +1,23 @@
 package com.travel.cab.service.fragment;
 
 
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,6 +25,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -31,6 +42,7 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import com.travel.cab.service.MainActivity;
 import com.travel.cab.service.R;
 import com.travel.cab.service.activity.HomeActivity;
+import com.travel.cab.service.activity.PhoneLogin;
 import com.travel.cab.service.utils.preference.SharedPreference;
 
 import java.util.HashMap;
@@ -99,6 +111,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         imageView = view.findViewById(R.id.img_user);
         toolbar = view.findViewById(R.id.toolbar);
         imageView.setOnClickListener(this);
+         LinearLayout lyt_progress = view.findViewById(R.id.lyt_progress);
+        lyt_progress.setVisibility(View.VISIBLE);
 
 
     }
@@ -236,11 +250,20 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             case R.id.edit_profile:
                 return true;
             case R.id.logout:
+                mAuth.signOut();
+                Intent loginIntent = new Intent(getActivity(),PhoneLogin.class);
+                startActivity(loginIntent);
+                clearPreference();
+                getActivity().finish();
                 return true;
 
             default:
                 Toast.makeText(getContext(), "Do Right Selection", Toast.LENGTH_SHORT).show();
                 return true;
         }
+    }
+
+    private void clearPreference() {
+    SharedPreference.getInstance().clearPreference();
     }
 }

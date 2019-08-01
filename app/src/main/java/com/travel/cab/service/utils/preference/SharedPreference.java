@@ -59,5 +59,9 @@ public class SharedPreference {
         editor.putString(USER_ID, userId);
         editor.commit();
     }
-
+    public void clearPreference()
+    {
+        editor =sharedPreferences.edit();
+        editor.clear().apply();
+    }
 }
