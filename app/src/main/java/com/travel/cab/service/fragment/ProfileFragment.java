@@ -53,6 +53,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
@@ -73,6 +75,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private Context context;
     private Toolbar toolbar;
     private String selectedImagePath;
+    private FragmentManager fragmentManager;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -88,7 +91,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
+        getActivity().setTitle("Edit Profile");
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         return view;
     }
@@ -99,7 +102,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         mAuth = FirebaseAuth.getInstance();
         setHasOptionsMenu(true);
         mDatabase = FirebaseDatabase.getInstance();
-        mDatabaseReference = mDatabase.getReference().child(SharedPreference.getInstance().getUserId());
+        mDatabaseReference = mDatabase.getReference().child("users").child(SharedPreference.getInstance().getUserId());
          mStorageRef = FirebaseStorage.getInstance().getReference().child("profile_images").
                  child(SharedPreference.getInstance().getUserId());
         etName = view.findViewById(R.id.et_name);
@@ -109,10 +112,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         etCompany = view.findViewById(R.id.et_company_name);
         btnSaveRecord = view.findViewById(R.id.btn_save_record);
         imageView = view.findViewById(R.id.img_user);
-        toolbar = view.findViewById(R.id.toolbar);
+       // toolbar = view.findViewById(R.id.toolbar);
+        fragmentManager = getChildFragmentManager();
         imageView.setOnClickListener(this);
-         LinearLayout lyt_progress = view.findViewById(R.id.lyt_progress);
-        lyt_progress.setVisibility(View.VISIBLE);
+//         LinearLayout lyt_progress = view.findViewById(R.id.lyt_progress);
+//        lyt_progress.setVisibility(View.VISIBLE);
 
 
     }
@@ -120,8 +124,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ((HomeActivity)getActivity()).setSupportActionBar(toolbar);
-        toolbar.setTitle("Profile");
+//        ((HomeActivity)getActivity()).setSupportActionBar(toolbar);
         btnSaveRecord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -154,7 +157,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
     private void uploadUserDetail(Uri uri) {
         String downloadedUrl = uri.toString();//actual this is uri
-        Map<String, Object> userProfileMap = new HashMap<>();
+        Map<String, String> userProfileMap = new HashMap<>();
         userProfileMap.put("Name", userName);
         userProfileMap.put("Email", userEmail);
         userProfileMap.put("Mobile", userMobile);
@@ -237,7 +240,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         selectedImagePath = cursor.getString(columnIndex);
         cursor.close();
     }
-    @Override
+/*    @Override
     public void onCreateOptionsMenu(Menu menu,MenuInflater inflater) {
         inflater.inflate(R.menu.menu_options, menu);
          super.onCreateOptionsMenu(menu,inflater);
@@ -248,6 +251,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
         switch (item.getItemId()) {
             case R.id.edit_profile:
+                setUpVIewFragment();
                 return true;
             case R.id.logout:
                 mAuth.signOut();
@@ -261,6 +265,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 Toast.makeText(getContext(), "Do Right Selection", Toast.LENGTH_SHORT).show();
                 return true;
         }
+    }*/
+
+    private void setUpVIewFragment() {
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.fl_profile_fragment, new ProfileFragment()).commit();
+
     }
 
     private void clearPreference() {

@@ -10,19 +10,28 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.travel.cab.service.R;
 import com.travel.cab.service.fragment.FareCalculatorFragment;
 import com.travel.cab.service.fragment.ProfileFragment;
+import com.travel.cab.service.fragment.ShowPackageFragment;
+import com.travel.cab.service.fragment.VIewProfileFragment;
+import com.travel.cab.service.utils.preference.SharedPreference;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -31,6 +40,9 @@ public class HomeActivity extends AppCompatActivity {
     private final String[] permissionList = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
     private FragmentManager fragmentManager;
     private TextView mTextMessage;
+    private Fragment fragment;
+    private FirebaseAuth mAuth;
+    private Toolbar toolbar;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -38,12 +50,15 @@ public class HomeActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
+                    displaySelectedScreen(R.id.navigation_home);
                     return true;
                 case R.id.navigation_fare_calci:
-                    setupFareCalculatorFragment();
+                    displaySelectedScreen(R.id.navigation_fare_calci);
+                  //  setupFareCalculatorFragment();
                     return true;
                 case R.id.navigation_profile:
-                    setupHomeFragment();
+                    displaySelectedScreen(R.id.navigation_profile);
+                   // setupHomeFragment();
                     return true;
             }
             return false;
@@ -66,15 +81,85 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         inItId();
         checkPermission();
+        displaySelectedScreen(R.id.navigation_home);
+
     }
 
+    private void displaySelectedScreen(int itemViewId) {
+        switch (itemViewId)
+        {
+            case R.id.navigation_home:
+                fragment = new ShowPackageFragment();
+                toolbar.setTitle("Home");
+                break;
+            case R.id.navigation_fare_calci:
+                fragment = new FareCalculatorFragment();
+                toolbar.setTitle("Fare Calculator");
+                break;
+            case R.id.navigation_profile:
+                fragment = new ProfileFragment();
+                break;
+            case R.id.view_profile:
+                fragment = new VIewProfileFragment();
+                break;
+            case R.id.edit_profile:
+                fragment = new ProfileFragment();
+                break;
+            default:
+                break;
+        }
+        //replacing the fragment
+        if (fragment != null) {
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.framLayout_container, fragment);
+            ft.commit();
+        }
+    }
     private void inItId() {
         fragmentManager = getSupportFragmentManager();
         mTextMessage = findViewById(R.id.message);
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        mAuth = FirebaseAuth.getInstance();
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_options, menu);
+       return super.onCreateOptionsMenu(menu);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.edit_profile:
+                toolbar.setTitle("Edit Profile");
+                displaySelectedScreen(R.id.edit_profile);
+                return true;
+            case R.id.logout:
+                mAuth.signOut();
+                Intent loginIntent = new Intent(this,PhoneLogin.class);
+                startActivity(loginIntent);
+                clearPreference();
+                finish();
+                return true;
+            case R.id.view_profile:
+                toolbar.setTitle(" Profile");
+                displaySelectedScreen(R.id.view_profile);
+                return true;
+
+            default:
+                Toast.makeText(this, "Do Right Selection", Toast.LENGTH_SHORT).show();
+                return true;
+        }
+    }
+
+
+    private void clearPreference() {
+        SharedPreference.getInstance().clearPreference();
+    }
     public void checkPermission() {
 //        int count = 0;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
