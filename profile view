@@ -469,3 +469,150 @@ public class UserDetail {
 
 
 }
+-------------------------buy button drawable0-----------------------
+                 <?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <corners android:radius="5dp"/>
+    <stroke android:width="1px"
+        android:color="#696969"/>
+    <solid android:color="#3d5afe"/>
+</shape>
+                 --------------------------------------------ui for card for packagae-----------------
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".SecondActivity">
+<androidx.cardview.widget.CardView
+    android:layout_width="match_parent"
+    android:layout_height="230dp"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="5dp"
+    app:cardElevation="15dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Spark"
+            android:textColor="#000000"
+            android:textSize="20sp"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="12dp">
+            <TextView
+                android:id="@+id/tv_from"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:text="From"
+                android:layout_weight="1"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New Gandhi Nagar Ghaziabad"
+                android:gravity="center_horizontal"
+                android:layout_weight="1"
+                android:layout_toEndOf="@+id/tv_from"
+                android:layout_marginStart="16dp"
+
+                />
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="12dp">
+            <TextView
+                android:id="@+id/tv_To"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:text="To"
+                android:textStyle="bold"
+                android:textColor="#000000"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New Gandhi Nagar Ghaziabad"
+                android:gravity="center_horizontal"
+                android:layout_toEndOf="@+id/tv_To"
+                android:layout_marginStart="16dp"
+
+                />
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="2"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="12dp">
+            <TextView
+                android:id="@+id/tv_distance"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:text="Distance"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="under 20km"
+                android:gravity="center_horizontal"
+                android:textAlignment="center"
+                android:layout_toEndOf="@+id/tv_distance"
+                android:layout_marginStart="16dp"
+
+                />
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="2"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="12dp">
+
+            <TextView
+                android:id="@+id/tv_fare"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="0dp"
+                android:text="Fare"
+                android:textColor="#000000"
+                android:textStyle="bold" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="12000"
+                android:gravity="center_horizontal"
+                android:textAlignment="center"
+                android:layout_toEndOf="@+id/tv_fare"
+                android:layout_marginStart="16dp"
+
+                />
+        </RelativeLayout>
+        <Button
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:text="Buy Now"
+            android:layout_gravity="end"
+            android:textColor="#ffffff"
+            android:background="@drawable/background_btn_buy"
+            android:layout_marginEnd="27dp"/>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
+</RelativeLayout>
