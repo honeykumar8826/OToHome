@@ -616,3 +616,8 @@ public class UserDetail {
     </LinearLayout>
 </androidx.cardview.widget.CardView>
 </RelativeLayout>
+--------------------------------popopen on clck
+  View alertLayout =  LayoutInflater.from(SecondActivity.this).inflate(R.layout.custom_dialog_for_package,null);
+                final AlertDialog.Builder mAlertBuilder = new AlertDialog.Builder(SecondActivity.this);
+                mAlertBuilder.setView(alertLayout);
+                mAlertBuilder.show();
