@@ -286,7 +286,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class MainActivity extends AppCompatActivity {
     FirebaseDatabase mDatabase;
     private static final String TAG = "MainActivity";
-    TextView tvName;
+    TextView tvName,tvMobile,tvEmail,tvAddress,tvComapnyName;
     CircleImageView imageView;
 
     @Override
@@ -295,6 +295,10 @@ public class MainActivity extends AppCompatActivity {
         Log.i(TAG, "onCreate: ");
         setContentView(R.layout.activity_main);
         tvName = findViewById(R.id.tv_name);
+        tvMobile = findViewById(R.id.tv_mobile);
+        tvEmail = findViewById(R.id.tv_email);
+        tvAddress = findViewById(R.id.tv_address);
+        tvComapnyName = findViewById(R.id.tv_companyName);
         imageView = findViewById(R.id.img_user);
         AppCompatButton button = findViewById(R.id.button);
         mDatabase = FirebaseDatabase.getInstance();
@@ -302,15 +306,34 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fetchValue();
-               /* HashMap<String, String> map = new HashMap<>();
+             fetchValue();
+               // forThreeValue();
+                //forSixValue();
+
+            }
+        });
+    }
+
+    private void forThreeValue() {
+             HashMap<String, String> map = new HashMap<>();
                 map.put("name", "nishant");
                 map.put("course", "https://firebasestorage.googleapis.com/v0/b/otohome-25109.appspot.com/o/profile_images%2FxTOKGZ9svPcbUtadDKjKLwIMkm12%2Faa.jpg?alt=media&token=0cdd910d-d1ce-4dc8-a729-c200df27cbd7");
                 map.put("age", "mca");
+                map.put("adres", "mca");
                 DatabaseReference databaseReference=mDatabase.getReference().child("user");
-                databaseReference.push().setValue(map);*/
-            }
-        });
+                databaseReference.push().setValue(map);
+    }
+
+    private void forSixValue() {
+                        HashMap<String, String> map = new HashMap<>();
+                map.put("name", "nishant");
+                map.put("image_Url", "https://firebasestorage.googleapis.com/v0/b/otohome-25109.appspot.com/o/profile_images%2FxTOKGZ9svPcbUtadDKjKLwIMkm12%2Faa.jpg?alt=media&token=0cdd910d-d1ce-4dc8-a729-c200df27cbd7");
+                map.put("cempany", "mca");
+                map.put("email", "mca");
+                map.put("adres", "mca");
+                map.put("mobile", "mca");
+                DatabaseReference databaseReference=mDatabase.getReference().child("user");
+                databaseReference.push().setValue(map);
     }
 
     private void fetchValue() {
@@ -338,75 +361,62 @@ public class MainActivity extends AppCompatActivity {
 
     private void showData(DataSnapshot dataSnapshot) {
         for (DataSnapshot ds : dataSnapshot.getChildren()) {
+           // forUserInfo(ds);
+            forUserPro(ds);
+
+
+
+        }
+    }
+
+    private void forUserPro(DataSnapshot ds) {
+                    UserDetail userProfile = ds.getValue(UserDetail.class);
+
+            Glide.with(this)
+                    .load(userProfile.getImage_Url())
+                    .centerCrop()
+                    .into(imageView);
+            tvName.setText(userProfile.getName());
+            tvMobile.setText(userProfile.getEmail());
+            tvEmail.setText(userProfile.getEmail());
+            tvAddress.setText(userProfile.getAdres());
+            tvComapnyName.setText(userProfile.getCompany());
+             Log.i(TAG, "showData: "+ userProfile.getEmail());
+    }
+
+    private void forUserInfo(DataSnapshot ds) {
 
             UserInformation userInformation = ds.getValue(UserInformation.class);
-            //UserProfile userProfile = ds.getValue(UserProfile.class);
-
-            //
-            dataSnapshot.getValue();
             tvName.setText(userInformation.getName());
-
             Glide.with(this)
                     .load(userInformation.getCourse())
                     .centerCrop()
                     .into(imageView);
-
-           // imageView.setImageURI(Uri.parse(userInformation.getCourse()));
-            //tvName.setText(userProfile.getName());
-
-
-            //
+            imageView.setImageURI(Uri.parse(userInformation.getCourse()));
+            Log.i(TAG, "showData: "+ userInformation.getCourse());
 
 
-            /*UserInformation userInformation = new UserInformation();
-            userInformation.setAge(ds.child("name").getValue(UserInformation.class).getAge());
-            userInformation.setCourse(ds.child("name").getValue(UserInformation.class).getCourse());*/
 
-             Log.i(TAG, "showData: "+ userInformation.getCourse());
-            // Log.i(TAG, "showData: "+ userProfile.getImage_url());
 
-       /*     UserInformation uInfo = new UserInformation();
-            uInfo.setName(ds.child(userID).getValue(UserInformation.class).getName()); //set the name
-            uInfo.setEmail(ds.child(userID).getValue(UserInformation.class).getEmail()); //set the email
-            uInfo.setPhone_num(ds.child(userID).getValue(UserInformation.class).getPhone_num()); //set the phone_num
-
-            //display all the information
-            Log.d(TAG, "showData: name: " + uInfo.getName());
-            Log.d(TAG, "showData: email: " + uInfo.getEmail());
-            Log.d(TAG, "showData: phone_num: " + uInfo.getPhone_num());
-
-            ArrayList<String> array  = new ArrayList<>();
-            array.add(uInfo.getName());
-            array.add(uInfo.getEmail());
-            array.add(uInfo.getPhone_num());
-            ArrayAdapter adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1,array);
-            mListView.setAdapter(adapter);*/
-        }
     }
 
+
 }
+
 
 ----------------------modal -----------------------------------------------
 package com.testingfirebase;
 
-public class UserProfile {
-    private String email;
-    private String mobile;
-    private String address;
-    private String company;
-    private String image_url;
-    private String name;
-   public UserProfile()
-    {
+public class UserDetail {
+    public String email;
+    public String mobile;
+    public String adres;
+    public String cempany;
+    public String image_Url;
+    public String name;
 
-    }
+    UserDetail() {
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getEmail() {
@@ -425,31 +435,189 @@ public class UserProfile {
         this.mobile = mobile;
     }
 
-    public String getAddress() {
-        return address;
+    public String getAdres() {
+        return adres;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setAdres(String adres) {
+        this.adres = adres;
     }
 
     public String getCompany() {
-        return company;
+        return cempany;
     }
 
     public void setCompany(String company) {
-        this.company = company;
+        this.cempany = company;
     }
 
-    public String getImage_url() {
-        return image_url;
+    public String getImage_Url() {
+        return image_Url;
     }
 
-    public void setImage_url(String image_url) {
-        this.image_url = image_url;
+    public void setImage_Url(String image_Url) {
+        this.image_Url = image_Url;
     }
 
+    public String getName() {
+        return name;
+    }
 
+    public void setName(String name) {
+        this.name = name;
+    }
 
 
 }
+-------------------------buy button drawable0-----------------------
+                 <?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <corners android:radius="5dp"/>
+    <stroke android:width="1px"
+        android:color="#696969"/>
+    <solid android:color="#3d5afe"/>
+</shape>
+                 --------------------------------------------ui for card for packagae-----------------
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".SecondActivity">
+<androidx.cardview.widget.CardView
+    android:layout_width="match_parent"
+    android:layout_height="230dp"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="5dp"
+    app:cardElevation="15dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Spark"
+            android:textColor="#000000"
+            android:textSize="20sp"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="12dp">
+            <TextView
+                android:id="@+id/tv_from"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:text="From"
+                android:layout_weight="1"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New Gandhi Nagar Ghaziabad"
+                android:gravity="center_horizontal"
+                android:layout_weight="1"
+                android:layout_toEndOf="@+id/tv_from"
+                android:layout_marginStart="16dp"
+
+                />
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="12dp">
+            <TextView
+                android:id="@+id/tv_To"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:text="To"
+                android:textStyle="bold"
+                android:textColor="#000000"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New Gandhi Nagar Ghaziabad"
+                android:gravity="center_horizontal"
+                android:layout_toEndOf="@+id/tv_To"
+                android:layout_marginStart="16dp"
+
+                />
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="2"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="12dp">
+            <TextView
+                android:id="@+id/tv_distance"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:text="Distance"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="under 20km"
+                android:gravity="center_horizontal"
+                android:textAlignment="center"
+                android:layout_toEndOf="@+id/tv_distance"
+                android:layout_marginStart="16dp"
+
+                />
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="2"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="12dp">
+
+            <TextView
+                android:id="@+id/tv_fare"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="0dp"
+                android:text="Fare"
+                android:textColor="#000000"
+                android:textStyle="bold" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="12000"
+                android:gravity="center_horizontal"
+                android:textAlignment="center"
+                android:layout_toEndOf="@+id/tv_fare"
+                android:layout_marginStart="16dp"
+
+                />
+        </RelativeLayout>
+        <Button
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:text="Buy Now"
+            android:layout_gravity="end"
+            android:textColor="#ffffff"
+            android:background="@drawable/background_btn_buy"
+            android:layout_marginEnd="27dp"/>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
+</RelativeLayout>
+--------------------------------popopen on clck
+  View alertLayout =  LayoutInflater.from(SecondActivity.this).inflate(R.layout.custom_dialog_for_package,null);
+                final AlertDialog.Builder mAlertBuilder = new AlertDialog.Builder(SecondActivity.this);
+                mAlertBuilder.setView(alertLayout);
+                mAlertBuilder.show();
