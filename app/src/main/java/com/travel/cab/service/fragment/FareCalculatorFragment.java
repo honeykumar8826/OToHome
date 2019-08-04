@@ -52,13 +52,14 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FareCalculatorFragment extends Fragment implements OnMapReadyCallback,View.OnClickListener {
+public class FareCalculatorFragment extends Fragment implements OnMapReadyCallback, View.OnClickListener {
     private static final String TAG = "PlaceActivity";
     private FusedLocationProviderClient mClient;
     private Location mLocation;
@@ -71,13 +72,13 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
     private String placeKey = "AIzaSyBBYFaI01s055CRQvOdnrZeapV_0duHFsI";
     private LatLng destination, source;
     private Context context;
-    private LinearLayout pickLoc,dropLoc;
-    private int AUTOCOMPLETE_REQUEST_CODE=101;
-    private int AUTOCOMPLETE_REQUEST_CODE_DROP=102;
+    private LinearLayout pickLoc, dropLoc;
+    private int AUTOCOMPLETE_REQUEST_CODE = 101;
+    private int AUTOCOMPLETE_REQUEST_CODE_DROP = 102;
     private IntentFilter intentFilter;
     private InternetBroadcastReceiver internetBroadcastReceiver;
     private Button buyPackageFare;
-    private TextView sourcePoint,destinationPoint;
+    private TextView sourcePoint, destinationPoint;
 
 
     public FareCalculatorFragment() {
@@ -128,18 +129,17 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
                 && ActivityCompat.checkSelfPermission(context,
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
-        }
-        else {
+        } else {
             mClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
                 @Override
                 public void onSuccess(Location location) {
                     mLocation = location;
-                     BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.icon);
+                    BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.icon);
                     LatLng currentLatLong = new LatLng(mLocation.getLatitude(), mLocation.getLongitude());
-                   // mMap.addMarker(new MarkerOptions().position(currentLatLong).title("Marker in India").icon(icon));
+                    // mMap.addMarker(new MarkerOptions().position(currentLatLong).title("Marker in India").icon(icon));
                     //Move the camera to the user's location and zoom in!
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 14.0f));
-                    Log.i(TAG, "onSuccess: "+location.getLatitude()+"-"+location.getLongitude());
+                    Log.i(TAG, "onSuccess: " + location.getLatitude() + "-" + location.getLongitude());
 
                     CircleOptions circleOptions = new CircleOptions()
                             .center(currentLatLong).radius(1000)
@@ -167,8 +167,10 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
                         String locality = addressList.get(0).getAddressLine(0);
                         String country = addressList.get(0).getCountryName();
                         if (!locality.isEmpty() && !country.isEmpty())
-                            value.setText(locality +
-                                    "  " + country);
+                        {
+                           // value.setText(locality + "  " + country);
+                            sourcePoint.setText(locality);
+                        }
                         MarkerOptions options = new MarkerOptions().position(latLng).icon(icon);
                 /*    if(marker==null)
                     {
@@ -216,37 +218,36 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
 
     @Override
     public void onClick(View view) {
-        switch (view.getId())
-        {
+        switch (view.getId()) {
             case R.id.ll_pickup:
                 openPickupIntent();
                 break;
-                case R.id.ll_drop:
+            case R.id.ll_drop:
                 openDropIntent();
                 break;
             case R.id.btn_buy_package_fare:
                 checkForBuyPackage();
                 break;
-                default:
-                    break;
+            default:
+                break;
 
         }
     }
 
     private void checkForBuyPackage() {
-        if(!sourcePoint.getText().equals(""))
-        {
-            Toast.makeText(context, "s", Toast.LENGTH_SHORT).show();
-        }
-        else if(destinationPoint.getText().equals(""))
-        {
-            Toast.makeText(context, "d", Toast.LENGTH_SHORT).show();
+        if (sourcePoint.getText().equals("")) {
+            openPickupIntent();
+            //Toast.makeText(context, "s", Toast.LENGTH_SHORT).show();
+        } else if (!
+                destinationPoint.getText().equals("")) {
+            openDropIntent();
+            //Toast.makeText(context, "d", Toast.LENGTH_SHORT).show();
 
-        }
-        else
-        {
-            Toast.makeText(context, "e", Toast.LENGTH_SHORT).show();
-
+        } else {
+            View alertLayout = LayoutInflater.from(context).inflate(R.layout.custom_dialog_for_package, null);
+            final AlertDialog.Builder mAlertBuilder = new AlertDialog.Builder(context);
+            mAlertBuilder.setView(alertLayout);
+            mAlertBuilder.show();
         }
     }
 
@@ -300,11 +301,12 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
             }
         }
     }
+
     @Override
     public void onResume() {
         super.onResume();
-        intentFilter= IntentFilterCondition.getInstance().callIntentFilter();
-        getActivity().registerReceiver(internetBroadcastReceiver,intentFilter);
+        intentFilter = IntentFilterCondition.getInstance().callIntentFilter();
+        getActivity().registerReceiver(internetBroadcastReceiver, intentFilter);
     }
 
     @Override

@@ -48,5 +48,6 @@
     <string name="buy_package">Buy Package</string>
     <string name="enter_pickup_point">Enter pickup point</string>
     <string name="enter_drop_point">Enter drop point</string>
+    <string name="address">Address</string>
 
 </resources>

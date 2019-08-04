@@ -97,11 +97,11 @@ public class VIewProfileFragment extends Fragment {
                     .load(userProfileDetail.getImage_Url())
                     .centerCrop()
                     .into(imageView);
-            tvName.setText(userProfileDetail.getName());
-            tvMobile.setText(userProfileDetail.getEmail());
-            tvEmail.setText(userProfileDetail.getEmail());
-            tvAddress.setText(userProfileDetail.getAdres());
-            tvComapnyName.setText(userProfileDetail.getCompany());
+            tvName.setText("Name            :   "+userProfileDetail.getName());
+            tvMobile.setText("Mobile        :   "+userProfileDetail.getMobile());
+            tvEmail.setText("Email          :   "+userProfileDetail.getEmail());
+            tvAddress.setText("Address      :   "+userProfileDetail.getAdres());
+            tvComapnyName.setText("Company  :   "+userProfileDetail.getCompany());
             Log.i(TAG, "showData: "+ userProfileDetail.getEmail());
 
 
