@@ -11,9 +11,5 @@
         android:title="@string/logout"
         app:showAsAction="never" />
 
-    <item android:id="@+id/edit_profile"
-        android:title="@string/edit_profile"
-        app:showAsAction="never"
-        />
 
 </menu>

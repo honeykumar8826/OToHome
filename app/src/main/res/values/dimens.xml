@@ -17,6 +17,17 @@
     <dimen name="card_corner_radius">15dp</dimen>
     <dimen name="spacing_medium">5dp</dimen>
     <dimen name="spacing_small">2dp</dimen>
-    <dimen name="spacing_16">2dp</dimen>
+    <dimen name="spacing_16">16dp</dimen>
     <dimen name="shape_corner_radius">5dp</dimen>
+    <dimen name="height_package_card">230dp</dimen>
+    <dimen name="spacing_">8dp</dimen>
+    <dimen name="spacing_5">5dp</dimen>
+    <dimen name="spacing_15">15dp</dimen>
+    <dimen name="size_20">20sp</dimen>
+    <dimen name="spacing_12">12dp</dimen>
+    <dimen name="width_textView_package_detail">60dp</dimen>
+    <dimen name="width_btn_buy">100dp</dimen>
+    <dimen name="height_btn_buy">40dp</dimen>
+    <dimen name="spacing_27">27dp</dimen>
+    <dimen name="size_16">16sp</dimen>
 </resources>

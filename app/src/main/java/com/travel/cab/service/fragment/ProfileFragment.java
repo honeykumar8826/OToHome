@@ -7,6 +7,7 @@ import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -43,6 +44,8 @@ import com.travel.cab.service.MainActivity;
 import com.travel.cab.service.R;
 import com.travel.cab.service.activity.HomeActivity;
 import com.travel.cab.service.activity.PhoneLogin;
+import com.travel.cab.service.broadcast.InternetBroadcastReceiver;
+import com.travel.cab.service.ui.IntentFilterCondition;
 import com.travel.cab.service.utils.preference.SharedPreference;
 
 import java.util.HashMap;
@@ -76,6 +79,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private Toolbar toolbar;
     private String selectedImagePath;
     private FragmentManager fragmentManager;
+    private InternetBroadcastReceiver internetBroadcastReceiver;
+    private IntentFilter intentFilter;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -115,6 +120,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
        // toolbar = view.findViewById(R.id.toolbar);
         fragmentManager = getChildFragmentManager();
         imageView.setOnClickListener(this);
+        internetBroadcastReceiver = new InternetBroadcastReceiver();
+
 //         LinearLayout lyt_progress = view.findViewById(R.id.lyt_progress);
 //        lyt_progress.setVisibility(View.VISIBLE);
 
@@ -132,6 +139,19 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 uploadUserImage();
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        intentFilter= IntentFilterCondition.getInstance().callIntentFilter();
+        getActivity().registerReceiver(internetBroadcastReceiver,intentFilter);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getActivity().unregisterReceiver(internetBroadcastReceiver);
     }
 
     private void uploadUserImage() {
@@ -158,13 +178,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private void uploadUserDetail(Uri uri) {
         String downloadedUrl = uri.toString();//actual this is uri
         Map<String, String> userProfileMap = new HashMap<>();
-        userProfileMap.put("Name", userName);
-        userProfileMap.put("Email", userEmail);
-        userProfileMap.put("Mobile", userMobile);
-        userProfileMap.put("Address", userAddress);
-        userProfileMap.put("Company", userCompany);
-        userProfileMap.put("Image_Url", downloadedUrl);
-        mDatabaseReference.setValue(userProfileMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+        userProfileMap.put("name", userName);
+        userProfileMap.put("email", userEmail);
+        userProfileMap.put("mobile", userMobile);
+        userProfileMap.put("adres", userAddress);
+        userProfileMap.put("cempany", userCompany);
+        userProfileMap.put("image_Url", downloadedUrl);
+        mDatabaseReference.push().setValue(userProfileMap).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 Log.i(TAG, "onSuccess: ");

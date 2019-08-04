@@ -2,23 +2,15 @@ package com.travel.cab.service.modal;
 
 
 public class UserProfileDetail {
-    private String email;
-    private String mobile;
-    private String address;
-    private String company;
-    private String image_url;
-    private String name;
+    public String email;
+    public String mobile;
+    public String adres;
+    public String cempany;
+    public String image_Url;
+    public String name;
 
-    public UserProfileDetail() {
+    UserProfileDetail() {
 
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getEmail() {
@@ -37,30 +29,37 @@ public class UserProfileDetail {
         this.mobile = mobile;
     }
 
-    public String getAddress() {
-        return address;
+    public String getAdres() {
+        return adres;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setAdres(String adres) {
+        this.adres = adres;
     }
 
     public String getCompany() {
-        return company;
+        return cempany;
     }
 
     public void setCompany(String company) {
-        this.company = company;
+        this.cempany = company;
     }
 
-    public String getImage_url() {
-        return image_url;
+    public String getImage_Url() {
+        return image_Url;
     }
 
-    public void setImage_url(String image_url) {
-        this.image_url = image_url;
+    public void setImage_Url(String image_Url) {
+        this.image_Url = image_Url;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
 
 }
-

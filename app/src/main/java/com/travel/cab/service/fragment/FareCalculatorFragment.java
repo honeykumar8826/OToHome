@@ -5,6 +5,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Address;
@@ -15,8 +16,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -40,6 +43,8 @@ import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.travel.cab.service.R;
+import com.travel.cab.service.broadcast.InternetBroadcastReceiver;
+import com.travel.cab.service.ui.IntentFilterCondition;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -69,6 +74,10 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
     private LinearLayout pickLoc,dropLoc;
     private int AUTOCOMPLETE_REQUEST_CODE=101;
     private int AUTOCOMPLETE_REQUEST_CODE_DROP=102;
+    private IntentFilter intentFilter;
+    private InternetBroadcastReceiver internetBroadcastReceiver;
+    private Button buyPackageFare;
+    private TextView sourcePoint,destinationPoint;
 
 
     public FareCalculatorFragment() {
@@ -92,17 +101,22 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        internetBroadcastReceiver = new InternetBroadcastReceiver();
         mClient = LocationServices.getFusedLocationProviderClient(getActivity());
         mapFragment = (SupportMapFragment) getChildFragmentManager()
                 .findFragmentById(R.id.map);
         value = view.findViewById(R.id.textView);
         pickLoc = view.findViewById(R.id.ll_pickup);
         dropLoc = view.findViewById(R.id.ll_drop);
+        sourcePoint = view.findViewById(R.id.tv_pickup_location);
+        destinationPoint = view.findViewById(R.id.tv_drop_location);
+        buyPackageFare = view.findViewById(R.id.btn_buy_package_fare);
         if (!Places.isInitialized()) {
             Places.initialize(getActivity(), placeKey);
         }
         pickLoc.setOnClickListener(this);
         dropLoc.setOnClickListener(this);
+        buyPackageFare.setOnClickListener(this);
 
     }
 
@@ -210,8 +224,28 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
                 case R.id.ll_drop:
                 openDropIntent();
                 break;
+            case R.id.btn_buy_package_fare:
+                checkForBuyPackage();
+                break;
                 default:
                     break;
+
+        }
+    }
+
+    private void checkForBuyPackage() {
+        if(!sourcePoint.getText().equals(""))
+        {
+            Toast.makeText(context, "s", Toast.LENGTH_SHORT).show();
+        }
+        else if(destinationPoint.getText().equals(""))
+        {
+            Toast.makeText(context, "d", Toast.LENGTH_SHORT).show();
+
+        }
+        else
+        {
+            Toast.makeText(context, "e", Toast.LENGTH_SHORT).show();
 
         }
     }
@@ -266,4 +300,17 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
             }
         }
     }
+    @Override
+    public void onResume() {
+        super.onResume();
+        intentFilter= IntentFilterCondition.getInstance().callIntentFilter();
+        getActivity().registerReceiver(internetBroadcastReceiver,intentFilter);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getActivity().unregisterReceiver(internetBroadcastReceiver);
+    }
+
 }

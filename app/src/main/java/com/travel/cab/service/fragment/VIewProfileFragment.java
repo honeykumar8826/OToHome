@@ -1,6 +1,7 @@
 package com.travel.cab.service.fragment;
 
 import android.content.Context;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,7 +16,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.travel.cab.service.R;
+import com.travel.cab.service.broadcast.InternetBroadcastReceiver;
 import com.travel.cab.service.modal.UserProfileDetail;
+import com.travel.cab.service.ui.IntentFilterCondition;
 import com.travel.cab.service.utils.preference.SharedPreference;
 
 import androidx.annotation.NonNull;
@@ -28,8 +31,10 @@ public class VIewProfileFragment extends Fragment {
 
     private static final String TAG = "MainActivity";
     private FirebaseDatabase mDatabase;
-    private TextView tvName;
+    private TextView tvName,tvMobile,tvEmail,tvAddress,tvComapnyName;
     private CircleImageView imageView;
+    private IntentFilter intentFilter;
+    private InternetBroadcastReceiver internetBroadcastReceiver;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -41,7 +46,12 @@ public class VIewProfileFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        internetBroadcastReceiver = new InternetBroadcastReceiver();
         tvName = view.findViewById(R.id.tv_name);
+        tvMobile = view.findViewById(R.id.tv_mobile);
+        tvEmail = view.findViewById(R.id.tv_email);
+        tvAddress = view.findViewById(R.id.tv_address);
+        tvComapnyName = view.findViewById(R.id.tv_companyName);
         imageView = view.findViewById(R.id.img_user);
         mDatabase = FirebaseDatabase.getInstance();
     }
@@ -84,40 +94,19 @@ public class VIewProfileFragment extends Fragment {
             tvName.setText(userProfileDetail.getName());
 
             Glide.with(this)
-                    .load(userProfileDetail.getImage_url())
+                    .load(userProfileDetail.getImage_Url())
                     .centerCrop()
                     .into(imageView);
+            tvName.setText(userProfileDetail.getName());
+            tvMobile.setText(userProfileDetail.getEmail());
+            tvEmail.setText(userProfileDetail.getEmail());
+            tvAddress.setText(userProfileDetail.getAdres());
+            tvComapnyName.setText(userProfileDetail.getCompany());
+            Log.i(TAG, "showData: "+ userProfileDetail.getEmail());
 
-            // imageView.setImageURI(Uri.parse(userInformation.getCourse()));
-            //tvName.setText(userProfile.getName());
 
-
-            //
-
-
-            /*UserInformation userInformation = new UserInformation();
-            userInformation.setAge(ds.child("name").getValue(UserInformation.class).getAge());
-            userInformation.setCourse(ds.child("name").getValue(UserInformation.class).getCourse());*/
-
-            Log.i(TAG, "showData: " + userProfileDetail.getAddress());
+            Log.i(TAG, "showData: " + userProfileDetail.getAdres());
             // Log.i(TAG, "showData: "+ userProfile.getImage_url());
-
-       /*     UserInformation uInfo = new UserInformation();
-            uInfo.setName(ds.child(userID).getValue(UserInformation.class).getName()); //set the name
-            uInfo.setEmail(ds.child(userID).getValue(UserInformation.class).getEmail()); //set the email
-            uInfo.setPhone_num(ds.child(userID).getValue(UserInformation.class).getPhone_num()); //set the phone_num
-
-            //display all the information
-            Log.d(TAG, "showData: name: " + uInfo.getName());
-            Log.d(TAG, "showData: email: " + uInfo.getEmail());
-            Log.d(TAG, "showData: phone_num: " + uInfo.getPhone_num());
-
-            ArrayList<String> array  = new ArrayList<>();
-            array.add(uInfo.getName());
-            array.add(uInfo.getEmail());
-            array.add(uInfo.getPhone_num());
-            ArrayAdapter adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1,array);
-            mListView.setAdapter(adapter);*/
         }
     }
 
@@ -127,7 +116,18 @@ public class VIewProfileFragment extends Fragment {
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        intentFilter= IntentFilterCondition.getInstance().callIntentFilter();
+        getActivity().registerReceiver(internetBroadcastReceiver,intentFilter);
+    }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        getActivity().unregisterReceiver(internetBroadcastReceiver);
+    }
 }
 //
 

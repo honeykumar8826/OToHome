@@ -41,5 +41,12 @@
     <string name="calculator">Calculator</string>
     <string name="edit_profile">Edit Profile</string>
     <string name="logout">Logout</string>
+    <string name="distance">Distance</string>
+    <string name="under_20km">under 20km</string>
+    <string name="_12000">12000</string>
+    <string name="buy_now">Buy Now</string>
+    <string name="buy_package">Buy Package</string>
+    <string name="enter_pickup_point">Enter pickup point</string>
+    <string name="enter_drop_point">Enter drop point</string>
 
 </resources>

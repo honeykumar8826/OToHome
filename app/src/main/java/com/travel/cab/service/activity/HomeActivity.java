@@ -11,9 +11,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -102,9 +100,7 @@ public class HomeActivity extends AppCompatActivity {
             case R.id.view_profile:
                 fragment = new VIewProfileFragment();
                 break;
-            case R.id.edit_profile:
-                fragment = new ProfileFragment();
-                break;
+
             default:
                 break;
         }
@@ -134,10 +130,6 @@ public class HomeActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-            case R.id.edit_profile:
-                toolbar.setTitle("Edit Profile");
-                displaySelectedScreen(R.id.edit_profile);
-                return true;
             case R.id.logout:
                 mAuth.signOut();
                 Intent loginIntent = new Intent(this,PhoneLogin.class);

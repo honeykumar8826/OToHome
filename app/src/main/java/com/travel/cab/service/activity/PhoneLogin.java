@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.IntentFilter;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +20,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.travel.cab.service.R;
+import com.travel.cab.service.broadcast.InternetBroadcastReceiver;
+import com.travel.cab.service.ui.IntentFilterCondition;
 
 import java.util.concurrent.TimeUnit;
 
@@ -31,6 +36,8 @@ public class PhoneLogin extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private Context context;
     private ProgressBar showProgressBar;
+    private InternetBroadcastReceiver internetBroadcastReceiver;
+    private IntentFilter intentFilter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +99,13 @@ public class PhoneLogin extends AppCompatActivity {
         };
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        intentFilter= IntentFilterCondition.getInstance().callIntentFilter();
+        registerReceiver(internetBroadcastReceiver,intentFilter);
+    }
+
     private void sendSms() {
         PhoneAuthProvider.getInstance().verifyPhoneNumber("+91" + mobileNum, TIME_SECOND, TimeUnit.SECONDS, PhoneLogin.this, mCallBack);
         Log.i("as", "sendSms: ");
@@ -106,7 +120,12 @@ public class PhoneLogin extends AppCompatActivity {
         etMobile = findViewById(R.id.et_mobile);
         sendOtp = findViewById(R.id.btn_send_otp);
         showProgressBar = findViewById(R.id.show_progress);
+         internetBroadcastReceiver = new InternetBroadcastReceiver();
     }
 
-
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(internetBroadcastReceiver);
+    }
 }

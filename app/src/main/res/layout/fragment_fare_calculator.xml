@@ -35,15 +35,17 @@
         android:layout_marginEnd="@dimen/spacing_18"
         android:background="@drawable/background_location_pickup">
         <TextView
-
+            android:id="@+id/tv_pickup_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Enter pickup point"
+            android:hint="@string/enter_pickup_point"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="@dimen/spacing_16"
+            android:maxLines="1"
             android:layout_marginEnd="@dimen/spacing_16"
+
             android:drawableStart="@drawable/ic_location_green"
-            android:textSize="16sp"/>
+            android:textSize="@dimen/size_16"/>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/ll_drop"
@@ -55,14 +57,23 @@
         android:layout_below="@+id/ll_pickup"
         android:background="@drawable/background_location_drop">
         <TextView
-
+            android:id="@+id/tv_drop_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Enter drop point"
+            android:hint="@string/enter_drop_point"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="@dimen/spacing_16"
             android:layout_marginEnd="@dimen/spacing_16"
+            android:maxLines="1"
             android:drawableStart="@drawable/ic_location_red"
             android:textSize="16sp"/>
     </LinearLayout>
+    <Button
+        android:id="@+id/btn_buy_package_fare"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/buy_package"
+        android:layout_alignParentBottom="true"
+        android:textColor="@color/white_color"
+        android:background="@color/black_color"/>
 </RelativeLayout>

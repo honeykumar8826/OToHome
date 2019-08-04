@@ -3,6 +3,8 @@ package com.travel.cab.service.activity;
 import android.content.Intent;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -19,6 +21,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.travel.cab.service.R;
+import com.travel.cab.service.broadcast.InternetBroadcastReceiver;
+import com.travel.cab.service.ui.IntentFilterCondition;
 import com.travel.cab.service.utils.preference.SharedPreference;
 
 public class OtpVerifyActivity extends AppCompatActivity {
@@ -29,6 +33,9 @@ public class OtpVerifyActivity extends AppCompatActivity {
     private String enterOtp, verificationId,generatedOtp,Opt1,Opt2,Opt3,Opt4,Opt5,Opt6;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallBack;
     private ProgressBar showProgressBar;
+    private IntentFilter intentFilter;
+    private InternetBroadcastReceiver internetBroadcastReceiver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +70,13 @@ public class OtpVerifyActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        intentFilter= IntentFilterCondition.getInstance().callIntentFilter();
+        registerReceiver(internetBroadcastReceiver,intentFilter);
     }
 
     private void puttingTextWatcherOnOtp() {
@@ -243,6 +257,12 @@ public class OtpVerifyActivity extends AppCompatActivity {
         etOpt6 = findViewById(R.id.et6);
         verifyOtp = findViewById(R.id.btn_verify_otp);
         showProgressBar = findViewById(R.id.show_progress_otp_verify);
+        internetBroadcastReceiver = new InternetBroadcastReceiver();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(internetBroadcastReceiver);
+    }
 }
