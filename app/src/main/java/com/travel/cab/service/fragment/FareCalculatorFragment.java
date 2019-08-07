@@ -16,8 +16,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -59,8 +62,9 @@ import androidx.fragment.app.Fragment;
 
 /**
  * A simple {@link Fragment} subclass.
- */
-public class FareCalculatorFragment extends Fragment implements OnMapReadyCallback, View.OnClickListener {
+ *///
+public class FareCalculatorFragment extends Fragment implements OnMapReadyCallback,
+        View.OnClickListener, AdapterView.OnItemSelectedListener {
     private static final String TAG = "PlaceActivity";
     private FusedLocationProviderClient mClient;
     private Location mLocation;
@@ -81,6 +85,8 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
     private Button buyPackageFare,showFare;
     private TextView sourcePoint, destinationPoint;
     private TextView fromLoc,toLoc,packageDistance,fare;
+    String[] country = { "India", "USA", "China", "Japan", "Other"};
+    private Spinner daysDropDown;
 
 
     public FareCalculatorFragment() {
@@ -113,6 +119,8 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
         dropLoc = view.findViewById(R.id.ll_drop);
         sourcePoint = view.findViewById(R.id.tv_pickup_location);
         destinationPoint = view.findViewById(R.id.tv_drop_location);
+        
+
         buyPackageFare = view.findViewById(R.id.btn_buy_package_fare);
         if (!Places.isInitialized()) {
             Places.initialize(getActivity(), placeKey);
@@ -120,6 +128,7 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
         pickLoc.setOnClickListener(this);
         dropLoc.setOnClickListener(this);
         buyPackageFare.setOnClickListener(this);
+
 
     }
 
@@ -254,6 +263,8 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
            packageDistance = alertLayout.findViewById(R.id.tv_distance);
            fare = alertLayout.findViewById(R.id.tv_fare);
            showFare = alertLayout.findViewById(R.id.tv_buy_select_package);
+           daysDropDown = alertLayout.findViewById(R.id.spinner);
+            daysDropDown.setOnItemSelectedListener(this);
             fromLoc.setText(sourcePoint.getText());
             toLoc.setText(destinationPoint.getText());
             packageDistance.setText(sourcePoint.getText());
@@ -272,6 +283,10 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
                     Toast.makeText(context, "Booked Package", Toast.LENGTH_SHORT).show();
                 }
             });
+            ArrayAdapter aa = new ArrayAdapter(getActivity(),android.R.layout.simple_spinner_item,country);
+            aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            //Setting the ArrayAdapter data on the Spinner
+            daysDropDown.setAdapter(aa);
             mAlertBuilder.setView(alertLayout);
             mAlertBuilder.show();
         }
@@ -379,5 +394,16 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
                 + " Meter   " + meterInDec);
 
         return Radius * c;
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        Toast.makeText(getActivity(),country[i] , Toast.LENGTH_LONG).show();
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
     }
 }

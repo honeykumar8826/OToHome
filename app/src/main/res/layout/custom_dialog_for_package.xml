@@ -149,6 +149,32 @@
 
                         />
                 </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginStart="12dp">
+
+                    <TextView
+                        android:id="@+id/tv_select_sub_days"
+                        android:layout_width="@dimen/width_textView_package_detail"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginTop="0dp"
+                        android:text="Days"
+                        android:layout_centerVertical="true"
+                        android:textColor="@color/black_color"
+                        android:textStyle="bold" />
+                    <Spinner
+                        android:id="@+id/spinner"
+                        android:layout_width="189dp"
+                        android:layout_height="40dp"
+                        android:layout_toEndOf="@+id/tv_select_sub_days"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="16dp"
+                         />
+                </RelativeLayout>
+
                 <Button
                     android:id="@+id/tv_buy_select_package"
                     android:layout_width="@dimen/width_btn_buy"
