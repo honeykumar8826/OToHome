@@ -47,6 +47,7 @@ import com.travel.cab.service.broadcast.InternetBroadcastReceiver;
 import com.travel.cab.service.ui.IntentFilterCondition;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
 
@@ -70,15 +71,16 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
     private Marker marker = null;
     private AutocompleteSupportFragment autocompleteFragment, autocompleteFragmentDrop;
     private String placeKey = "AIzaSyBBYFaI01s055CRQvOdnrZeapV_0duHFsI";
-    private LatLng destination, source;
+    private LatLng destinationLatlong, sourceLatlong;
     private Context context;
     private LinearLayout pickLoc, dropLoc;
     private int AUTOCOMPLETE_REQUEST_CODE = 101;
     private int AUTOCOMPLETE_REQUEST_CODE_DROP = 102;
     private IntentFilter intentFilter;
     private InternetBroadcastReceiver internetBroadcastReceiver;
-    private Button buyPackageFare;
+    private Button buyPackageFare,showFare;
     private TextView sourcePoint, destinationPoint;
+    private TextView fromLoc,toLoc,packageDistance,fare;
 
 
     public FareCalculatorFragment() {
@@ -159,6 +161,7 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
             @Override
             public void onCameraIdle() {
                 LatLng latLng = mMap.getCameraPosition().target;
+                sourceLatlong=latLng;
                 BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.pin);
                 Geocoder geocoder = new Geocoder(context);
                 try {
@@ -169,7 +172,8 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
                         if (!locality.isEmpty() && !country.isEmpty())
                         {
                            // value.setText(locality + "  " + country);
-                            sourcePoint.setText(locality);
+                            String address[] = getSplitAddress(locality);
+                            sourcePoint.setText(address[0]+address[1]+address[3]);
                         }
                         MarkerOptions options = new MarkerOptions().position(latLng).icon(icon);
                 /*    if(marker==null)
@@ -238,14 +242,36 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
         if (sourcePoint.getText().equals("")) {
             openPickupIntent();
             //Toast.makeText(context, "s", Toast.LENGTH_SHORT).show();
-        } else if (!
-                destinationPoint.getText().equals("")) {
+        } else if (destinationPoint.getText().equals("")) {
             openDropIntent();
             //Toast.makeText(context, "d", Toast.LENGTH_SHORT).show();
 
         } else {
             View alertLayout = LayoutInflater.from(context).inflate(R.layout.custom_dialog_for_package, null);
             final AlertDialog.Builder mAlertBuilder = new AlertDialog.Builder(context);
+           fromLoc = alertLayout.findViewById(R.id.tv_from);
+           toLoc = alertLayout.findViewById(R.id.tv_to);
+           packageDistance = alertLayout.findViewById(R.id.tv_distance);
+           fare = alertLayout.findViewById(R.id.tv_fare);
+           showFare = alertLayout.findViewById(R.id.tv_buy_select_package);
+            fromLoc.setText(sourcePoint.getText());
+            toLoc.setText(destinationPoint.getText());
+            packageDistance.setText(sourcePoint.getText());
+            fare.setText(sourcePoint.getText());
+            if(!sourcePoint.getText().toString().isEmpty()
+                    &&!destinationPoint.getText().toString().isEmpty())
+            {
+                Double distanceFToHome =    calculationByDistance(sourceLatlong,destinationLatlong);
+                fare.setText(distanceFToHome.toString());
+
+            }
+            showFare.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    Toast.makeText(context, "Booked Package", Toast.LENGTH_SHORT).show();
+                }
+            });
             mAlertBuilder.setView(alertLayout);
             mAlertBuilder.show();
         }
@@ -254,18 +280,8 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
     private void openDropIntent() {
 
         // Set the fields to specify which types of place data to return.
-        List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME);
-
-        // Start the autocomplete intent.
-        Intent intent = new Autocomplete.IntentBuilder(
-                AutocompleteActivityMode.FULLSCREEN, fields)
-                .build(context);
-        startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
-    }
-
-    private void openPickupIntent() {
-        // Set the fields to specify which types of place data to return.
-        List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME);
+        List<Place.Field> fields = Arrays.asList(Place.Field.ID,
+                Place.Field.NAME,Place.Field.ADDRESS,Place.Field.LAT_LNG);
 
         // Start the autocomplete intent.
         Intent intent = new Autocomplete.IntentBuilder(
@@ -274,12 +290,29 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
         startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE_DROP);
     }
 
+    private void openPickupIntent() {
+        // Set the fields to specify which types of place data to return.
+        List<Place.Field> fields = Arrays.asList(Place.Field.ID,
+                Place.Field.NAME,Place.Field.ADDRESS,Place.Field.LAT_LNG);
+
+
+        // Start the autocomplete intent.
+        Intent intent = new Autocomplete.IntentBuilder(
+                AutocompleteActivityMode.FULLSCREEN, fields)
+                .build(context);
+        startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
+
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 Place place = Autocomplete.getPlaceFromIntent(data);
-                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
+                sourceLatlong = place.getLatLng();
+                String address[] =getSplitAddress(place.getAddress());
+                sourcePoint.setText(address[0]+address[1]+address[2]+address[3]);
+                Log.i(TAG, "Place: " + place.getAddress() + ", " + place.getId());
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 // TODO: Handle the error.
                 Status status = Autocomplete.getStatusFromIntent(data);
@@ -291,6 +324,9 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE_DROP) {
             if (resultCode == Activity.RESULT_OK) {
                 Place place = Autocomplete.getPlaceFromIntent(data);
+                destinationLatlong = place.getLatLng();
+                String address[] = getSplitAddress(place.getAddress());
+                destinationPoint.setText(address[0]+address[1]);
                 Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 // TODO: Handle the error.
@@ -314,5 +350,34 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
         super.onPause();
         getActivity().unregisterReceiver(internetBroadcastReceiver);
     }
+    private String[] getSplitAddress(String address)
+    {
+        String[] addressArray = address.split(",", 5);
 
+        return addressArray;
+    }
+    public double calculationByDistance(LatLng StartP, LatLng EndP) {
+        int Radius = 6371;// radius of earth in Km
+        double lat1 = StartP.latitude;
+        double lat2 = EndP.latitude;
+        double lon1 = StartP.longitude;
+        double lon2 = EndP.longitude;
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLon = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+                + Math.cos(Math.toRadians(lat1))
+                * Math.cos(Math.toRadians(lat2)) * Math.sin(dLon / 2)
+                * Math.sin(dLon / 2);
+        double c = 2 * Math.asin(Math.sqrt(a));
+        double valueResult = Radius * c;
+        double km = valueResult / 1;
+        DecimalFormat newFormat = new DecimalFormat("####");
+        int kmInDec = Integer.valueOf(newFormat.format(km));
+        double meter = valueResult % 1000;
+        int meterInDec = Integer.valueOf(newFormat.format(meter));
+        Log.i("Radius Value", "" + valueResult + "   KM  " + kmInDec
+                + " Meter   " + meterInDec);
+
+        return Radius * c;
+    }
 }

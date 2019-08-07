@@ -19,7 +19,7 @@
     <dimen name="spacing_small">2dp</dimen>
     <dimen name="spacing_16">16dp</dimen>
     <dimen name="shape_corner_radius">5dp</dimen>
-    <dimen name="height_package_card">230dp</dimen>
+    <dimen name="height_package_card">292dp</dimen>
     <dimen name="spacing_">8dp</dimen>
     <dimen name="spacing_5">5dp</dimen>
     <dimen name="spacing_15">15dp</dimen>
