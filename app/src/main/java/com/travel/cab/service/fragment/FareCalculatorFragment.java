@@ -166,6 +166,7 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
     }
 
     private void configureCameraIdle() {
+
         onCameraIdleListener = new GoogleMap.OnCameraIdleListener() {
             @Override
             public void onCameraIdle() {
@@ -217,6 +218,26 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
         }
         mMap.setOnCameraIdleListener(onCameraIdleListener);
         mMap.setMyLocationEnabled(true);
+        mClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                mLocation = location;
+                BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.icon);
+                LatLng currentLatLong = new LatLng(mLocation.getLatitude(), mLocation.getLongitude());
+                // mMap.addMarker(new MarkerOptions().position(currentLatLong).title("Marker in India").icon(icon));
+                //Move the camera to the user's location and zoom in!
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 14.0f));
+                Log.i(TAG, "onSuccess: " + location.getLatitude() + "-" + location.getLongitude());
+
+                CircleOptions circleOptions = new CircleOptions()
+                        .center(currentLatLong).radius(1000)
+                        .fillColor(Color.TRANSPARENT).strokeColor(Color.GREEN).strokeWidth(8);
+                Circle mCircle = mMap.addCircle(circleOptions);
+                Log.i(TAG, "onSuccess: " + location.getLongitude());
+            }
+        });
+
+
     }
 
     private void setId() {
