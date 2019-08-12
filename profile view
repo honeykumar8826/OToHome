@@ -1,623 +1,125 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+package com.travel.cab.service;
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/black_color"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:contentInsetStartWithNavigation="0dp"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/nested_scroll_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/white"
-            android:clipToPadding="false"
-            android:scrollbars="none"
-            android:scrollingCache="true">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="230dp"
-                    android:background="@color/grey_10"
-                    android:orientation="vertical">
-
-                    <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/img_user"
-                        android:layout_width="120dp"
-                        android:layout_height="120dp"
-                        android:src="@drawable/ic_person"
-                        android:layout_gravity="center"
-                        android:background="@drawable/background_profile_image"
-                        android:layout_marginTop="16dp"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/lyt_form"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="@dimen/spacing_large">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <ImageButton
-                            android:layout_width="@dimen/spacing_25"
-                            android:layout_height="@dimen/spacing_25"
-                            android:layout_marginTop="@dimen/spacing_25"
-                            android:background="@android:color/transparent"
-                            android:tint="@color/grey_60"
-                            app:srcCompat="@drawable/ic_person" />
-
-                        <View
-                            android:layout_width="@dimen/spacing_large"
-                            android:layout_height="match_parent" />
-
-                        <TextView
-                            android:id="@+id/tv_name"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/spacing_25"
-                            android:text="Name"/>
-
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/spacing_large" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="3"
-                            android:orientation="horizontal">
-
-                            <ImageButton
-                                android:layout_width="@dimen/spacing_25"
-                                android:layout_height="@dimen/spacing_25"
-                                android:layout_marginTop="@dimen/spacing_25"
-                                android:background="@android:color/transparent"
-                                android:tint="@color/grey_60"
-                                app:srcCompat="@drawable/ic_phone" />
-
-                            <View
-                                android:layout_width="@dimen/spacing_large"
-                                android:layout_height="match_parent" />
-
-                            <TextView
-                                android:id="@+id/tv_mobile"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="@dimen/spacing_25"
-                                android:text="Mobile "/>
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/spacing_large" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="3"
-                            android:orientation="horizontal">
-
-                            <ImageButton
-                                android:layout_width="@dimen/spacing_25"
-                                android:layout_height="@dimen/spacing_25"
-                                android:layout_marginTop="@dimen/spacing_25"
-                                android:background="@android:color/transparent"
-                                android:tint="@color/grey_60"
-                                app:srcCompat="@drawable/ic_email" />
-
-                            <View
-                                android:layout_width="@dimen/spacing_large"
-                                android:layout_height="match_parent" />
-
-
-                            <TextView
-                                android:id="@+id/tv_email"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="@dimen/spacing_25"
-                                android:text="Email"/>
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/spacing_large" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <ImageButton
-                            android:id="@+id/imageButton2"
-                            android:layout_width="@dimen/spacing_25"
-                            android:layout_height="@dimen/spacing_25"
-                            android:layout_marginTop="@dimen/spacing_25"
-                            android:background="@android:color/transparent"
-                            android:tint="@color/grey_60"
-                            app:srcCompat="@drawable/ic_location"
-                            android:text="aa"/>
-
-                        <View
-                            android:layout_width="@dimen/spacing_large"
-                            android:layout_height="match_parent" />
-
-
-                        <TextView
-                            android:id="@+id/tv_address"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/spacing_25"
-                            android:text="Address"/>
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/spacing_large" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <ImageButton
-                            android:layout_width="@dimen/spacing_25"
-                            android:layout_height="@dimen/spacing_25"
-                            android:layout_marginTop="@dimen/spacing_25"
-                            android:background="@android:color/transparent"
-                            android:tint="@color/grey_60"
-                            app:srcCompat="@drawable/ic_domain" />
-
-                        <View
-                            android:layout_width="@dimen/spacing_large"
-                            android:layout_height="match_parent" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-
-                            <TextView
-                                android:id="@+id/tv_companyName"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="@dimen/spacing_25"
-                                android:text="Company Name"/>
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/spacing_large" />
-                    <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/button"
-                        android:layout_width="200dp"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/btn_rounded_red"
-                        android:text="Save"
-                        android:textColor="@android:color/white"
-                        android:layout_gravity="center_horizontal"/>
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-        </androidx.core.widget.NestedScrollView>
-
-
-
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
-</LinearLayout>
-----------------------------java file----------------------------------------
-package com.testingfirebase;
-
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.content.ContextCompat;
 
-import android.net.Uri;
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.HashMap;
+public class MainActivity extends AppCompatActivity  implements OnMapReadyCallback,
+        LocationListener,GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener{
 
-import de.hdodenhof.circleimageview.CircleImageView;
-
-public class MainActivity extends AppCompatActivity {
-    FirebaseDatabase mDatabase;
-    private static final String TAG = "MainActivity";
-    TextView tvName,tvMobile,tvEmail,tvAddress,tvComapnyName;
-    CircleImageView imageView;
+    private GoogleMap mMap;
+    Location mLastLocation;
+    Marker mCurrLocationMarker;
+    GoogleApiClient mGoogleApiClient;
+    LocationRequest mLocationRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i(TAG, "onCreate: ");
         setContentView(R.layout.activity_main);
-        tvName = findViewById(R.id.tv_name);
-        tvMobile = findViewById(R.id.tv_mobile);
-        tvEmail = findViewById(R.id.tv_email);
-        tvAddress = findViewById(R.id.tv_address);
-        tvComapnyName = findViewById(R.id.tv_companyName);
-        imageView = findViewById(R.id.img_user);
-        AppCompatButton button = findViewById(R.id.button);
-        mDatabase = FirebaseDatabase.getInstance();
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-             fetchValue();
-               // forThreeValue();
-                //forSixValue();
+    }
 
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+                buildGoogleApiClient();
+                mMap.setMyLocationEnabled(true);
             }
-        });
+        }
+        else {
+            buildGoogleApiClient();
+            mMap.setMyLocationEnabled(true);
+        }
+
+    }
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API).build();
+        mGoogleApiClient.connect();
     }
 
-    private void forThreeValue() {
-             HashMap<String, String> map = new HashMap<>();
-                map.put("name", "nishant");
-                map.put("course", "https://firebasestorage.googleapis.com/v0/b/otohome-25109.appspot.com/o/profile_images%2FxTOKGZ9svPcbUtadDKjKLwIMkm12%2Faa.jpg?alt=media&token=0cdd910d-d1ce-4dc8-a729-c200df27cbd7");
-                map.put("age", "mca");
-                map.put("adres", "mca");
-                DatabaseReference databaseReference=mDatabase.getReference().child("user");
-                databaseReference.push().setValue(map);
-    }
+    @Override
+    public void onConnected(Bundle bundle) {
 
-    private void forSixValue() {
-                        HashMap<String, String> map = new HashMap<>();
-                map.put("name", "nishant");
-                map.put("image_Url", "https://firebasestorage.googleapis.com/v0/b/otohome-25109.appspot.com/o/profile_images%2FxTOKGZ9svPcbUtadDKjKLwIMkm12%2Faa.jpg?alt=media&token=0cdd910d-d1ce-4dc8-a729-c200df27cbd7");
-                map.put("cempany", "mca");
-                map.put("email", "mca");
-                map.put("adres", "mca");
-                map.put("mobile", "mca");
-                DatabaseReference databaseReference=mDatabase.getReference().child("user");
-                databaseReference.push().setValue(map);
-    }
-
-    private void fetchValue() {
-        Log.i(TAG, "onStart: ");
-        try {
-            mDatabase.getReference().child("user").addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    Log.i(TAG, "onDataChange: ");
-                    // This method is called once with the initial value and again
-                    // whenever data at this location is updated.
-                    showData(dataSnapshot);
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    Log.i(TAG, "onCancelled: " + databaseError);
-                }
-            });
-        } catch (Exception e) {
-            Log.i(TAG, "fetchValue: " + e);
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(1000);
+        mLocationRequest.setFastestInterval(1000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         }
 
     }
 
-    private void showData(DataSnapshot dataSnapshot) {
-        for (DataSnapshot ds : dataSnapshot.getChildren()) {
-           // forUserInfo(ds);
-            forUserPro(ds);
+    @Override
+    public void onConnectionSuspended(int i) {
 
+    }
 
+    @Override
+    public void onLocationChanged(Location location) {
 
+        mLastLocation = location;
+        if (mCurrLocationMarker != null) {
+            mCurrLocationMarker.remove();
         }
-    }
+        //Place current location marker
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(latLng);
+        markerOptions.title("Current Position");
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+        mCurrLocationMarker = mMap.addMarker(markerOptions);
 
-    private void forUserPro(DataSnapshot ds) {
-                    UserDetail userProfile = ds.getValue(UserDetail.class);
+        //move map camera
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
 
-            Glide.with(this)
-                    .load(userProfile.getImage_Url())
-                    .centerCrop()
-                    .into(imageView);
-            tvName.setText(userProfile.getName());
-            tvMobile.setText(userProfile.getEmail());
-            tvEmail.setText(userProfile.getEmail());
-            tvAddress.setText(userProfile.getAdres());
-            tvComapnyName.setText(userProfile.getCompany());
-             Log.i(TAG, "showData: "+ userProfile.getEmail());
-    }
-
-    private void forUserInfo(DataSnapshot ds) {
-
-            UserInformation userInformation = ds.getValue(UserInformation.class);
-            tvName.setText(userInformation.getName());
-            Glide.with(this)
-                    .load(userInformation.getCourse())
-                    .centerCrop()
-                    .into(imageView);
-            imageView.setImageURI(Uri.parse(userInformation.getCourse()));
-            Log.i(TAG, "showData: "+ userInformation.getCourse());
-
-
-
+        //stop location updates
+        if (mGoogleApiClient != null) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+        }
 
     }
 
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
+    }
 
 }
-
-
-----------------------modal -----------------------------------------------
-package com.testingfirebase;
-
-public class UserDetail {
-    public String email;
-    public String mobile;
-    public String adres;
-    public String cempany;
-    public String image_Url;
-    public String name;
-
-    UserDetail() {
-
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getMobile() {
-        return mobile;
-    }
-
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
-    }
-
-    public String getAdres() {
-        return adres;
-    }
-
-    public void setAdres(String adres) {
-        this.adres = adres;
-    }
-
-    public String getCompany() {
-        return cempany;
-    }
-
-    public void setCompany(String company) {
-        this.cempany = company;
-    }
-
-    public String getImage_Url() {
-        return image_Url;
-    }
-
-    public void setImage_Url(String image_Url) {
-        this.image_Url = image_Url;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-
-}
--------------------------buy button drawable0-----------------------
-                 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
-    <corners android:radius="5dp"/>
-    <stroke android:width="1px"
-        android:color="#696969"/>
-    <solid android:color="#3d5afe"/>
-</shape>
-                 --------------------------------------------ui for card for packagae-----------------
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".SecondActivity">
-<androidx.cardview.widget.CardView
-    android:layout_width="match_parent"
-    android:layout_height="230dp"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="5dp"
-    app:cardElevation="15dp">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Spark"
-            android:textColor="#000000"
-            android:textSize="20sp"
-            android:gravity="center_horizontal"
-            android:layout_marginTop="16dp"
-            />
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="12dp">
-            <TextView
-                android:id="@+id/tv_from"
-                android:layout_width="60dp"
-                android:layout_height="wrap_content"
-                android:text="From"
-                android:layout_weight="1"
-                android:textColor="#000000"
-                android:textStyle="bold"
-                />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="New Gandhi Nagar Ghaziabad"
-                android:gravity="center_horizontal"
-                android:layout_weight="1"
-                android:layout_toEndOf="@+id/tv_from"
-                android:layout_marginStart="16dp"
-
-                />
-        </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="12dp">
-            <TextView
-                android:id="@+id/tv_To"
-                android:layout_width="60dp"
-                android:layout_height="wrap_content"
-                android:text="To"
-                android:textStyle="bold"
-                android:textColor="#000000"
-                />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="New Gandhi Nagar Ghaziabad"
-                android:gravity="center_horizontal"
-                android:layout_toEndOf="@+id/tv_To"
-                android:layout_marginStart="16dp"
-
-                />
-        </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:weightSum="2"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="12dp">
-            <TextView
-                android:id="@+id/tv_distance"
-                android:layout_width="60dp"
-                android:layout_height="wrap_content"
-                android:text="Distance"
-                android:textColor="#000000"
-                android:textStyle="bold"
-                />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="under 20km"
-                android:gravity="center_horizontal"
-                android:textAlignment="center"
-                android:layout_toEndOf="@+id/tv_distance"
-                android:layout_marginStart="16dp"
-
-                />
-        </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:weightSum="2"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="12dp">
-
-            <TextView
-                android:id="@+id/tv_fare"
-                android:layout_width="60dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_marginTop="0dp"
-                android:text="Fare"
-                android:textColor="#000000"
-                android:textStyle="bold" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="12000"
-                android:gravity="center_horizontal"
-                android:textAlignment="center"
-                android:layout_toEndOf="@+id/tv_fare"
-                android:layout_marginStart="16dp"
-
-                />
-        </RelativeLayout>
-        <Button
-            android:layout_width="100dp"
-            android:layout_height="40dp"
-            android:text="Buy Now"
-            android:layout_gravity="end"
-            android:textColor="#ffffff"
-            android:background="@drawable/background_btn_buy"
-            android:layout_marginEnd="27dp"/>
-    </LinearLayout>
-</androidx.cardview.widget.CardView>
-</RelativeLayout>
---------------------------------popopen on clck
-  View alertLayout =  LayoutInflater.from(SecondActivity.this).inflate(R.layout.custom_dialog_for_package,null);
-                final AlertDialog.Builder mAlertBuilder = new AlertDialog.Builder(SecondActivity.this);
-                mAlertBuilder.setView(alertLayout);
-                mAlertBuilder.show();
