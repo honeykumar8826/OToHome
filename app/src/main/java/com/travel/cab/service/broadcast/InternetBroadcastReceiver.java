@@ -18,7 +18,7 @@ public class InternetBroadcastReceiver extends BroadcastReceiver {
         if (intent.getAction().equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
             checkConnectivity(context);
         }
-        if (WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(intent.getAction())) {
+    /*    if (WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(intent.getAction())) {
             NetworkInfo networkInfo = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
             Log.i(TAG, "onReceive: " + networkInfo.isConnected());
             if (networkInfo.isConnected()) {
@@ -29,13 +29,13 @@ public class InternetBroadcastReceiver extends BroadcastReceiver {
             } else {
                 Toast.makeText(context, "Wifi is disconnected", Toast.LENGTH_SHORT).show();
             }
-        }
-        if (Intent.ACTION_POWER_CONNECTED.equals(intent.getAction())) {
+        }*/
+/*        if (Intent.ACTION_POWER_CONNECTED.equals(intent.getAction())) {
             Toast.makeText(context, "Power connected", Toast.LENGTH_SHORT).show();
         }
         if (Intent.ACTION_POWER_DISCONNECTED.equals(intent.getAction())) {
             Toast.makeText(context, "Power disconnected", Toast.LENGTH_SHORT).show();
-        }
+        }*/
     }
 
     private void checkConnectivity(final Context context) {

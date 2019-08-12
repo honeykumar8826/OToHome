@@ -6,7 +6,7 @@
     >
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="@dimen/height_package_card"
+        android:layout_height="@dimen/height_package_card_home"
         android:layout_margin="@dimen/spacing_"
         app:cardCornerRadius="@dimen/spacing_5"
         app:cardElevation="@dimen/spacing_15">

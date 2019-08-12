@@ -7,7 +7,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.database.DataSnapshot;
@@ -35,6 +37,8 @@ public class VIewProfileFragment extends Fragment {
     private CircleImageView imageView;
     private IntentFilter intentFilter;
     private InternetBroadcastReceiver internetBroadcastReceiver;
+    private ProgressBar progressBar;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,11 +58,14 @@ public class VIewProfileFragment extends Fragment {
         tvComapnyName = view.findViewById(R.id.tv_companyName);
         imageView = view.findViewById(R.id.img_user);
         mDatabase = FirebaseDatabase.getInstance();
+        progressBar = view.findViewById(R.id.show_progress);
+
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        progressBar.setVisibility(View.VISIBLE);
         fetchValue();
     }
 
@@ -69,10 +76,18 @@ public class VIewProfileFragment extends Fragment {
             databaseReferenc.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
+                    if(dataSnapshot !=null)
+                    {
+                        showData(dataSnapshot);
+                    }
+                    else
+                    {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(getActivity(), "Data not Found", Toast.LENGTH_SHORT).show();
+                    }
                     Log.i(TAG, "onDataChange: ");
                     // This method is called once with the initial value and again
                     // whenever data at this location is updated.
-                    showData(dataSnapshot);
                 }
 
                 @Override
@@ -102,6 +117,7 @@ public class VIewProfileFragment extends Fragment {
             tvEmail.setText("Email          :   "+userProfileDetail.getEmail());
             tvAddress.setText("Address      :   "+userProfileDetail.getAdres());
             tvComapnyName.setText("Company  :   "+userProfileDetail.getCompany());
+            progressBar.setVisibility(View.GONE);
             Log.i(TAG, "showData: "+ userProfileDetail.getEmail());
 
 

@@ -78,7 +78,8 @@ public class PhoneLogin extends AppCompatActivity {
                     startActivity(intent);
                 }
                 else {
-                    showProgressBar.setVisibility(View.VISIBLE);
+                    showProgressBar.setVisibility(View.GONE);
+                    Toast.makeText(context, "Authentication Problem", Toast.LENGTH_SHORT).show();
                     Log.i(TAG, "onVerificationCompleted: " + code);
                 }
 
@@ -86,7 +87,7 @@ public class PhoneLogin extends AppCompatActivity {
 
             @Override
             public void onVerificationFailed(FirebaseException e) {
-                showProgressBar.setVisibility(View.VISIBLE);
+                showProgressBar.setVisibility(View.GONE);
                 Toast.makeText(context, "failed" + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
 

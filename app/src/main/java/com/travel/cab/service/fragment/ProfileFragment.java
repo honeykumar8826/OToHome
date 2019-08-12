@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -65,6 +66,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private FragmentManager fragmentManager;
     private InternetBroadcastReceiver internetBroadcastReceiver;
     private IntentFilter intentFilter;
+    private ProgressBar progressBar;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -101,6 +103,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         etCompany = view.findViewById(R.id.et_company_name);
         btnSaveRecord = view.findViewById(R.id.btn_save_record);
         imageView = view.findViewById(R.id.img_user);
+        progressBar = view.findViewById(R.id.show_progress);
        // toolbar = view.findViewById(R.id.toolbar);
         fragmentManager = getChildFragmentManager();
         imageView.setOnClickListener(this);
@@ -119,6 +122,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         btnSaveRecord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                progressBar.setVisibility(View.VISIBLE);
                 getUserData();
                 uploadUserImage();
             }
@@ -146,13 +150,21 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 user_profile.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        Toast.makeText(context, "Image Uploaded", Toast.LENGTH_SHORT).show();
-                        uploadUserDetail(uri);
+                        if(uri !=null)
+                        {
+                            Toast.makeText(context, "Image Uploaded", Toast.LENGTH_SHORT).show();
+                            uploadUserDetail(uri);
+                        }
+                        else {
+                            progressBar.setVisibility(View.GONE);
+                        }
+
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(context, ""+e, Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -171,12 +183,16 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         mDatabaseReference.push().setValue(userProfileMap).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
+                progressBar.setVisibility(View.GONE);
+                Toast.makeText(context, "Data Save Successfully", Toast.LENGTH_SHORT).show();
                 Log.i(TAG, "onSuccess: ");
             }
 
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
+                progressBar.setVisibility(View.GONE);
+                Toast.makeText(context, ""+e, Toast.LENGTH_SHORT).show();
                 Log.i(TAG, "onSuccess: " + e);
             }
         });

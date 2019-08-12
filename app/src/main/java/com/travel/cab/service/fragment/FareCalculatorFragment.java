@@ -12,6 +12,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +27,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -87,6 +89,7 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
     private TextView fromLoc,toLoc,packageDistance,fare;
     String[] country = { "India", "USA", "China", "Japan", "Other"};
     private Spinner daysDropDown;
+    private LocationRequest mLocationRequest;
 
 
     public FareCalculatorFragment() {
@@ -145,18 +148,25 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
                 @Override
                 public void onSuccess(Location location) {
                     mLocation = location;
-                    BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.icon);
-                    LatLng currentLatLong = new LatLng(mLocation.getLatitude(), mLocation.getLongitude());
-                    // mMap.addMarker(new MarkerOptions().position(currentLatLong).title("Marker in India").icon(icon));
-                    //Move the camera to the user's location and zoom in!
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 14.0f));
-                    Log.i(TAG, "onSuccess: " + location.getLatitude() + "-" + location.getLongitude());
+                    if(mLocation !=null)
+                    {
+                        BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.icon);
+                        LatLng currentLatLong = new LatLng(mLocation.getLatitude(), mLocation.getLongitude());
+                        // mMap.addMarker(new MarkerOptions().position(currentLatLong).title("Marker in India").icon(icon));
+                        //Move the camera to the user's location and zoom in!
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 14.0f));
+                        Log.i(TAG, "onSuccess: " + location.getLatitude() + "-" + location.getLongitude());
 
-                    CircleOptions circleOptions = new CircleOptions()
-                            .center(currentLatLong).radius(1000)
-                            .fillColor(Color.TRANSPARENT).strokeColor(Color.GREEN).strokeWidth(8);
-                    Circle mCircle = mMap.addCircle(circleOptions);
-                    Log.i(TAG, "onSuccess: " + location.getLongitude());
+                        CircleOptions circleOptions = new CircleOptions()
+                                .center(currentLatLong).radius(1000)
+                                .fillColor(Color.TRANSPARENT).strokeColor(Color.GREEN).strokeWidth(8);
+                        Circle mCircle = mMap.addCircle(circleOptions);
+                        Log.i(TAG, "onSuccess: " + location.getLongitude());
+                    }
+                    else {
+                        Toast.makeText(context, "Problem occured", Toast.LENGTH_SHORT).show();
+                    }
+
                 }
             });
             mapFragment.getMapAsync(this);
@@ -216,28 +226,14 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
 
             return;
         }
+      /*  mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(120000); // two minute interval
+        mLocationRequest.setFastestInterval(120000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        mClient.requestLocationUpdates(mLocationRequest,this, Looper.myLooper());*/
+
         mMap.setOnCameraIdleListener(onCameraIdleListener);
         mMap.setMyLocationEnabled(true);
-        mClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-                mLocation = location;
-                BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.icon);
-                LatLng currentLatLong = new LatLng(mLocation.getLatitude(), mLocation.getLongitude());
-                // mMap.addMarker(new MarkerOptions().position(currentLatLong).title("Marker in India").icon(icon));
-                //Move the camera to the user's location and zoom in!
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 14.0f));
-                Log.i(TAG, "onSuccess: " + location.getLatitude() + "-" + location.getLongitude());
-
-                CircleOptions circleOptions = new CircleOptions()
-                        .center(currentLatLong).radius(1000)
-                        .fillColor(Color.TRANSPARENT).strokeColor(Color.GREEN).strokeWidth(8);
-                Circle mCircle = mMap.addCircle(circleOptions);
-                Log.i(TAG, "onSuccess: " + location.getLongitude());
-            }
-        });
-
-
     }
 
     private void setId() {
@@ -343,7 +339,7 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
+            if (resultCode == Activity.RESULT_OK && data != null) {
                 Place place = Autocomplete.getPlaceFromIntent(data);
                 sourceLatlong = place.getLatLng();
                 String address[] =getSplitAddress(place.getAddress());
@@ -358,7 +354,7 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
             }
         }
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE_DROP) {
-            if (resultCode == Activity.RESULT_OK) {
+            if (resultCode == Activity.RESULT_OK && data !=null) {
                 Place place = Autocomplete.getPlaceFromIntent(data);
                 destinationLatlong = place.getLatLng();
                 String address[] = getSplitAddress(place.getAddress());
