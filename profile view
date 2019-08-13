@@ -128,3 +128,21 @@ public class ShowPackageFragment extends Fragment implements View.OnClickListene
                     .setWriteTimeout(1, TimeUnit.SECONDS);
         }
     }
+
+      <TextView
+                    android:id="@+id/show_package_to_data"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/to_content"
+                    android:gravity="center_horizontal"
+                    android:layout_toEndOf="@+id/tv_To"
+                    android:layout_marginStart="@dimen/spacing_16"
+                    />
+                <ImageView
+                    android:id="@+id/show_package_more_content"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/show_package_to_data"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="16dp"
+                    android:src="@drawable/expandlist"/>
