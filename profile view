@@ -123,3 +123,49 @@ public class MainActivity extends AppCompatActivity  implements OnMapReadyCallba
     }
 
 }
+
+
+--------------------------Direction api result--------------------------------
+ class DirectionResult extends AsyncTask<Void,Void,String>
+    {
+
+        @Override
+        protected String doInBackground(Void... voids) {
+      //opulent lattitude and longitude
+        //28.656939, 77.436766
+        // fluper latlong
+        //28.615129, 77.386282
+        LatLng latLngOppulent = new LatLng(28.656939,77.436766);
+        LatLng latLngFluper = new LatLng(28.615129,77.386282);
+            DateTime now = new DateTime();
+            try {
+                DirectionsResult result = DirectionsApi.newRequest(getGeoContext())
+                        .mode(TravelMode.DRIVING).origin("Vohra Complex, New Gandhi Nagar, Gandhi Nagar, Nehru Nagar III, Nehru Nagar, Ghaziabad, Uttar Pradesh 201001")
+                        .destination("C Block, Sector 63, Noida, Uttar Pradesh 201307").departureTime(now)
+                        .await();
+                return result.routes[0].legs[0].distance.humanReadable;
+            } catch (ApiException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            Toast.makeText(context, ""+s, Toast.LENGTH_SHORT).show();
+        }
+        /*geocontext is passed in a request api*/
+        private GeoApiContext getGeoContext() {
+            GeoApiContext geoApiContext = new GeoApiContext();
+            return geoApiContext.setQueryRateLimit(3)
+                    .setApiKey(directionKey)                .
+                            setConnectTimeout(1, TimeUnit.SECONDS)
+                    .setReadTimeout(1, TimeUnit.SECONDS)
+                    .setWriteTimeout(1, TimeUnit.SECONDS);
+        }
+    }
