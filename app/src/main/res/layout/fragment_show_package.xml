@@ -4,6 +4,11 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="vertical">
+
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="@dimen/height_package_card_home"
@@ -37,7 +42,7 @@
                     android:textColor="@color/black_color"
                     android:textStyle="bold"
                     />
-                <TextView
+            <!--    <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="New Gandhi Nagar Ghaziabad"
@@ -46,7 +51,24 @@
                     android:layout_toEndOf="@+id/tv_from"
                     android:layout_marginStart="@dimen/spacing_16"
 
+                    />-->
+                <TextView
+                    android:id="@+id/tv_show_package_for_data_from"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/content_from_show_package"
+                    android:gravity="center_horizontal"
+                    android:layout_toEndOf="@+id/tv_from"
+                    android:layout_marginStart="@dimen/spacing_16"
                     />
+                <ImageView
+                    android:id="@+id/img_show_package_more_content_from"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/tv_show_package_for_data_from"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="16dp"
+                    android:src="@drawable/expandlist"/>
             </RelativeLayout>
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -61,15 +83,24 @@
                     android:textStyle="bold"
                     android:textColor="@color/black_color"
                     />
+
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:id="@+id/tv_show_package_to_data"
+                    android:layout_width="200dp"
                     android:layout_height="wrap_content"
-                    android:text="New Gandhi Nagar Ghaziabad"
+                    android:text="@string/content_to_show_package"
                     android:gravity="center_horizontal"
                     android:layout_toEndOf="@+id/tv_To"
                     android:layout_marginStart="@dimen/spacing_16"
-
                     />
+                <ImageView
+                    android:id="@+id/img_show_package_more_content_to"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/tv_show_package_to_data"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="16dp"
+                    android:src="@drawable/expandlist"/>
             </RelativeLayout>
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -130,7 +161,10 @@
                 android:layout_gravity="end"
                 android:textColor="@color/white_color"
                 android:background="@drawable/background_button_buy"
-                android:layout_marginEnd="@dimen/spacing_27"/>
+                android:layout_marginEnd="@dimen/spacing_27"
+                android:layout_marginTop="@dimen/spacing_16"
+                android:layout_marginBottom="@dimen/spacing_16"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
+    </ScrollView>
 </RelativeLayout>

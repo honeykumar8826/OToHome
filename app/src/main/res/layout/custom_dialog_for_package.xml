@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="vertical">
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="@dimen/height_package_card"
         android:layout_margin="@dimen/spacing_"
         app:cardCornerRadius="@dimen/spacing_5"
+        android:padding="@dimen/spacing_8"
         app:cardElevation="@dimen/spacing_15">
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="vertical">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -49,7 +51,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_16"
-                    android:layout_marginStart="@dimen/spacing_12">
+                    android:layout_marginStart="@dimen/spacing_3">
                     <TextView
                         android:id="@+id/tv_From"
                         android:layout_width="@dimen/width_textView_package_detail"
@@ -59,7 +61,7 @@
                         android:textColor="@color/black_color"
                         android:textStyle="bold"
                         />
-                    <TextView
+               <!--     <TextView
                         android:id="@+id/tv_from"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -69,13 +71,32 @@
                         android:layout_toEndOf="@+id/tv_From"
                         android:layout_marginStart="@dimen/spacing_16"
 
+                        />-->
+
+                                    <TextView
+                        android:id="@+id/tv_book_package_for_data_from"
+                        android:layout_width="190dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/content_from_book_package"
+                        android:gravity="start"
+                        android:layout_toEndOf="@+id/tv_From"
+                        android:layout_marginStart="@dimen/spacing_5"
                         />
+                    <ImageView
+                        android:id="@+id/img_book_package_more_content_from"
+                        android:layout_width="40dp"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@+id/tv_book_package_for_data_from"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="@dimen/spacing_3"
+                        android:src="@drawable/expandlist"/>
                 </RelativeLayout>
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_16"
-                    android:layout_marginStart="@dimen/spacing_12">
+
+                    android:layout_marginStart="@dimen/spacing_3">
                     <TextView
                         android:id="@+id/tv_To"
                         android:layout_width="@dimen/width_textView_package_detail"
@@ -85,6 +106,23 @@
                         android:textColor="@color/black_color"
                         />
                     <TextView
+                        android:id="@+id/tv_book_package_for_data_to"
+                        android:layout_width="190dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/content_from_book_package"
+                        android:gravity="start"
+                        android:layout_toEndOf="@+id/tv_To"
+                        android:layout_marginStart="@dimen/spacing_5"
+                        />
+                    <ImageView
+                        android:id="@+id/img_book_package_more_content_to"
+                        android:layout_width="40dp"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@+id/tv_book_package_for_data_to"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="@dimen/spacing_3"
+                        android:src="@drawable/expandlist"/>
+            <!--        <TextView
                         android:id="@+id/tv_to"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -93,14 +131,14 @@
                         android:layout_toEndOf="@+id/tv_To"
                         android:layout_marginStart="@dimen/spacing_16"
 
-                        />
+                        />-->
                 </RelativeLayout>
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:weightSum="2"
                     android:layout_marginTop="@dimen/spacing_16"
-                    android:layout_marginStart="@dimen/spacing_12">
+                    android:layout_marginStart="@dimen/spacing_3">
                     <TextView
                         android:id="@+id/tv_Distance"
                         android:layout_width="@dimen/width_textView_package_detail"
@@ -114,10 +152,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/under_20km"
-                        android:gravity="center_horizontal"
+                        android:gravity="start"
                         android:textAlignment="center"
                         android:layout_toEndOf="@+id/tv_Distance"
-                        android:layout_marginStart="@dimen/spacing_16"
+                        android:layout_marginStart="@dimen/spacing_5"
 
                         />
                 </RelativeLayout>
@@ -125,8 +163,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:weightSum="2"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginStart="12dp">
+                    android:layout_marginTop="@dimen/spacing_16"
+                    android:layout_marginStart="@dimen/spacing_3">
 
                     <TextView
                         android:id="@+id/tv_Fare"
@@ -142,18 +180,18 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/_12000"
-                        android:gravity="center_horizontal"
+                        android:gravity="start"
                         android:textAlignment="center"
                         android:layout_toEndOf="@+id/tv_Fare"
-                        android:layout_marginStart="16dp"
+                        android:layout_marginStart="@dimen/spacing_5"
 
                         />
                 </RelativeLayout>
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginStart="12dp">
+                    android:layout_marginTop="@dimen/spacing_16"
+                    android:layout_marginStart="@dimen/spacing_3">
 
                     <TextView
                         android:id="@+id/tv_select_sub_days"
@@ -171,7 +209,7 @@
                         android:layout_height="40dp"
                         android:layout_toEndOf="@+id/tv_select_sub_days"
                         android:layout_centerVertical="true"
-                        android:layout_marginStart="16dp"
+                        android:layout_marginStart="@dimen/spacing_5"
                          />
                 </RelativeLayout>
 
@@ -184,9 +222,9 @@
                     android:textColor="@color/white_color"
                     android:background="@drawable/background_button_buy"
                     android:layout_marginEnd="@dimen/spacing_27"
+                    android:layout_marginBottom="@dimen/spacing_8"
                     android:layout_marginTop="@dimen/spacing_16"/>
             </LinearLayout>
-        </ScrollView>
-
     </androidx.cardview.widget.CardView>
+    </ScrollView>
 </RelativeLayout>

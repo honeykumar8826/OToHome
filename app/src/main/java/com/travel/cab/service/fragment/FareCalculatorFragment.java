@@ -11,8 +11,8 @@ import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,11 +20,14 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
@@ -40,21 +43,31 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
+import com.google.maps.DirectionsApi;
+import com.google.maps.GeoApiContext;
+import com.google.maps.android.PolyUtil;
+import com.google.maps.model.DirectionsResult;
+import com.google.maps.model.TravelMode;
 import com.travel.cab.service.R;
 import com.travel.cab.service.broadcast.InternetBroadcastReceiver;
 import com.travel.cab.service.ui.IntentFilterCondition;
+
+import org.joda.time.DateTime;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -77,6 +90,7 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
     private Marker marker = null;
     private AutocompleteSupportFragment autocompleteFragment, autocompleteFragmentDrop;
     private String placeKey = "AIzaSyBBYFaI01s055CRQvOdnrZeapV_0duHFsI";
+    private String directionKey = "AIzaSyBBYFaI01s055CRQvOdnrZeapV_0duHFsI";
     private LatLng destinationLatlong, sourceLatlong;
     private Context context;
     private LinearLayout pickLoc, dropLoc;
@@ -87,9 +101,16 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
     private Button buyPackageFare,showFare;
     private TextView sourcePoint, destinationPoint;
     private TextView fromLoc,toLoc,packageDistance,fare;
-    String[] country = { "India", "USA", "China", "Japan", "Other"};
+    private String[] country = { "1day", "2days", "3days", "4days", "5days"};
+    private String toAddress,fromAddress;
+    private String[] shortToAddress,shortFromAddress;
     private Spinner daysDropDown;
-    private LocationRequest mLocationRequest;
+    private ImageView showMoreContentForTo,showMoreContentForFrom;
+    Boolean isButtonClickedTo = false;
+    Boolean isButtonClickedFrom = false;
+    private DirectionsResult result;
+    private ProgressBar progressBar;
+    private boolean isDirectionGet=false;
 
 
     public FareCalculatorFragment() {
@@ -122,15 +143,15 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
         dropLoc = view.findViewById(R.id.ll_drop);
         sourcePoint = view.findViewById(R.id.tv_pickup_location);
         destinationPoint = view.findViewById(R.id.tv_drop_location);
-        
-
         buyPackageFare = view.findViewById(R.id.btn_buy_package_fare);
+        progressBar = view.findViewById(R.id.show_progress);
         if (!Places.isInitialized()) {
             Places.initialize(getActivity(), placeKey);
         }
         pickLoc.setOnClickListener(this);
         dropLoc.setOnClickListener(this);
         buyPackageFare.setOnClickListener(this);
+
 
 
     }
@@ -192,8 +213,32 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
                         if (!locality.isEmpty() && !country.isEmpty())
                         {
                            // value.setText(locality + "  " + country);
-                            String address[] = getSplitAddress(locality);
-                            sourcePoint.setText(address[0]+address[1]+address[3]);
+                            fromAddress = locality;
+                            shortFromAddress = getSplitAddress(locality);
+                            setSelectedLocationByUserEitherSourceOrDestinationPoint(shortFromAddress,sourcePoint);
+                            /*if(address[0] !=null && !address[0].equals(""))
+                            {
+                                sourcePoint.setText(address[0]);
+                                if(address[1] !=null && !address[1].equals(""))
+                                {
+                                    sourcePoint.setText(address[0]+address[1]);
+                                    if(address[2] !=null && !address[2].equals(""))
+                                    {
+                                        sourcePoint.setText(address[0]+address[1]+address[2]);
+                                        if(address[3] !=null && !address[3].equals(""))
+                                        {
+                                            sourcePoint.setText(address[0]+address[1]+address[2]+address[3]);
+                                            if(address[4] !=null && !address[4].equals(""))
+                                            {
+                                                sourcePoint.setText(address[0]+address[1]
+                                                        +address[2]+address[3]+address[4]);
+
+                                            }
+                                        }
+                                    }
+                                }
+
+                            }*/
                         }
                         MarkerOptions options = new MarkerOptions().position(latLng).icon(icon);
                 /*    if(marker==null)
@@ -273,40 +318,87 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
             //Toast.makeText(context, "d", Toast.LENGTH_SHORT).show();
 
         } else {
-            View alertLayout = LayoutInflater.from(context).inflate(R.layout.custom_dialog_for_package, null);
-            final AlertDialog.Builder mAlertBuilder = new AlertDialog.Builder(context);
-           fromLoc = alertLayout.findViewById(R.id.tv_from);
-           toLoc = alertLayout.findViewById(R.id.tv_to);
-           packageDistance = alertLayout.findViewById(R.id.tv_distance);
-           fare = alertLayout.findViewById(R.id.tv_fare);
-           showFare = alertLayout.findViewById(R.id.tv_buy_select_package);
-           daysDropDown = alertLayout.findViewById(R.id.spinner);
-            daysDropDown.setOnItemSelectedListener(this);
-            fromLoc.setText(sourcePoint.getText());
-            toLoc.setText(destinationPoint.getText());
-            packageDistance.setText(sourcePoint.getText());
-            fare.setText(sourcePoint.getText());
-            if(!sourcePoint.getText().toString().isEmpty()
-                    &&!destinationPoint.getText().toString().isEmpty())
-            {
-                Double distanceFToHome =    calculationByDistance(sourceLatlong,destinationLatlong);
-                fare.setText(distanceFToHome.toString());
+            progressBar.setVisibility(View.VISIBLE);
+            new DirectionResult().execute();
+                View alertLayout = LayoutInflater.from(context).inflate(R.layout.custom_dialog_for_package, null);
+                final AlertDialog.Builder mAlertBuilder = new AlertDialog.Builder(context);
+                fromLoc = alertLayout.findViewById(R.id.tv_book_package_for_data_from);
+                toLoc = alertLayout.findViewById(R.id.tv_book_package_for_data_to);
+                packageDistance = alertLayout.findViewById(R.id.tv_distance);
+                fare = alertLayout.findViewById(R.id.tv_fare);
+                showFare = alertLayout.findViewById(R.id.tv_buy_select_package);
+                daysDropDown = alertLayout.findViewById(R.id.spinner);
+                showMoreContentForTo = alertLayout.findViewById(R.id.img_book_package_more_content_to);
+                showMoreContentForFrom = alertLayout.findViewById(R.id.img_book_package_more_content_from);
+                daysDropDown.setOnItemSelectedListener(this);
+                String[] shortAddressFrom = getSplitAddressForShort(fromAddress);
+                setShortSelectedLocationByUser(shortAddressFrom,fromLoc);
+                String[] shortAddressTo = getSplitAddressForShort(toAddress);
+                setShortSelectedLocationByUser(shortAddressTo,toLoc);
+//            packageDistance.setText(sourcePoint.getText());
+                //fare.setText(sourcePoint.getText());
+                if(!sourcePoint.getText().toString().isEmpty()
+                        &&!destinationPoint.getText().toString().isEmpty())
+                {
 
-            }
-            showFare.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+                    // Double distanceFToHome =    calculationByDistance(sourceLatlong,destinationLatlong);
+                    //fare.setText(distanceFToHome.toString());
 
-                    Toast.makeText(context, "Booked Package", Toast.LENGTH_SHORT).show();
                 }
-            });
-            ArrayAdapter aa = new ArrayAdapter(getActivity(),android.R.layout.simple_spinner_item,country);
-            aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            //Setting the ArrayAdapter data on the Spinner
-            daysDropDown.setAdapter(aa);
-            mAlertBuilder.setView(alertLayout);
-            mAlertBuilder.show();
-        }
+                showFare.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        Toast.makeText(context, "Booked Package", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                ArrayAdapter aa = new ArrayAdapter(getActivity(),android.R.layout.simple_spinner_item,country);
+                aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                //Setting the ArrayAdapter data on the Spinner
+                daysDropDown.setAdapter(aa);
+                showMoreContentForFrom.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String getherDataFrom = fromAddress;
+                        String[] shortAddress = getSplitAddressForShort(getherDataFrom);
+                        if(!isButtonClickedFrom)
+                        {
+                            fromLoc.setText(fromAddress);
+                            isButtonClickedFrom = true;
+                        }
+                        else {
+                            setShortSelectedLocationByUser(shortAddress,fromLoc);
+                            //fromLoc.setText(R.string.content_from_show_package);
+                            isButtonClickedFrom = false;
+                        }
+                    }
+                });
+                showMoreContentForTo.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String getherDataTo = toAddress;
+                        String[] shortAddress = getSplitAddressForShort(getherDataTo);
+                        if(!isButtonClickedTo)
+                        {
+                            toLoc.setText(toAddress);
+                            isButtonClickedTo = true;
+                        }
+                        else {
+                            setShortSelectedLocationByUser(shortAddress,toLoc);
+                            isButtonClickedTo = false;
+                        }
+                    }
+                });
+            if(isDirectionGet)
+            {
+                mAlertBuilder.setView(alertLayout);
+                mAlertBuilder.show();
+            }
+            else {
+                Toast.makeText(context, "Service not available", Toast.LENGTH_SHORT).show();
+            }
+            }
+
     }
 
     private void openDropIntent() {
@@ -317,7 +409,7 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
 
         // Start the autocomplete intent.
         Intent intent = new Autocomplete.IntentBuilder(
-                AutocompleteActivityMode.FULLSCREEN, fields)
+                AutocompleteActivityMode.FULLSCREEN, fields).setCountry("In")
                 .build(context);
         startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE_DROP);
     }
@@ -330,7 +422,7 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
 
         // Start the autocomplete intent.
         Intent intent = new Autocomplete.IntentBuilder(
-                AutocompleteActivityMode.FULLSCREEN, fields)
+                AutocompleteActivityMode.FULLSCREEN, fields).setCountry("In")
                 .build(context);
         startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
 
@@ -342,8 +434,10 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
             if (resultCode == Activity.RESULT_OK && data != null) {
                 Place place = Autocomplete.getPlaceFromIntent(data);
                 sourceLatlong = place.getLatLng();
-                String address[] =getSplitAddress(place.getAddress());
-                sourcePoint.setText(address[0]+address[1]+address[2]+address[3]);
+                fromAddress = place.getAddress();
+                shortFromAddress = getSplitAddress(place.getAddress());
+                setSelectedLocationByUserEitherSourceOrDestinationPoint(shortFromAddress,sourcePoint);
+                //sourcePoint.setText(address[0]+address[1]+address[2]+address[3]);
                 Log.i(TAG, "Place: " + place.getAddress() + ", " + place.getId());
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 // TODO: Handle the error.
@@ -357,8 +451,10 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
             if (resultCode == Activity.RESULT_OK && data !=null) {
                 Place place = Autocomplete.getPlaceFromIntent(data);
                 destinationLatlong = place.getLatLng();
-                String address[] = getSplitAddress(place.getAddress());
-                destinationPoint.setText(address[0]+address[1]);
+                toAddress = place.getAddress();
+                shortToAddress = getSplitAddress(place.getAddress());
+                setSelectedLocationByUserEitherSourceOrDestinationPoint(shortToAddress,destinationPoint);
+               // destinationPoint.setText(address[0]+address[1]);
                 Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 // TODO: Handle the error.
@@ -367,6 +463,50 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 // The user canceled the operation.
             }
+        }
+    }
+
+    private void setSelectedLocationByUserEitherSourceOrDestinationPoint(String[] address,TextView eitherSourceOrDesinationPoint) {
+        switch (address.length)
+        {
+            case 1:
+                eitherSourceOrDesinationPoint.setText(address[0]);
+                break;
+                case 2:
+                    eitherSourceOrDesinationPoint.setText(address[0]+address[1]);
+                break;
+                case 3:
+                    eitherSourceOrDesinationPoint.setText(address[0]+address[1]+address[2]);
+                break;
+                case 4:
+                    eitherSourceOrDesinationPoint.setText(address[0]+address[1]+address[2]+address[3]);
+                    break;
+            case 5:
+                eitherSourceOrDesinationPoint.setText(address[0]+address[1]
+                        +address[2]+address[3]+address[4]);
+                break;
+                case 6:
+                eitherSourceOrDesinationPoint.setText(address[0]+address[1]
+                        +address[2]+address[3]+address[4]+address[5]);
+                break;
+                default:
+                    break;
+        }
+    }
+    private void setShortSelectedLocationByUser(String[] address,TextView eitherSourceOrDesinationPoint) {
+        switch (address.length)
+        {
+            case 1:
+                eitherSourceOrDesinationPoint.setText(address[0]);
+                break;
+            case 2:
+                eitherSourceOrDesinationPoint.setText(address[0]+address[1]);
+                break;
+            case 3:
+                eitherSourceOrDesinationPoint.setText(address[0]+address[1]);
+                break;
+            default:
+                break;
         }
     }
 
@@ -388,31 +528,12 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
 
         return addressArray;
     }
-    public double calculationByDistance(LatLng StartP, LatLng EndP) {
-        int Radius = 6371;// radius of earth in Km
-        double lat1 = StartP.latitude;
-        double lat2 = EndP.latitude;
-        double lon1 = StartP.longitude;
-        double lon2 = EndP.longitude;
-        double dLat = Math.toRadians(lat2 - lat1);
-        double dLon = Math.toRadians(lon2 - lon1);
-        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
-                + Math.cos(Math.toRadians(lat1))
-                * Math.cos(Math.toRadians(lat2)) * Math.sin(dLon / 2)
-                * Math.sin(dLon / 2);
-        double c = 2 * Math.asin(Math.sqrt(a));
-        double valueResult = Radius * c;
-        double km = valueResult / 1;
-        DecimalFormat newFormat = new DecimalFormat("####");
-        int kmInDec = Integer.valueOf(newFormat.format(km));
-        double meter = valueResult % 1000;
-        int meterInDec = Integer.valueOf(newFormat.format(meter));
-        Log.i("Radius Value", "" + valueResult + "   KM  " + kmInDec
-                + " Meter   " + meterInDec);
+    private String[] getSplitAddressForShort(String address)
+    {
+        String[] addressArray = address.split(",", 3);
 
-        return Radius * c;
+        return addressArray;
     }
-
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         Toast.makeText(getActivity(),country[i] , Toast.LENGTH_LONG).show();
@@ -423,4 +544,64 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
     public void onNothingSelected(AdapterView<?> adapterView) {
 
     }
+
+   /* ------------------innner class to find the distance between two location ---------------------------*/
+   class DirectionResult extends AsyncTask<Void,Void,String>
+   {
+
+       @Override
+       protected String doInBackground(Void... voids) {
+           DateTime now = new DateTime();
+           try {
+                result = DirectionsApi.newRequest(getGeoContext())
+                       .mode(TravelMode.DRIVING).origin(fromAddress)
+                       .destination(toAddress).departureTime(now)
+                       .await();
+               if(result !=null)
+               {
+                   return result.routes[0].legs[0].distance.humanReadable;
+               }
+
+           } catch (InterruptedException e) {
+               e.printStackTrace();
+           } catch (IOException e) {
+               e.printStackTrace();
+           } catch (com.google.maps.errors.ApiException e) {
+               e.printStackTrace();
+           }
+           return null;
+       }
+
+       @Override
+       protected void onPostExecute(String distanceFToHome) {
+           super.onPostExecute(distanceFToHome);
+           if(distanceFToHome !=null)
+           {
+               isDirectionGet = true;
+               packageDistance.setText(distanceFToHome);
+               List<LatLng> decodedPath = PolyUtil.decode(result.routes[0].overviewPolyline.getEncodedPath());
+               mMap.addPolyline(new PolylineOptions().addAll(decodedPath).width(25).color(Color.RED));
+               progressBar.setVisibility(View.GONE);
+           }
+
+           else
+           {
+               packageDistance.setText("");
+               Toast.makeText(context, "Service not Available", Toast.LENGTH_SHORT).show();
+               progressBar.setVisibility(View.GONE);
+           }
+
+
+
+       }
+       /*geocontext is passed in a request api*/
+       private GeoApiContext getGeoContext() {
+           GeoApiContext geoApiContext = new GeoApiContext();
+           return geoApiContext.setQueryRateLimit(3)
+                   .setApiKey(directionKey)                .
+                           setConnectTimeout(1, TimeUnit.SECONDS)
+                   .setReadTimeout(1, TimeUnit.SECONDS)
+                   .setWriteTimeout(1, TimeUnit.SECONDS);
+       }
+   }
 }

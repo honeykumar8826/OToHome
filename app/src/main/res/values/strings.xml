@@ -49,5 +49,8 @@
     <string name="enter_pickup_point">Enter pickup point</string>
     <string name="enter_drop_point">Enter drop point</string>
     <string name="address">Address</string>
+    <string name="content_to_show_package">New Gandhi Nagar Ghaziabad</string>
+    <string name="content_from_show_package">New Gandhi Nagar Ghaziabad</string>
+    <string name="content_from_book_package">New Gandhi Nagar Ghaziabad</string>
 
 </resources>

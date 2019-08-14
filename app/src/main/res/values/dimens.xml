@@ -20,9 +20,8 @@
     <dimen name="spacing_16">16dp</dimen>
     <dimen name="shape_corner_radius">5dp</dimen>
     <dimen name="height_package_card">345dp</dimen>
-    <dimen name="height_package_card_home">272dp</dimen>
+    <dimen name="height_package_card_home">292dp</dimen>
     <dimen name="spacing_">8dp</dimen>
-    <dimen name="spacing_5">5dp</dimen>
     <dimen name="spacing_15">15dp</dimen>
     <dimen name="size_20">20sp</dimen>
     <dimen name="spacing_12">12dp</dimen>
@@ -31,4 +30,7 @@
     <dimen name="height_btn_buy">40dp</dimen>
     <dimen name="spacing_27">27dp</dimen>
     <dimen name="size_16">16sp</dimen>
+    <dimen name="spacing_8">8dp</dimen>
+    <dimen name="spacing_5">5dp</dimen>
+    <dimen name="spacing_3">3dp</dimen>
 </resources>

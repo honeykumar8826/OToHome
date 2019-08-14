@@ -58,7 +58,7 @@
             android:name=".activity.HomeActivity"
             android:label="@string/title_activity_home"
             android:theme="@style/NoActionBar"
-            android:screenOrientation="portrait"/>
+            />
         <activity android:name=".activity.SplashActivity"
             android:theme="@style/SplashTheme"
             android:screenOrientation="portrait">
