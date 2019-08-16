@@ -66,7 +66,15 @@ public class VIewProfileFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         progressBar.setVisibility(View.VISIBLE);
-        fetchValue();
+        if(InternetBroadcastReceiver.isNetworkInterfaceAvailable(getContext()))
+        {
+            fetchValue();
+        }
+        else {
+            progressBar.setVisibility(View.GONE);
+            Toast.makeText(getActivity(), R.string.offline, Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     private void fetchValue() {
@@ -92,10 +100,12 @@ public class VIewProfileFragment extends Fragment {
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
+                    progressBar.setVisibility(View.GONE);
                     Log.i(TAG, "onCancelled: " + databaseError);
                 }
             });
         } catch (Exception e) {
+            progressBar.setVisibility(View.GONE);
             Log.i(TAG, "fetchValue: " + e);
         }
 

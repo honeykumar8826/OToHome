@@ -40,13 +40,13 @@ public class InternetBroadcastReceiver extends BroadcastReceiver {
 
     private void checkConnectivity(final Context context) {
         if (!isNetworkInterfaceAvailable(context)) {
-            Toast.makeText(context, "You are OFFLINE!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "You are OFFLINE!", Toast.LENGTH_LONG).show();
             return;
         }
     }
 
     //This only checks if the network interface is available, doesn't guarantee a particular network service is available, for example, there could be low signal or server downtime
-    private boolean isNetworkInterfaceAvailable(Context context) {
+    public static boolean isNetworkInterfaceAvailable(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         return activeNetwork != null && activeNetwork.isConnected();

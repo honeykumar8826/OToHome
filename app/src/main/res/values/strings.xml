@@ -52,5 +52,9 @@
     <string name="content_to_show_package">New Gandhi Nagar Ghaziabad</string>
     <string name="content_from_show_package">New Gandhi Nagar Ghaziabad</string>
     <string name="content_from_book_package">New Gandhi Nagar Ghaziabad</string>
+    <string name="fullName">Full Name</string>
+    <string name="offline">You are Offline</string>
+    <string name="some_problem_occured">Some problem occurred</string>
+    <string name="permission_not_grant">Permission not granted</string>
 
 </resources>

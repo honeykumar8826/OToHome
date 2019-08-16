@@ -124,7 +124,7 @@
                                 android:id="@+id/et_name"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:hint="Name"
+                                android:hint="@string/fullName"
                                 android:inputType="text"
                                 android:maxLength="30"
                                 android:maxLines="1"

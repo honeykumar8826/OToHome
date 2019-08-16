@@ -59,6 +59,7 @@ import com.google.maps.model.TravelMode;
 import com.travel.cab.service.R;
 import com.travel.cab.service.broadcast.InternetBroadcastReceiver;
 import com.travel.cab.service.ui.IntentFilterCondition;
+import com.travel.cab.service.utils.baseactivity.BaseActivity;
 
 import org.joda.time.DateTime;
 
@@ -163,10 +164,13 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+      /*  BaseActivity baseActivity = new BaseActivity();
+        baseActivity.checkPermission(getActivity());*/
         if (ActivityCompat.checkSelfPermission(context,
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(context,
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(context, getString(R.string.permission_not_grant), Toast.LENGTH_SHORT).show();
             return;
         } else {
 
@@ -395,16 +399,16 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
         } catch (ApiException e) {
             e.printStackTrace();
             progressBar.setVisibility(View.GONE);
-            Toast.makeText(context, "Some problem occurred"+e, Toast.LENGTH_LONG).show();
+            Toast.makeText(context, getString(R.string.some_problem_occured)+e, Toast.LENGTH_LONG).show();
         } catch (InterruptedException e) {
             e.printStackTrace();
             progressBar.setVisibility(View.GONE);
-            Toast.makeText(context, "Some problem occurred"+e, Toast.LENGTH_LONG).show();
+            Toast.makeText(context, getString(R.string.some_problem_occured)+e, Toast.LENGTH_LONG).show();
 
         } catch (IOException e) {
             e.printStackTrace();
             progressBar.setVisibility(View.GONE);
-            Toast.makeText(context, "Some problem occurred"+e, Toast.LENGTH_LONG).show();
+            Toast.makeText(context, getString(R.string.some_problem_occured)+e, Toast.LENGTH_LONG).show();
         }
         if (result != null) {
             return result.routes[0].legs[0].distance.humanReadable;

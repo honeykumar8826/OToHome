@@ -22,6 +22,7 @@ import com.travel.cab.service.fragment.FareCalculatorFragment;
 import com.travel.cab.service.fragment.ProfileFragment;
 import com.travel.cab.service.fragment.ShowPackageFragment;
 import com.travel.cab.service.fragment.VIewProfileFragment;
+import com.travel.cab.service.utils.baseactivity.BaseActivity;
 import com.travel.cab.service.utils.preference.SharedPreference;
 
 import androidx.annotation.NonNull;
@@ -41,6 +42,7 @@ public class HomeActivity extends AppCompatActivity {
     private Fragment fragment;
     private FirebaseAuth mAuth;
     private Toolbar toolbar;
+    BaseActivity baseActivity = new BaseActivity();
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -78,7 +80,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         inItId();
-        checkPermission();
+        baseActivity.checkPermission(HomeActivity.this);
         displaySelectedScreen(R.id.navigation_home);
 
     }
@@ -107,6 +109,7 @@ public class HomeActivity extends AppCompatActivity {
         //replacing the fragment
         if (fragment != null) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.setCustomAnimations(R.anim.slide_up, 0);
             ft.replace(R.id.framLayout_container, fragment);
             ft.commit();
         }

@@ -57,7 +57,7 @@
                     android:layout_width="200dp"
                     android:layout_height="wrap_content"
                     android:text="@string/content_from_show_package"
-                    android:gravity="center_horizontal"
+                    android:gravity="start"
                     android:layout_toEndOf="@+id/tv_from"
                     android:layout_marginStart="@dimen/spacing_16"
                     />
@@ -89,7 +89,7 @@
                     android:layout_width="200dp"
                     android:layout_height="wrap_content"
                     android:text="@string/content_to_show_package"
-                    android:gravity="center_horizontal"
+                    android:gravity="start"
                     android:layout_toEndOf="@+id/tv_To"
                     android:layout_marginStart="@dimen/spacing_16"
                     />

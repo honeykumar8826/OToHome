@@ -1,9 +1,6 @@
 package com.travel.cab.service.activity;
 
 import android.content.Intent;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.text.Editable;
@@ -25,16 +22,20 @@ import com.travel.cab.service.broadcast.InternetBroadcastReceiver;
 import com.travel.cab.service.ui.IntentFilterCondition;
 import com.travel.cab.service.utils.preference.SharedPreference;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 public class OtpVerifyActivity extends AppCompatActivity {
-    private FirebaseAuth mAuth;
     private static final String TAG = "OtpVerifyActivity";
-    private EditText etOpt1,etOpt2,etOpt3,etOpt4,etOpt5,etOpt6;
+    private FirebaseAuth mAuth;
+    private EditText etOpt1, etOpt2, etOpt3, etOpt4, etOpt5, etOpt6;
     private Button verifyOtp;
-    private String enterOtp, verificationId,generatedOtp,Opt1,Opt2,Opt3,Opt4,Opt5,Opt6;
+    private String enterOtp, verificationId, generatedOtp, Opt1, Opt2, Opt3, Opt4, Opt5, Opt6;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallBack;
     private ProgressBar showProgressBar;
     private IntentFilter intentFilter;
     private InternetBroadcastReceiver internetBroadcastReceiver;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,12 +52,16 @@ public class OtpVerifyActivity extends AppCompatActivity {
                 getUserInput();
                 if (!enterOtp.isEmpty()) {
 
-                    if(enterOtp.equals(generatedOtp))
-                    {
-//                      send the post reqest on the server
-                        verifyCode(generatedOtp,verificationId);
-                    }
-                    else {
+                    if (enterOtp.equals(generatedOtp)) {
+                        if (InternetBroadcastReceiver.isNetworkInterfaceAvailable(OtpVerifyActivity.this)) {
+                            // send the post reqest on the server
+                            verifyCode(generatedOtp, verificationId);
+                        } else {
+                            showProgressBar.setVisibility(View.GONE);
+                            Toast.makeText(OtpVerifyActivity.this, getString(R.string.offline), Toast.LENGTH_SHORT).show();
+                        }
+//
+                    } else {
                         showProgressBar.setVisibility(View.GONE);
                         Toast.makeText(OtpVerifyActivity.this, "Invalid OTP ", Toast.LENGTH_SHORT).show();
                     }
@@ -64,7 +69,7 @@ public class OtpVerifyActivity extends AppCompatActivity {
 
                 } else {
                     showProgressBar.setVisibility(View.GONE);
-                    Toast.makeText(OtpVerifyActivity.this, "OTP is blank", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(OtpVerifyActivity.this, "OTP is empty", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -75,8 +80,8 @@ public class OtpVerifyActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        intentFilter= IntentFilterCondition.getInstance().callIntentFilter();
-        registerReceiver(internetBroadcastReceiver,intentFilter);
+        intentFilter = IntentFilterCondition.getInstance().callIntentFilter();
+        registerReceiver(internetBroadcastReceiver, intentFilter);
     }
 
     private void puttingTextWatcherOnOtp() {
@@ -94,8 +99,7 @@ public class OtpVerifyActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(s.toString().length()==1)
-                {
+                if (s.toString().length() == 1) {
                     etOpt2.requestFocus();
                 }
 
@@ -114,8 +118,7 @@ public class OtpVerifyActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(s.toString().length()==1)
-                {
+                if (s.toString().length() == 1) {
                     etOpt3.requestFocus();
                 }
             }
@@ -133,8 +136,7 @@ public class OtpVerifyActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(s.toString().length()==1)
-                {
+                if (s.toString().length() == 1) {
                     etOpt4.requestFocus();
                 }
             }
@@ -152,8 +154,7 @@ public class OtpVerifyActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(s.toString().length()==1)
-                {
+                if (s.toString().length() == 1) {
                     etOpt5.requestFocus();
                 }
             }
@@ -171,8 +172,7 @@ public class OtpVerifyActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(s.toString().length()==1)
-                {
+                if (s.toString().length() == 1) {
                     etOpt6.requestFocus();
                 }
             }
@@ -214,8 +214,7 @@ public class OtpVerifyActivity extends AppCompatActivity {
                     Intent intent = new Intent(OtpVerifyActivity.this, HomeActivity.class);
                     startActivity(intent);
                     finish();
-                }
-                else {
+                } else {
                     showProgressBar.setVisibility(View.GONE);
                     Toast.makeText(OtpVerifyActivity.this, "Code Not Verified Successfully", Toast.LENGTH_SHORT).show();
                 }
@@ -229,8 +228,7 @@ public class OtpVerifyActivity extends AppCompatActivity {
         if (extras != null) {
             verificationId = extras.getString("VERIFICATION_ID");
             generatedOtp = extras.getString("OTP_CODE");
-        }
-        else {
+        } else {
             Toast.makeText(OtpVerifyActivity.this, getString(R.string.something_wrong), Toast.LENGTH_SHORT).show();
         }
     }
@@ -242,7 +240,7 @@ public class OtpVerifyActivity extends AppCompatActivity {
         Opt4 = etOpt4.getText().toString();
         Opt5 = etOpt5.getText().toString();
         Opt6 = etOpt6.getText().toString();
-        enterOtp = Opt1+Opt2+Opt3+Opt4+Opt5+Opt6;
+        enterOtp = Opt1 + Opt2 + Opt3 + Opt4 + Opt5 + Opt6;
 
     }
 

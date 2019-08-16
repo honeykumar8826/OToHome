@@ -5,6 +5,8 @@ import android.app.Application;
 import com.crashlytics.android.Crashlytics;
 import com.travel.cab.service.ui.IntentFilterCondition;
 import com.travel.cab.service.utils.preference.SharedPreference;
+import com.travel.cab.service.utils.validation.CustomCheck;
+
 import io.fabric.sdk.android.Fabric;
 
 
@@ -14,6 +16,7 @@ public class CustomApplication extends Application {
         super.onCreate();
         Fabric.with(this, new Crashlytics());
         SharedPreference.initShared(this);
+        CustomCheck.initCustomCheck(this);
         IntentFilterCondition.initialiseInstance(this);
     }
 }

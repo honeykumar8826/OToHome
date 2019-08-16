@@ -1,7 +1,6 @@
 package com.travel.cab.service.fragment;
 
 
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -32,6 +31,7 @@ import com.travel.cab.service.R;
 import com.travel.cab.service.broadcast.InternetBroadcastReceiver;
 import com.travel.cab.service.ui.IntentFilterCondition;
 import com.travel.cab.service.utils.preference.SharedPreference;
+import com.travel.cab.service.utils.validation.CustomCheck;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -94,8 +94,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         setHasOptionsMenu(true);
         mDatabase = FirebaseDatabase.getInstance();
         mDatabaseReference = mDatabase.getReference().child("users").child(SharedPreference.getInstance().getUserId());
-         mStorageRef = FirebaseStorage.getInstance().getReference().child("profile_images").
-                 child(SharedPreference.getInstance().getUserId());
+        mStorageRef = FirebaseStorage.getInstance().getReference().child("profile_images").
+                child(SharedPreference.getInstance().getUserId());
         etName = view.findViewById(R.id.et_name);
         etPhone = view.findViewById(R.id.et_mobile_number);
         etEmail = view.findViewById(R.id.et_email);
@@ -104,7 +104,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         btnSaveRecord = view.findViewById(R.id.btn_save_record);
         imageView = view.findViewById(R.id.img_user);
         progressBar = view.findViewById(R.id.show_progress);
-       // toolbar = view.findViewById(R.id.toolbar);
+        // toolbar = view.findViewById(R.id.toolbar);
         fragmentManager = getChildFragmentManager();
         imageView.setOnClickListener(this);
         internetBroadcastReceiver = new InternetBroadcastReceiver();
@@ -132,8 +132,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
-        intentFilter= IntentFilterCondition.getInstance().callIntentFilter();
-        getActivity().registerReceiver(internetBroadcastReceiver,intentFilter);
+        intentFilter = IntentFilterCondition.getInstance().callIntentFilter();
+        getActivity().registerReceiver(internetBroadcastReceiver, intentFilter);
     }
 
     @Override
@@ -143,32 +143,70 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     }
 
     private void uploadUserImage() {
-        StorageReference user_profile = mStorageRef.child(userName + ".jpg");
-        user_profile.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                user_profile.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        if(uri !=null)
-                        {
-                            Toast.makeText(context, "Image Uploaded", Toast.LENGTH_SHORT).show();
-                            uploadUserDetail(uri);
-                        }
-                        else {
-                            progressBar.setVisibility(View.GONE);
-                        }
+        if (CustomCheck.getInstance().checkNormalStringCase(userName)) {
+            if (CustomCheck.getInstance().checkPhoneNumber(userMobile)) {
+                if (CustomCheck.getInstance().checkNormalStringCase(userEmail)) {
+                    if (CustomCheck.getInstance().checkNormalStringCase(userAddress)) {
+                        if (CustomCheck.getInstance().checkNormalStringCase(userCompany)) {
+                            if (CustomCheck.getInstance().checkNormalStringCase(String.valueOf(imageUri))) {
+                                if(InternetBroadcastReceiver.isNetworkInterfaceAvailable(getContext()))
+                                {
+                                    StorageReference user_profile = mStorageRef.child(userName + ".jpg");
+                                    user_profile.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                        @Override
+                                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                            user_profile.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                @Override
+                                                public void onSuccess(Uri uri) {
+                                                    if (uri != null) {
+                                                        Toast.makeText(context, "Image Uploaded", Toast.LENGTH_SHORT).show();
+                                                        uploadUserDetail(uri);
+                                                    } else {
+                                                        progressBar.setVisibility(View.GONE);
+                                                    }
 
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
+                                                }
+                                            }).addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    progressBar.setVisibility(View.GONE);
+                                                    Toast.makeText(context, "" + e, Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                        }
+                                    });
+
+                                }
+                                else
+                                {
+                                    progressBar.setVisibility(View.GONE);
+                                    Toast.makeText(context, R.string.offline, Toast.LENGTH_SHORT).show();
+                                }
+                                                           } else {
+                                progressBar.setVisibility(View.GONE);
+                                Toast.makeText(context, "Select Profile image", Toast.LENGTH_SHORT).show();
+                            }
+
+                        } else {
+                            progressBar.setVisibility(View.GONE);
+                            Toast.makeText(context, "Enter valid Company name", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
                         progressBar.setVisibility(View.GONE);
-                        Toast.makeText(context, ""+e, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Enter valid Address ", Toast.LENGTH_SHORT).show();
                     }
-                });
+                } else {
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(context, "Enter valid Email ", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                progressBar.setVisibility(View.GONE);
+                Toast.makeText(context, "Enter valid Mobile number", Toast.LENGTH_SHORT).show();
             }
-        });
+        } else {
+            progressBar.setVisibility(View.GONE);
+            Toast.makeText(context, "Enter a valid name", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void uploadUserDetail(Uri uri) {
@@ -192,7 +230,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onFailure(@NonNull Exception e) {
                 progressBar.setVisibility(View.GONE);
-                Toast.makeText(context, ""+e, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "" + e, Toast.LENGTH_SHORT).show();
                 Log.i(TAG, "onSuccess: " + e);
             }
         });
@@ -211,7 +249,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         if (view.getId() == R.id.img_user) {
             // start picker to get image for cropping and then use the image in cropping activity
-          Intent intent=  CropImage.activity()
+            Intent intent = CropImage.activity()
                     .setGuidelines(CropImageView.Guidelines.ON)
                     .getIntent(getActivity());
             startActivityForResult(intent, CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE);
@@ -227,16 +265,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == Activity.RESULT_OK) {
                 imageUri = result.getUri();
-                if(imageUri !=null)
-                {
+                if (imageUri != null) {
                     imageView.setImageURI(imageUri);
                 }
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
             }
-        }
-        else
-        {
+        } else {
             Toast.makeText(context, "", Toast.LENGTH_SHORT).show();
         }
    /*     if (resultCode == Activity.RESULT_OK)
@@ -294,6 +329,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     }
 
     private void clearPreference() {
-    SharedPreference.getInstance().clearPreference();
+        SharedPreference.getInstance().clearPreference();
     }
 }

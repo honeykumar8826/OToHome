@@ -2,11 +2,7 @@ package com.travel.cab.service.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.IntentFilter;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -22,8 +18,11 @@ import com.google.firebase.auth.PhoneAuthProvider;
 import com.travel.cab.service.R;
 import com.travel.cab.service.broadcast.InternetBroadcastReceiver;
 import com.travel.cab.service.ui.IntentFilterCondition;
+import com.travel.cab.service.utils.validation.CustomCheck;
 
 import java.util.concurrent.TimeUnit;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class PhoneLogin extends AppCompatActivity {
 
@@ -55,13 +54,20 @@ public class PhoneLogin extends AppCompatActivity {
 //                get the value from the user
                 showProgressBar.setVisibility(View.VISIBLE);
                 getUserInput();
-                if (!mobileNum.isEmpty()) {
-//                      send the post reqest on the server
-                    sendSms();
+                if (CustomCheck.getInstance().checkPhoneNumber(mobileNum)) {
+                    if (InternetBroadcastReceiver.isNetworkInterfaceAvailable(PhoneLogin.this)) {
+                        // send the post reqest on the server
+                        sendSms();
+                    } else {
+                        showProgressBar.setVisibility(View.GONE);
+                        Toast.makeText(PhoneLogin.this, "You are Offline", Toast.LENGTH_SHORT).show();
+
+                    }
+//
 
                 } else {
                     showProgressBar.setVisibility(View.GONE);
-                    Toast.makeText(PhoneLogin.this, "Fill all field", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PhoneLogin.this, "Enter valid mobile number", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -76,8 +82,7 @@ public class PhoneLogin extends AppCompatActivity {
                     intent.putExtra("VERIFICATION_ID", verificationId);
                     intent.putExtra("OTP_CODE", code);
                     startActivity(intent);
-                }
-                else {
+                } else {
                     showProgressBar.setVisibility(View.GONE);
                     Toast.makeText(context, "Authentication Problem", Toast.LENGTH_SHORT).show();
                     Log.i(TAG, "onVerificationCompleted: " + code);
@@ -103,11 +108,12 @@ public class PhoneLogin extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        intentFilter= IntentFilterCondition.getInstance().callIntentFilter();
-        registerReceiver(internetBroadcastReceiver,intentFilter);
+        intentFilter = IntentFilterCondition.getInstance().callIntentFilter();
+        registerReceiver(internetBroadcastReceiver, intentFilter);
     }
 
     private void sendSms() {
+
         PhoneAuthProvider.getInstance().verifyPhoneNumber("+91" + mobileNum, TIME_SECOND, TimeUnit.SECONDS, PhoneLogin.this, mCallBack);
         Log.i("as", "sendSms: ");
     }
@@ -121,7 +127,7 @@ public class PhoneLogin extends AppCompatActivity {
         etMobile = findViewById(R.id.et_mobile);
         sendOtp = findViewById(R.id.btn_send_otp);
         showProgressBar = findViewById(R.id.show_progress);
-         internetBroadcastReceiver = new InternetBroadcastReceiver();
+        internetBroadcastReceiver = new InternetBroadcastReceiver();
     }
 
     @Override
