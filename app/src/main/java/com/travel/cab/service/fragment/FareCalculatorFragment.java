@@ -4,7 +4,6 @@ package com.travel.cab.service.fragment;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -23,6 +22,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,16 +50,17 @@ import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.maps.DirectionsApi;
 import com.google.maps.GeoApiContext;
 import com.google.maps.android.PolyUtil;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.DirectionsResult;
 import com.google.maps.model.TravelMode;
+import com.travel.cab.service.BuildConfig;
 import com.travel.cab.service.R;
 import com.travel.cab.service.broadcast.InternetBroadcastReceiver;
 import com.travel.cab.service.ui.IntentFilterCondition;
-import com.travel.cab.service.utils.baseactivity.BaseActivity;
 
 import org.joda.time.DateTime;
 
@@ -90,8 +91,8 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
     private TextView value;
     private Marker marker = null;
     private AutocompleteSupportFragment autocompleteFragment, autocompleteFragmentDrop;
-    private String placeKey = "AIzaSyBBYFaI01s055CRQvOdnrZeapV_0duHFsI";
-    private String directionKey = "AIzaSyBBYFaI01s055CRQvOdnrZeapV_0duHFsI";
+    private String placeKey = BuildConfig.ApiKey;
+    private String directionKey = BuildConfig.ApiKey;
     private LatLng destinationLatlong, sourceLatlong;
     private Context context;
     private LinearLayout pickLoc, dropLoc;
@@ -102,16 +103,18 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
     private Button buyPackageFare, showFare;
     private TextView sourcePoint, destinationPoint;
     private TextView fromLoc, toLoc, packageDistance, fare;
-    private String[] country = {"1day", "2days", "3days", "4days", "5days"};
+    private String[] days = {"select service days","1day", "2days", "3days", "4days", "5days"};
     private String toAddress, fromAddress;
     private String[] shortToAddress, shortFromAddress;
     private Spinner daysDropDown;
-    private ImageView showMoreContentForTo, showMoreContentForFrom,closeBuyPackageDialog;
+    private ImageView showMoreContentForTo, showMoreContentForFrom, closeBuyPackageDialog;
     private DirectionsResult result;
     private ProgressBar progressBar;
     private boolean isDirectionGet = false;
     private RectangularBounds bounds;
     private AlertDialog show;
+    private int numOfDays;
+    private RelativeLayout relativeLayout;
 
 
     public FareCalculatorFragment() {
@@ -144,6 +147,7 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
         dropLoc = view.findViewById(R.id.ll_drop);
         sourcePoint = view.findViewById(R.id.tv_pickup_location);
         destinationPoint = view.findViewById(R.id.tv_drop_location);
+        relativeLayout = view.findViewById(R.id.rl_fare_calculator);
         buyPackageFare = view.findViewById(R.id.btn_buy_package_fare);
         progressBar = view.findViewById(R.id.show_progress);
         if (!Places.isInitialized()) {
@@ -183,7 +187,14 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
                         LatLng currentLatLong = new LatLng(mLocation.getLatitude(), mLocation.getLongitude());
                         // mMap.addMarker(new MarkerOptions().position(currentLatLong).title("Marker in India").icon(icon));
                         //Move the camera to the user's location and zoom in!
-                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 14.0f));
+                        if(mMap !=null)
+                        {
+                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 14.0f));
+                        }
+                        else
+                        {
+                          return;
+                        }
                         Log.i(TAG, "onSuccess: " + location.getLatitude() + "-" + location.getLongitude());
 
                         CircleOptions circleOptions = new CircleOptions()
@@ -263,6 +274,7 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
         mMap.setOnCameraIdleListener(onCameraIdleListener);
         mMap.setMyLocationEnabled(true);
     }
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -273,7 +285,7 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
                 openDropIntent();
                 break;
             case R.id.btn_buy_package_fare:
-                    checkForBuyPackage();
+                checkForBuyPackage();
                 break;
             default:
                 break;
@@ -314,23 +326,28 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
         setShortSelectedLocationByUser(shortAddressFrom, fromLoc);
         String[] shortAddressTo = getSplitAddressForShort(toAddress);
         setShortSelectedLocationByUser(shortAddressTo, toLoc);
-//            packageDistance.setText(sourcePoint.getText());
-        //fare.setText(sourcePoint.getText());
-        if (!sourcePoint.getText().toString().isEmpty()
-                && !destinationPoint.getText().toString().isEmpty()) {
 
-            // Double distanceFToHome =    calculationByDistance(sourceLatlong,destinationLatlong);
-            //fare.setText(distanceFToHome.toString());
 
-        }
         showFare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                Toast.makeText(context, "Booked Package", Toast.LENGTH_SHORT).show();
+                if (!fromLoc.getText().toString().isEmpty()
+                        && !toLoc.getText().toString().isEmpty()
+                        && !packageDistance.getText().toString().isEmpty()) {
+                    if (numOfDays >= 0) {
+                        float rideFare = calculateFare(packageDistance.getText().toString(), numOfDays);
+                        fare.setText(String.valueOf(rideFare)+getString(R.string.rupees));
+                    } else {
+                        Toast.makeText(context, "Select days", Toast.LENGTH_SHORT).show();
+                    }
+
+                } else {
+                    Toast.makeText(context, "Click on buy package again", Toast.LENGTH_SHORT).show();
+                }
             }
         });
-        ArrayAdapter aa = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_item, country);
+        ArrayAdapter aa = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_item, days);
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         //Setting the ArrayAdapter data on the Spinner
         daysDropDown.setAdapter(aa);
@@ -375,7 +392,7 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
             List<LatLng> decodedPath = PolyUtil.decode(result.routes[0].overviewPolyline.getEncodedPath());
             mMap.addPolyline(new PolylineOptions().addAll(decodedPath).width(25).color(Color.RED));
             mAlertBuilder.setView(alertLayout);
-            show =  mAlertBuilder.show();
+            show = mAlertBuilder.show();
             show.setCancelable(false);
 
         }
@@ -388,7 +405,33 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
         });
     }
 
-    private String getDistanceBetweenTwoLocation(){
+    private float calculateFare(String packageDistance, int numOfDays) {
+        String seperateUnit[] = packageDistance.split(" ");
+        if (packageDistance.contains("km")) {
+            /*----------when this scenario will come like (1,900)-----------not work------------*/
+            if(seperateUnit.length<=3)
+            {
+                float distance = Float.parseFloat(seperateUnit[0]);
+                return distance * numOfDays * 7;
+            }
+            else {
+
+                Snackbar snackbar = Snackbar
+                        .make(relativeLayout, "Service not available", Snackbar.LENGTH_LONG);
+                snackbar.show();
+
+                return 0;
+            }
+
+        } else if (packageDistance.equals("m")) {
+            return 10;
+        } else {
+            return 0;
+        }
+
+    }
+
+    private String getDistanceBetweenTwoLocation() {
         progressBar.setVisibility(View.VISIBLE);
 
         DateTime now = new DateTime();
@@ -399,16 +442,16 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
         } catch (ApiException e) {
             e.printStackTrace();
             progressBar.setVisibility(View.GONE);
-            Toast.makeText(context, getString(R.string.some_problem_occured)+e, Toast.LENGTH_LONG).show();
+            Toast.makeText(context, getString(R.string.some_problem_occured) + e, Toast.LENGTH_LONG).show();
         } catch (InterruptedException e) {
             e.printStackTrace();
             progressBar.setVisibility(View.GONE);
-            Toast.makeText(context, getString(R.string.some_problem_occured)+e, Toast.LENGTH_LONG).show();
+            Toast.makeText(context, getString(R.string.some_problem_occured) + e, Toast.LENGTH_LONG).show();
 
         } catch (IOException e) {
             e.printStackTrace();
             progressBar.setVisibility(View.GONE);
-            Toast.makeText(context, getString(R.string.some_problem_occured)+e, Toast.LENGTH_LONG).show();
+            Toast.makeText(context, getString(R.string.some_problem_occured) + e, Toast.LENGTH_LONG).show();
         }
         if (result != null) {
             return result.routes[0].legs[0].distance.humanReadable;
@@ -555,6 +598,13 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
         getActivity().unregisterReceiver(internetBroadcastReceiver);
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(show !=null)
+        show.dismiss();
+    }
+
     private String[] getSplitAddress(String address) {
         String[] addressArray = address.split(",", 5);
 
@@ -568,8 +618,9 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
     }
 
     @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        Toast.makeText(getActivity(), country[i], Toast.LENGTH_LONG).show();
+    public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+        numOfDays = position;
+        Toast.makeText(getActivity(), days[position], Toast.LENGTH_LONG).show();
 
     }
 

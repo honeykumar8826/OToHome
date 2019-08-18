@@ -26,23 +26,9 @@
             android:theme="@style/NoActionBar"
             android:screenOrientation="portrait">
 
-
-            <!--
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            -->
         </activity>
         <activity android:name=".activity.IntroSliderActivity"
             android:screenOrientation="portrait">
-           <!-- <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
         </activity>
         <activity
             android:name=".activity.PhoneLogin"
@@ -58,6 +44,7 @@
             android:name=".activity.HomeActivity"
             android:label="@string/title_activity_home"
             android:theme="@style/NoActionBar"
+            android:screenOrientation="portrait"
             >
 
         </activity>
@@ -78,6 +65,7 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+        <!-- -&#45;&#45;fabric-&#45;&#45;&#45;&#45;&#45;&#45;-->
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="2231bb890a3d00b8c0a8651fc64bcb9fc5c8f8ee" />

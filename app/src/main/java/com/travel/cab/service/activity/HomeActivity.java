@@ -80,7 +80,8 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         inItId();
-        baseActivity.checkPermission(HomeActivity.this);
+        //baseActivity.checkPermission(HomeActivity.this);
+        checkPermission();
         displaySelectedScreen(R.id.navigation_home);
 
     }

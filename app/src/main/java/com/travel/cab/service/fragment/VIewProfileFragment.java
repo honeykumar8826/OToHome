@@ -38,6 +38,7 @@ public class VIewProfileFragment extends Fragment {
     private IntentFilter intentFilter;
     private InternetBroadcastReceiver internetBroadcastReceiver;
     private ProgressBar progressBar;
+    private Context context;
 
 
     @Override
@@ -80,18 +81,18 @@ public class VIewProfileFragment extends Fragment {
     private void fetchValue() {
         Log.i(TAG, "onStart: ");
         try {
-          DatabaseReference databaseReferenc= mDatabase.getReference().child("users").child(SharedPreference.getInstance().getUserId());
-            databaseReferenc.addListenerForSingleValueEvent(new ValueEventListener() {
+          DatabaseReference databaseReference= mDatabase.getReference().child("users").child(SharedPreference.getInstance().getUserId());
+            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    if(dataSnapshot !=null)
+                    if(dataSnapshot.getValue() !=null)
                     {
                         showData(dataSnapshot);
                     }
                     else
                     {
                         progressBar.setVisibility(View.GONE);
-                        Toast.makeText(getActivity(), "Data not Found", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, getString(R.string.create_profile), Toast.LENGTH_SHORT).show();
                     }
                     Log.i(TAG, "onDataChange: ");
                     // This method is called once with the initial value and again
@@ -118,7 +119,7 @@ public class VIewProfileFragment extends Fragment {
 
             tvName.setText(userProfileDetail.getName());
 
-            Glide.with(this)
+            Glide.with(context)
                     .load(userProfileDetail.getImage_Url())
                     .centerCrop()
                     .into(imageView);
@@ -139,6 +140,7 @@ public class VIewProfileFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        this.context = context;
 
     }
 
@@ -146,13 +148,13 @@ public class VIewProfileFragment extends Fragment {
     public void onResume() {
         super.onResume();
         intentFilter= IntentFilterCondition.getInstance().callIntentFilter();
-        getActivity().registerReceiver(internetBroadcastReceiver,intentFilter);
+        context.registerReceiver(internetBroadcastReceiver,intentFilter);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        getActivity().unregisterReceiver(internetBroadcastReceiver);
+        context.unregisterReceiver(internetBroadcastReceiver);
     }
 }
 //

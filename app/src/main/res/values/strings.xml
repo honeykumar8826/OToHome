@@ -43,7 +43,7 @@
     <string name="logout">Logout</string>
     <string name="distance">Distance</string>
     <string name="under_20km">under 20km</string>
-    <string name="_12000">12000</string>
+    <string name="_12000">select days first</string>
     <string name="buy_now">Buy Now</string>
     <string name="buy_package">Buy Package</string>
     <string name="enter_pickup_point">Enter pickup point</string>
@@ -56,5 +56,7 @@
     <string name="offline">You are Offline</string>
     <string name="some_problem_occured">Some problem occurred</string>
     <string name="permission_not_grant">Permission not granted</string>
+    <string name="rupees">Rupees</string>
+    <string name="create_profile">Create your profile</string>
 
 </resources>
