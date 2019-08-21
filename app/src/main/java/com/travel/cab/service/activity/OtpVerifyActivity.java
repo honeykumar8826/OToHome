@@ -18,8 +18,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.travel.cab.service.R;
-import com.travel.cab.service.broadcast.InternetBroadcastReceiver;
 import com.travel.cab.service.ui.IntentFilterCondition;
+import com.travel.cab.service.broadcast.InternetBroadcastReceiver;
 import com.travel.cab.service.utils.preference.SharedPreference;
 
 import androidx.annotation.NonNull;

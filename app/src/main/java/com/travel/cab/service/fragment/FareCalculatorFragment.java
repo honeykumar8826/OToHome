@@ -91,8 +91,8 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
     private TextView value;
     private Marker marker = null;
     private AutocompleteSupportFragment autocompleteFragment, autocompleteFragmentDrop;
-    private String placeKey = BuildConfig.ApiKey;
-    private String directionKey = BuildConfig.ApiKey;
+    private String placeKey = BuildConfig.AllApiKey;
+    private String directionKey = BuildConfig.AllApiKey;
     private LatLng destinationLatlong, sourceLatlong;
     private Context context;
     private LinearLayout pickLoc, dropLoc;

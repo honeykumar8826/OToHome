@@ -1,7 +1,6 @@
 package com.travel.cab.service.utils.validation;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 
 
 public class CustomCheck {

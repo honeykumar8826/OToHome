@@ -18,10 +18,10 @@ import android.widget.Toast;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.travel.cab.service.R;
-import com.travel.cab.service.fragment.FareCalculatorFragment;
 import com.travel.cab.service.fragment.ProfileFragment;
-import com.travel.cab.service.fragment.ShowPackageFragment;
 import com.travel.cab.service.fragment.VIewProfileFragment;
+import com.travel.cab.service.fragment.FareCalculatorFragment;
+import com.travel.cab.service.fragment.ShowPackageFragment;
 import com.travel.cab.service.utils.baseactivity.BaseActivity;
 import com.travel.cab.service.utils.preference.SharedPreference;
 
