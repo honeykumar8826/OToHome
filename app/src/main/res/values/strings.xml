@@ -58,5 +58,7 @@
     <string name="permission_not_grant">Permission not granted</string>
     <string name="rupees">Rupees</string>
     <string name="create_profile">Create your profile</string>
+    <string name="select_pickup_location">Please select pickup location</string>
+    <string name="select_drop_location">Please select drop location</string>
 
 </resources>

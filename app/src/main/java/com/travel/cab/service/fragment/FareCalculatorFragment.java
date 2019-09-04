@@ -59,6 +59,8 @@ import com.google.maps.model.DirectionsResult;
 import com.google.maps.model.TravelMode;
 import com.travel.cab.service.BuildConfig;
 import com.travel.cab.service.R;
+import com.travel.cab.service.activity.HomeActivity;
+import com.travel.cab.service.activity.PackageDetailActivity;
 import com.travel.cab.service.broadcast.InternetBroadcastReceiver;
 import com.travel.cab.service.ui.IntentFilterCondition;
 
@@ -66,7 +68,9 @@ import org.joda.time.DateTime;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
@@ -115,8 +119,10 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
     private AlertDialog show;
     private int numOfDays;
     private RelativeLayout relativeLayout;
-
-
+    private PackageInfo mPackageInfo;
+    public interface PackageInfo {
+        void getPackageDetail(Map<String,String> map);
+    }
     public FareCalculatorFragment() {
         // Required empty public constructor
     }
@@ -125,6 +131,12 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         this.context = context;
+        try {
+          // mPackageInfo  = (PackageInfo) context;
+
+        } catch (ClassCastException  e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -296,8 +308,11 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
     private void checkForBuyPackage() {
 
         if (sourcePoint.getText().equals("")) {
+            Toast.makeText(context, getString(R.string.select_pickup_location), Toast.LENGTH_SHORT).show();
             openPickupIntent();
         } else if (destinationPoint.getText().equals("")) {
+            Toast.makeText(context, getString(R.string.select_drop_location), Toast.LENGTH_SHORT).show();
+
             openDropIntent();
         } else {
             setUpDialogForShowingPackage();
@@ -338,6 +353,9 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
                     if (numOfDays >= 0) {
                         float rideFare = calculateFare(packageDistance.getText().toString(), numOfDays);
                         fare.setText(String.valueOf(rideFare)+getString(R.string.rupees));
+                        sendPackageDetailViaIntent();
+
+
                     } else {
                         Toast.makeText(context, "Select days", Toast.LENGTH_SHORT).show();
                     }
@@ -390,7 +408,7 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
             progressBar.setVisibility(View.GONE);
             packageDistance.setText(distance);
             List<LatLng> decodedPath = PolyUtil.decode(result.routes[0].overviewPolyline.getEncodedPath());
-            mMap.addPolyline(new PolylineOptions().addAll(decodedPath).width(25).color(Color.RED));
+            mMap.addPolyline(new PolylineOptions().addAll(decodedPath).width(15).color(Color.GREEN));
             mAlertBuilder.setView(alertLayout);
             show = mAlertBuilder.show();
             show.setCancelable(false);
@@ -403,6 +421,20 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
                 show.dismiss();
             }
         });
+    }
+
+    private void sendPackageDetailViaIntent() {
+        Map<String,String> packageMap = new HashMap<>();
+        packageMap.put("fromLocation",fromLoc.getText().toString());
+        packageMap.put("toLocation",toLoc.getText().toString());
+        packageMap.put("fare",fare.getText().toString());
+        packageMap.put("distanceDiff",packageDistance.getText().toString());
+        Log.i(TAG, "sendPackageDetailViaIntent: "+packageMap.size()
+        );
+        mPackageInfo.getPackageDetail(packageMap);
+        Intent intent = new Intent(getActivity(),PackageDetailActivity.class);
+        startActivity(intent);
+
     }
 
     private float calculateFare(String packageDistance, int numOfDays) {
