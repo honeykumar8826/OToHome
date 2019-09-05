@@ -12,6 +12,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,6 +68,7 @@ import com.travel.cab.service.ui.IntentFilterCondition;
 import org.joda.time.DateTime;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -131,12 +133,7 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         this.context = context;
-        try {
-          // mPackageInfo  = (PackageInfo) context;
 
-        } catch (ClassCastException  e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -431,8 +428,9 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
         packageMap.put("distanceDiff",packageDistance.getText().toString());
         Log.i(TAG, "sendPackageDetailViaIntent: "+packageMap.size()
         );
-        mPackageInfo.getPackageDetail(packageMap);
+//        mPackageInfo.getPackageDetail(packageMap);
         Intent intent = new Intent(getActivity(),PackageDetailActivity.class);
+        intent.putExtra("packageInfoMap", (Serializable) packageMap);
         startActivity(intent);
 
     }
