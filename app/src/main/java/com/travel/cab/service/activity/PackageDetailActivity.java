@@ -22,7 +22,7 @@ public class PackageDetailActivity extends AppCompatActivity {
     private void getValueFromIntent() {
 
         Intent intent = getIntent();
-        HashMap<String, String> hashMap = (HashMap<String, String>)intent.getSerializableExtra("packageMapInfo");
+        HashMap<String, String> hashMap = (HashMap<String, String>)intent.getSerializableExtra("packageInfoMap");
         Log.v("HashMapTest", hashMap.get("toLoc"));
     }
 

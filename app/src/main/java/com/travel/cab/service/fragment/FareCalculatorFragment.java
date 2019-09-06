@@ -429,7 +429,7 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
         Log.i(TAG, "sendPackageDetailViaIntent: "+packageMap.size()
         );
 //        mPackageInfo.getPackageDetail(packageMap);
-        Intent intent = new Intent(getActivity(),PackageDetailActivity.class);
+        Intent intent = new Intent(context,PackageDetailActivity.class);
         intent.putExtra("packageInfoMap", (Serializable) packageMap);
         startActivity(intent);
 
