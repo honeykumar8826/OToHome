@@ -41,7 +41,6 @@
     <string name="calculator">Calculator</string>
     <string name="edit_profile">Edit Profile</string>
     <string name="logout">Logout</string>
-    <string name="distance">Distance</string>
     <string name="under_20km">under 20km</string>
     <string name="_12000">select days first</string>
     <string name="buy_now">Buy Now</string>
@@ -60,5 +59,20 @@
     <string name="create_profile">Create your profile</string>
     <string name="select_pickup_location">Please select pickup location</string>
     <string name="select_drop_location">Please select drop location</string>
+    <string name="pickup_point">Pickup Point</string>
+    <string name="drop_point">Drop Point</string>
+    <string name="distance">Distance</string>
+    <string name="fare">Ride Fare</string>
+    <string name="service_start_date">Service Starting Date</string>
+    <string name="pickup_address">Pickup Address</string>
+    <string name="fare_of_ride">Fare of ride</string>
+    <string name="select_service_starting_date">Select service starting date</string>
+    <string name="select_going_timing">Select going time</string>
+    <string name="select_coming_time">Select coming time</string>
+    <string name="service_days">Service Days</string>
+    <string name="select_days_for_service">Select Days for Service</string>
+    <string name="select_days">Select days</string>
+    <string name="click_on_buy_package">Click on buy package again</string>
+    <string name="select_service_type">Select service type</string>
 
 </resources>

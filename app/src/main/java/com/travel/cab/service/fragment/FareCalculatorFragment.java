@@ -12,7 +12,6 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,7 +59,6 @@ import com.google.maps.model.DirectionsResult;
 import com.google.maps.model.TravelMode;
 import com.travel.cab.service.BuildConfig;
 import com.travel.cab.service.R;
-import com.travel.cab.service.activity.HomeActivity;
 import com.travel.cab.service.activity.PackageDetailActivity;
 import com.travel.cab.service.broadcast.InternetBroadcastReceiver;
 import com.travel.cab.service.ui.IntentFilterCondition;
@@ -109,22 +107,21 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
     private Button buyPackageFare, showFare;
     private TextView sourcePoint, destinationPoint;
     private TextView fromLoc, toLoc, packageDistance, fare;
-    private String[] days = {"select service days","1day", "2days", "3days", "4days", "5days"};
+    private String[] days = {"select service days", "1day", "2days", "3days", "4days", "5days"};
+    private String[] serviceType = {"select service type", "one sided", "both sided"};
     private String toAddress, fromAddress;
     private String[] shortToAddress, shortFromAddress;
-    private Spinner daysDropDown;
+    private Spinner daysDropDown,serviceTypeDropDown;
     private ImageView showMoreContentForTo, showMoreContentForFrom, closeBuyPackageDialog;
     private DirectionsResult result;
     private ProgressBar progressBar;
     private boolean isDirectionGet = false;
     private RectangularBounds bounds;
     private AlertDialog show;
-    private int numOfDays;
+    private int numOfDays,typeOfService;
     private RelativeLayout relativeLayout;
     private PackageInfo mPackageInfo;
-    public interface PackageInfo {
-        void getPackageDetail(Map<String,String> map);
-    }
+
     public FareCalculatorFragment() {
         // Required empty public constructor
     }
@@ -196,13 +193,10 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
                         LatLng currentLatLong = new LatLng(mLocation.getLatitude(), mLocation.getLongitude());
                         // mMap.addMarker(new MarkerOptions().position(currentLatLong).title("Marker in India").icon(icon));
                         //Move the camera to the user's location and zoom in!
-                        if(mMap !=null)
-                        {
+                        if (mMap != null) {
                             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 14.0f));
-                        }
-                        else
-                        {
-                          return;
+                        } else {
+                            return;
                         }
                         Log.i(TAG, "onSuccess: " + location.getLatitude() + "-" + location.getLongitude());
 
@@ -330,10 +324,12 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
         fare = alertLayout.findViewById(R.id.tv_fare);
         showFare = alertLayout.findViewById(R.id.tv_buy_select_package);
         daysDropDown = alertLayout.findViewById(R.id.spinner);
+        serviceTypeDropDown = alertLayout.findViewById(R.id.spinner_select_service_type);
         showMoreContentForTo = alertLayout.findViewById(R.id.img_book_package_more_content_to);
         showMoreContentForFrom = alertLayout.findViewById(R.id.img_book_package_more_content_from);
         closeBuyPackageDialog = alertLayout.findViewById(R.id.img_close);
         daysDropDown.setOnItemSelectedListener(this);
+        serviceTypeDropDown.setOnItemSelectedListener(this);
         String[] shortAddressFrom = getSplitAddressForShort(fromAddress);
         setShortSelectedLocationByUser(shortAddressFrom, fromLoc);
         String[] shortAddressTo = getSplitAddressForShort(toAddress);
@@ -347,25 +343,37 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
                 if (!fromLoc.getText().toString().isEmpty()
                         && !toLoc.getText().toString().isEmpty()
                         && !packageDistance.getText().toString().isEmpty()) {
-                    if (numOfDays >= 0) {
-                        float rideFare = calculateFare(packageDistance.getText().toString(), numOfDays);
-                        fare.setText(String.valueOf(rideFare)+getString(R.string.rupees));
-                        sendPackageDetailViaIntent();
+                    if(typeOfService>0)
+                    {
+                        if (numOfDays > 0) {
+                            float rideFare = calculateFare(packageDistance.getText().toString(), numOfDays,typeOfService);
+                            fare.setText(String.valueOf(rideFare) + getString(R.string.rupees));
+                            sendPackageDetailViaIntent();
 
 
-                    } else {
-                        Toast.makeText(context, "Select days", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(context, getString(R.string.select_days), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    else {
+                        Toast.makeText(context, getString(R.string.select_service_type), Toast.LENGTH_SHORT).show();
                     }
 
                 } else {
-                    Toast.makeText(context, "Click on buy package again", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, getString(R.string.click_on_buy_package), Toast.LENGTH_SHORT).show();
                 }
             }
         });
+        // spinner for service required days
         ArrayAdapter aa = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_item, days);
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         //Setting the ArrayAdapter data on the Spinner
         daysDropDown.setAdapter(aa);
+        // spinner for service type it may be of one sided or both sided
+        ArrayAdapter arayAdapterForServiceType = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_item, serviceType);
+        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //Setting the ArrayAdapter data on the Spinner
+        serviceTypeDropDown.setAdapter(arayAdapterForServiceType);
         showMoreContentForFrom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -421,30 +429,37 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
     }
 
     private void sendPackageDetailViaIntent() {
-        Map<String,String> packageMap = new HashMap<>();
-        packageMap.put("fromLocation",fromLoc.getText().toString());
-        packageMap.put("toLocation",toLoc.getText().toString());
-        packageMap.put("fare",fare.getText().toString());
-        packageMap.put("distanceDiff",packageDistance.getText().toString());
-        Log.i(TAG, "sendPackageDetailViaIntent: "+packageMap.size()
+        Map<String, String> packageMap = new HashMap<>();
+        packageMap.put("fromLocation", fromAddress);
+        packageMap.put("toLocation", toAddress);
+        packageMap.put("fare", fare.getText().toString());
+        packageMap.put("distanceDiff", packageDistance.getText().toString());
+        packageMap.put("serviceDays", String.valueOf(numOfDays));
+        Log.i(TAG, "sendPackageDetailViaIntent: " + packageMap.size()
         );
 //        mPackageInfo.getPackageDetail(packageMap);
-        Intent intent = new Intent(context,PackageDetailActivity.class);
+        Intent intent = new Intent(context, PackageDetailActivity.class);
         intent.putExtra("packageInfoMap", (Serializable) packageMap);
         startActivity(intent);
 
     }
 
-    private float calculateFare(String packageDistance, int numOfDays) {
+    private float calculateFare(String packageDistance, int numOfDays,int serviceType) {
         String seperateUnit[] = packageDistance.split(" ");
         if (packageDistance.contains("km")) {
             /*----------when this scenario will come like (1,900)-----------not work------------*/
-            if(seperateUnit.length<=3)
-            {
+            if (seperateUnit.length <= 3) {
                 float distance = Float.parseFloat(seperateUnit[0]);
-                return distance * numOfDays * 7;
-            }
-            else {
+                if(serviceType==1)
+                {
+                    return distance * numOfDays * 7;
+                }
+                else
+                {
+                    return distance * numOfDays * 7*2;
+                }
+
+            } else {
 
                 Snackbar snackbar = Snackbar
                         .make(relativeLayout, "Service not available", Snackbar.LENGTH_LONG);
@@ -631,8 +646,8 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
     @Override
     public void onStop() {
         super.onStop();
-        if(show !=null)
-        show.dismiss();
+        if (show != null)
+            show.dismiss();
     }
 
     private String[] getSplitAddress(String address) {
@@ -649,14 +664,26 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-        numOfDays = position;
-        Toast.makeText(getActivity(), days[position], Toast.LENGTH_LONG).show();
+        if(adapterView.getAdapter().getItem(0).toString().equals("select service type"))
+        {
+         typeOfService = position;
+        }
+        else
+        {
+            numOfDays = position;
+           // Toast.makeText(getActivity(), days[position], Toast.LENGTH_LONG).show();
+        }
+
 
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
 
+    }
+
+    public interface PackageInfo {
+        void getPackageDetail(Map<String, String> map);
     }
 
     /* ------------------inner class to find the distance between two location ---------------------------*/

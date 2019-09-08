@@ -25,10 +25,10 @@
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/NoActionBar"></activity>
+            android:theme="@style/NoActionBar" />
         <activity
             android:name=".activity.IntroSliderActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.PhoneLogin"
             android:screenOrientation="portrait"
@@ -36,12 +36,12 @@
         <activity
             android:name=".activity.OtpVerifyActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/NoActionBar"></activity>
+            android:theme="@style/NoActionBar" />
         <activity
             android:name=".activity.HomeActivity"
             android:label="@string/title_activity_home"
             android:screenOrientation="portrait"
-            android:theme="@style/NoActionBar"></activity>
+            android:theme="@style/NoActionBar" />
         <activity
             android:name=".activity.SplashActivity"
             android:screenOrientation="portrait"
@@ -52,6 +52,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
         <!-- for image croping -->
         <activity
@@ -70,7 +71,15 @@
             android:name="com.paytm.pgsdk.PaytmPGActivity"
             android:configChanges="keyboardHidden|orientation|keyboard"
             android:screenOrientation="portrait" />
-        <activity android:name=".activity.PackageDetailActivity"></activity>
+        <activity android:name=".activity.PackageDetailActivity"
+            android:theme="@style/NoActionBar">
+
+        </activity>
+
+        <activity android:name=".TestActivity"
+            android:theme="@style/NoActionBar">
+
+        </activity>
     </application>
 
 </manifest>
