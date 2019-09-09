@@ -223,7 +223,7 @@
                         android:ems="10"
                         android:gravity="center_vertical"
                         android:paddingStart="20dp"
-                        android:text="@string/select_service_starting_date"
+                        android:hint="@string/select_service_starting_date"
                         android:textColor="#000000"
                         android:textColorHint="#808080"
                         tools:ignore="RtlCompat" />
@@ -261,7 +261,7 @@
                             android:ems="10"
                             android:gravity="center_vertical"
                             android:paddingStart="10dp"
-                            android:text="@string/select_going_timing"
+                            android:hint="@string/select_going_timing"
                             android:textColor="#000000"
                             android:textColorHint="#808080"
                             tools:ignore="RtlCompat" />
@@ -278,7 +278,7 @@
                             android:ems="10"
                             android:gravity="center_vertical"
                             android:paddingStart="10dp"
-                            android:text="@string/select_coming_time"
+                            android:hint="@string/select_coming_time"
                             android:textColor="#000000"
                             android:textColorHint="#808080"
                             tools:ignore="RtlCompat" />
@@ -294,13 +294,13 @@
                     android:layout_marginBottom="40dp">
 
                     <Button
-                        android:id="@+id/submitbtn"
+                        android:id="@+id/btn_submit"
                         android:layout_width="170dp"
                         android:layout_height="40dp"
                         android:layout_alignParentBottom="true"
                         android:layout_centerHorizontal="true"
                         android:background="@drawable/background_package_detail_view"
-                        android:text="Submit"
+                        android:text="@string/submit"
                         android:textAllCaps="false"
                         android:textSize="@dimen/_22ssp" />
                 </RelativeLayout>

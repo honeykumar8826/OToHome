@@ -6,28 +6,42 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.travel.cab.service.MainActivity;
 import com.travel.cab.service.R;
+import com.travel.cab.service.utils.preference.SharedPreference;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class PackageDetailActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "PackageDetailActivity";
-    private String pickupAddress, dropAddress, distanceBetweenLoc, rideFare, startDate, goingTime, comingTime, numberOfDays;
+    private String pickupAddress, dropAddress, distanceBetweenLoc, rideFare,serviceType ,startDate, goingTime, comingTime, numberOfDays;
     private TextView tvPickupAddress,tvDropAddress,tvDistanceBetweenLoc,tvRideFare,tvServiceDays
             ,tvStartDate,tvGoingTime,tvComingTime;
     private Calendar myCalendar;
     private  DatePickerDialog.OnDateSetListener date;
     private  TimePickerDialog mTimePicker;
+    private FirebaseDatabase mDatabase;
+    private DatabaseReference mDatabaseReference;
+    private Button btnSubmit;
 
 
     @Override
@@ -38,12 +52,20 @@ public class PackageDetailActivity extends AppCompatActivity implements View.OnC
         inItId();
         setListener();
         setGettedValue();
+        setUpToStoreValueInDb();
+    }
+
+    private void setUpToStoreValueInDb() {
+        mDatabase = FirebaseDatabase.getInstance();
+        mDatabaseReference = mDatabase.getReference().child("applyForService").child(SharedPreference.getInstance().getUserId());
+
     }
 
     private void setListener() {
         tvStartDate.setOnClickListener(this);
         tvGoingTime.setOnClickListener(this);
         tvComingTime.setOnClickListener(this);
+        btnSubmit.setOnClickListener(this);
         //initialize the date object first and set it with blank value
         setDateSelected();
     }
@@ -65,6 +87,7 @@ public class PackageDetailActivity extends AppCompatActivity implements View.OnC
         tvGoingTime = findViewById(R.id.tv_going_timing);
         tvComingTime = findViewById(R.id.tv_coming_timing);
         tvServiceDays = findViewById(R.id.tv_service_days);
+        btnSubmit = findViewById(R.id.btn_submit);
         myCalendar = Calendar.getInstance();
     }
 
@@ -78,6 +101,7 @@ public class PackageDetailActivity extends AppCompatActivity implements View.OnC
             distanceBetweenLoc = hashMap.get("distanceDiff");
             rideFare = hashMap.get("fare");
             numberOfDays = hashMap.get("serviceDays");
+            serviceType = hashMap.get("serviceType");
         }
 
        // Log.v("HashMapTest", hashMap.get("toLoc"));
@@ -98,8 +122,64 @@ public class PackageDetailActivity extends AppCompatActivity implements View.OnC
             case R.id.tv_coming_timing:
                 getComingTime();
             break;
+            case R.id.btn_submit:
+                storeServiceRequiredDetail();
+            break;
             default:
                 break;
+        }
+    }
+
+    private void storeServiceRequiredDetail() {
+        if(!tvStartDate.getText().toString().equals(""))
+        {
+           if(!tvGoingTime.getText().toString().equals(""))
+           {
+               if(!tvComingTime.getText().toString().equals(""))
+               {
+
+                   Map<String, String> serviceDetailMap = new HashMap<>();
+                   serviceDetailMap.put("pickup_location", pickupAddress);
+                   serviceDetailMap.put("drop_location", dropAddress);
+                   serviceDetailMap.put("distance_home_office", distanceBetweenLoc);
+                   serviceDetailMap.put("service_days", numberOfDays);
+                   serviceDetailMap.put("service_fare", rideFare);
+                   serviceDetailMap.put("service_starting_date", startDate);
+                   serviceDetailMap.put("service_type", serviceType);
+                   serviceDetailMap.put("going_time", tvGoingTime.getText().toString());
+                   serviceDetailMap.put("coming_time", tvComingTime.getText().toString());
+                   serviceDetailMap.put("service_created_at_time", Calendar.getInstance().getTime().toString());
+                   mDatabaseReference.push().setValue(serviceDetailMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                       @Override
+                       public void onSuccess(Void aVoid) {
+                           Toast.makeText(PackageDetailActivity.this, "Data Save Successfully", Toast.LENGTH_SHORT).show();
+                           Intent intent = new Intent(PackageDetailActivity.this,MainActivity.class);
+                           startActivity(intent);
+                           Log.i(TAG, "onSuccess: ");
+                       }
+
+                   }).addOnFailureListener(new OnFailureListener() {
+                       @Override
+                       public void onFailure(@NonNull Exception e) {
+                           Toast.makeText(PackageDetailActivity.this, "" + e, Toast.LENGTH_SHORT).show();
+                           Log.i(TAG, "onSuccess: " + e);
+                       }
+                   });
+
+               }
+               else
+               {
+                   Toast.makeText(this, getString(R.string.coming_time), Toast.LENGTH_SHORT).show();
+               }
+           }
+           else
+           {
+               Toast.makeText(this, getString(R.string.going_time), Toast.LENGTH_SHORT).show();
+           }
+        }
+        else
+        {
+            Toast.makeText(this, getString(R.string.select_date_field), Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -118,7 +118,7 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
     private boolean isDirectionGet = false;
     private RectangularBounds bounds;
     private AlertDialog show;
-    private int numOfDays,typeOfService;
+    private int numOfDays,typeOfServiceAtPosition;
     private RelativeLayout relativeLayout;
     private PackageInfo mPackageInfo;
 
@@ -343,10 +343,10 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
                 if (!fromLoc.getText().toString().isEmpty()
                         && !toLoc.getText().toString().isEmpty()
                         && !packageDistance.getText().toString().isEmpty()) {
-                    if(typeOfService>0)
+                    if(typeOfServiceAtPosition>0)
                     {
                         if (numOfDays > 0) {
-                            float rideFare = calculateFare(packageDistance.getText().toString(), numOfDays,typeOfService);
+                            float rideFare = calculateFare(packageDistance.getText().toString(), numOfDays,typeOfServiceAtPosition);
                             fare.setText(String.valueOf(rideFare) + getString(R.string.rupees));
                             sendPackageDetailViaIntent();
 
@@ -435,6 +435,7 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
         packageMap.put("fare", fare.getText().toString());
         packageMap.put("distanceDiff", packageDistance.getText().toString());
         packageMap.put("serviceDays", String.valueOf(numOfDays));
+        packageMap.put("serviceType", serviceType[typeOfServiceAtPosition]);
         Log.i(TAG, "sendPackageDetailViaIntent: " + packageMap.size()
         );
 //        mPackageInfo.getPackageDetail(packageMap);
@@ -666,7 +667,7 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
     public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
         if(adapterView.getAdapter().getItem(0).toString().equals("select service type"))
         {
-         typeOfService = position;
+         typeOfServiceAtPosition = position;
         }
         else
         {

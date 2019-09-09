@@ -55,8 +55,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private FirebaseAuth mAuth;
     private AppCompatEditText etName, etPhone, etEmail, etAddress, etCompany;
     private Button btnSaveRecord;
-    private FirebaseDatabase mDatabase;
     private String userName, userMobile, userEmail, userAddress, userCompany;
+    private FirebaseDatabase mDatabase;
     private DatabaseReference mDatabaseReference;
     private CircleImageView imageView;
     private Uri imageUri;

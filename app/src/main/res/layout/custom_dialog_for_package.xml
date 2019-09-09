@@ -213,6 +213,7 @@
                         android:layout_height="40dp"
                         android:layout_toEndOf="@+id/tv_select_service_type"
                         android:layout_centerVertical="true"
+                        android:padding="@dimen/_4sdp"
                         android:gravity="start"
                         android:textAlignment="textStart"
                         />
