@@ -78,5 +78,6 @@
     <string name="select_date_field">Select date field</string>
     <string name="going_time">Select going time</string>
     <string name="coming_time">Select coming time</string>
+    <string name="proceed_to_pay">Proceed to pay</string>
 
 </resources>

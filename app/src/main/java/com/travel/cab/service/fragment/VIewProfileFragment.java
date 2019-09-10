@@ -19,13 +19,18 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.travel.cab.service.R;
 import com.travel.cab.service.broadcast.InternetBroadcastReceiver;
+import com.travel.cab.service.database.MyAppDatabase;
+import com.travel.cab.service.database.User;
 import com.travel.cab.service.modal.UserProfileDetail;
 import com.travel.cab.service.ui.IntentFilterCondition;
 import com.travel.cab.service.utils.preference.SharedPreference;
 
+import java.util.List;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.room.Room;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
@@ -39,6 +44,7 @@ public class VIewProfileFragment extends Fragment {
     private InternetBroadcastReceiver internetBroadcastReceiver;
     private ProgressBar progressBar;
     private Context context;
+    private MyAppDatabase myAppDatabase;
 
 
     @Override
@@ -60,6 +66,8 @@ public class VIewProfileFragment extends Fragment {
         imageView = view.findViewById(R.id.img_user);
         mDatabase = FirebaseDatabase.getInstance();
         progressBar = view.findViewById(R.id.show_progress);
+        myAppDatabase = Room.databaseBuilder(getActivity(), MyAppDatabase.class, "userdb").allowMainThreadQueries().build();
+
 
     }
 
@@ -80,6 +88,7 @@ public class VIewProfileFragment extends Fragment {
 
     private void fetchValue() {
         Log.i(TAG, "onStart: ");
+        showDataByDatabase();
         try {
           DatabaseReference databaseReference= mDatabase.getReference().child("users").child(SharedPreference.getInstance().getUserId());
             databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -87,7 +96,7 @@ public class VIewProfileFragment extends Fragment {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if(dataSnapshot.getValue() !=null)
                     {
-                        showData(dataSnapshot);
+                       // showData(dataSnapshot);
                     }
                     else
                     {
@@ -112,18 +121,66 @@ public class VIewProfileFragment extends Fragment {
 
     }
 
+    private void showDataByDatabase() {
+        // getting all values from the database
+        List<User> users = myAppDatabase.myDao().getUser();
+        String userInfo , name = null,mobile = null,email=null,address=null,company=null,image = null;
+        int id;
+        for (User user : users) {
+            name = user.getUserName();
+             mobile = user.getMobileNumber();
+             email = user.getUserEmail();
+             address = user.getUserAddress();
+             company = user.getUserCompany();
+             image = user.getUserImage();
+             id = user.getId();
+        }
+
+
+        //tvName.setText(userProfileDetail.getName());
+        if(image !=null && name !=null && mobile !=null && email !=null && address !=null && company !=null)
+        {
+            Glide.with(context)
+                    .load(image)
+                    .centerCrop()
+                    .into(imageView);
+            //tvName.setText("Name            :   "+userProfileDetail.getName());
+            tvName.setText("Name            :   "+name);
+            tvMobile.setText("Mobile        :   "+mobile);
+            tvEmail.setText("Email          :   "+email);
+            tvAddress.setText("Address      :   "+address);
+            tvComapnyName.setText("Company  :   "+company);
+        }
+
+        progressBar.setVisibility(View.GONE);
+
+    }
+
     private void showData(DataSnapshot dataSnapshot) {
         for (DataSnapshot ds : dataSnapshot.getChildren()) {
 
             UserProfileDetail userProfileDetail = ds.getValue(UserProfileDetail.class);
-
-            tvName.setText(userProfileDetail.getName());
+            // getting all values from the database
+            List<User> users = myAppDatabase.myDao().getUser();
+            String userInfo , name = null;
+            for (User user : users) {
+                 name = user.getUserName();
+                String mobile = user.getMobileNumber();
+                String email = user.getUserEmail();
+                String address = user.getUserAddress();
+                String company = user.getUserCompany();
+                int id = user.getId();
+            }
+                
+                
+            //tvName.setText(userProfileDetail.getName());
 
             Glide.with(context)
                     .load(userProfileDetail.getImage_Url())
                     .centerCrop()
                     .into(imageView);
-            tvName.setText("Name            :   "+userProfileDetail.getName());
+            //tvName.setText("Name            :   "+userProfileDetail.getName());
+            tvName.setText("Name            :   "+name);
             tvMobile.setText("Mobile        :   "+userProfileDetail.getMobile());
             tvEmail.setText("Email          :   "+userProfileDetail.getEmail());
             tvAddress.setText("Address      :   "+userProfileDetail.getAdres());

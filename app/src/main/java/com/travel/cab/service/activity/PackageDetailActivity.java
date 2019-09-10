@@ -3,6 +3,7 @@ package com.travel.cab.service.activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,6 +20,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.travel.cab.service.MainActivity;
 import com.travel.cab.service.R;
+import com.travel.cab.service.broadcast.InternetBroadcastReceiver;
+import com.travel.cab.service.ui.IntentFilterCondition;
 import com.travel.cab.service.utils.preference.SharedPreference;
 
 import java.text.SimpleDateFormat;
@@ -42,19 +45,26 @@ public class PackageDetailActivity extends AppCompatActivity implements View.OnC
     private FirebaseDatabase mDatabase;
     private DatabaseReference mDatabaseReference;
     private Button btnSubmit;
+    private InternetBroadcastReceiver internetBroadcastReceiver;
+    private IntentFilter intentFilter;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_package_detail);
-        getValueFromIntent();
         inItId();
+        getValueFromIntent();
         setListener();
         setGettedValue();
         setUpToStoreValueInDb();
     }
-
+    @Override
+    protected void onStart() {
+        super.onStart();
+        intentFilter = IntentFilterCondition.getInstance().callIntentFilter();
+        registerReceiver(internetBroadcastReceiver, intentFilter);
+    }
     private void setUpToStoreValueInDb() {
         mDatabase = FirebaseDatabase.getInstance();
         mDatabaseReference = mDatabase.getReference().child("applyForService").child(SharedPreference.getInstance().getUserId());
@@ -76,6 +86,7 @@ public class PackageDetailActivity extends AppCompatActivity implements View.OnC
         tvDistanceBetweenLoc.setText(distanceBetweenLoc);
         tvRideFare.setText(rideFare);
         tvServiceDays.setText(numberOfDays);
+        btnSubmit.setText(getString(R.string.proceed_to_pay)+""+rideFare);
     }
 
     private void inItId() {
@@ -264,5 +275,11 @@ public class PackageDetailActivity extends AppCompatActivity implements View.OnC
                 myCalendar.get(Calendar.DAY_OF_MONTH));
         datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
         datePickerDialog.show();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(internetBroadcastReceiver);
     }
 }

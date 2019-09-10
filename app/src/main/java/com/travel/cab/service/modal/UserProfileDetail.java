@@ -9,7 +9,7 @@ public class UserProfileDetail {
     public String image_Url;
     public String name;
 
-    UserProfileDetail() {
+   public UserProfileDetail() {
 
     }
 

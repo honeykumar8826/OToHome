@@ -29,6 +29,9 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.travel.cab.service.R;
 import com.travel.cab.service.broadcast.InternetBroadcastReceiver;
+import com.travel.cab.service.database.MyAppDatabase;
+import com.travel.cab.service.database.User;
+import com.travel.cab.service.modal.UserProfileDetail;
 import com.travel.cab.service.ui.IntentFilterCondition;
 import com.travel.cab.service.utils.preference.SharedPreference;
 import com.travel.cab.service.utils.validation.CustomCheck;
@@ -43,6 +46,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.room.Room;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
@@ -67,6 +71,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private InternetBroadcastReceiver internetBroadcastReceiver;
     private IntentFilter intentFilter;
     private ProgressBar progressBar;
+    private MyAppDatabase myAppDatabase;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -108,6 +113,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         fragmentManager = getChildFragmentManager();
         imageView.setOnClickListener(this);
         internetBroadcastReceiver = new InternetBroadcastReceiver();
+        myAppDatabase = Room.databaseBuilder(getActivity(), MyAppDatabase.class, "userdb").allowMainThreadQueries().build();
 
 //         LinearLayout lyt_progress = view.findViewById(R.id.lyt_progress);
 //        lyt_progress.setVisibility(View.VISIBLE);
@@ -218,6 +224,16 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         userProfileMap.put("adres", userAddress);
         userProfileMap.put("cempany", userCompany);
         userProfileMap.put("image_Url", downloadedUrl);
+        // store this values also in database
+        User user = new User();
+        user.setUserName(userName);
+        user.setUserEmail(userEmail);
+        user.setMobileNumber(userMobile);
+        user.setUserAddress(userAddress);
+        user.setUserCompany(userCompany);
+        user.setUserImage(downloadedUrl);
+        myAppDatabase.myDao().addUser(user);
+        //store value in fireBase
         mDatabaseReference.push().setValue(userProfileMap).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
