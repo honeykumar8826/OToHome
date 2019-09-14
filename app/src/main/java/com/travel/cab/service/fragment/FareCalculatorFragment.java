@@ -109,16 +109,17 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
     private TextView fromLoc, toLoc, packageDistance, fare;
     private String[] days = {"select service days", "1day", "2days", "3days", "4days", "5days"};
     private String[] serviceType = {"select service type", "one sided", "both sided"};
+    private String[] vehicleType = {"select vehicle type", "Bike", "Car"};
     private String toAddress, fromAddress;
     private String[] shortToAddress, shortFromAddress;
-    private Spinner daysDropDown,serviceTypeDropDown;
+    private Spinner daysDropDown,serviceTypeDropDown,vehicleDropDown;
     private ImageView showMoreContentForTo, showMoreContentForFrom, closeBuyPackageDialog;
     private DirectionsResult result;
     private ProgressBar progressBar;
     private boolean isDirectionGet = false;
     private RectangularBounds bounds;
     private AlertDialog show;
-    private int numOfDays,typeOfServiceAtPosition;
+    private int numOfDays,typeOfServiceAtPosition,vehicleTypePosition;
     private RelativeLayout relativeLayout;
     private PackageInfo mPackageInfo;
 
@@ -325,11 +326,13 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
         showFare = alertLayout.findViewById(R.id.tv_buy_select_package);
         daysDropDown = alertLayout.findViewById(R.id.spinner);
         serviceTypeDropDown = alertLayout.findViewById(R.id.spinner_select_service_type);
+        vehicleDropDown = alertLayout.findViewById(R.id.spinner_select_Vehicle_type);
         showMoreContentForTo = alertLayout.findViewById(R.id.img_book_package_more_content_to);
         showMoreContentForFrom = alertLayout.findViewById(R.id.img_book_package_more_content_from);
         closeBuyPackageDialog = alertLayout.findViewById(R.id.img_close);
         daysDropDown.setOnItemSelectedListener(this);
         serviceTypeDropDown.setOnItemSelectedListener(this);
+        vehicleDropDown.setOnItemSelectedListener(this);
         String[] shortAddressFrom = getSplitAddressForShort(fromAddress);
         setShortSelectedLocationByUser(shortAddressFrom, fromLoc);
         String[] shortAddressTo = getSplitAddressForShort(toAddress);
@@ -346,9 +349,17 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
                     if(typeOfServiceAtPosition>0)
                     {
                         if (numOfDays > 0) {
-                            float rideFare = calculateFare(packageDistance.getText().toString(), numOfDays,typeOfServiceAtPosition);
-                            fare.setText(String.valueOf(rideFare) + getString(R.string.rupees));
-                            sendPackageDetailViaIntent();
+                            if(vehicleTypePosition>0)
+                            {
+                                float rideFare = calculateFare(packageDistance.getText().toString(), numOfDays,typeOfServiceAtPosition,typeOfServiceAtPosition);
+                                fare.setText(String.valueOf(rideFare));
+                                sendPackageDetailViaIntent();
+                            }
+                            else
+                            {
+                                Toast.makeText(context, getString(R.string.select_vehicle_type), Toast.LENGTH_SHORT).show();
+                            }
+
 
 
                         } else {
@@ -374,6 +385,11 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         //Setting the ArrayAdapter data on the Spinner
         serviceTypeDropDown.setAdapter(arayAdapterForServiceType);
+        // spinner for vehicle type
+        ArrayAdapter arayAdapterForVehicleType = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_item, vehicleType);
+        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //Setting the ArrayAdapter data on the Spinner
+        vehicleDropDown.setAdapter(arayAdapterForVehicleType);
         showMoreContentForFrom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -436,6 +452,7 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
         packageMap.put("distanceDiff", packageDistance.getText().toString());
         packageMap.put("serviceDays", String.valueOf(numOfDays));
         packageMap.put("serviceType", serviceType[typeOfServiceAtPosition]);
+        packageMap.put("vehicleType", vehicleType[vehicleTypePosition]);
         Log.i(TAG, "sendPackageDetailViaIntent: " + packageMap.size()
         );
 //        mPackageInfo.getPackageDetail(packageMap);
@@ -444,21 +461,38 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
         startActivity(intent);
 
     }
-
-    private float calculateFare(String packageDistance, int numOfDays,int serviceType) {
+    // for calculating the fare for both bike and car
+    private float calculateFare(String packageDistance, int numOfDays,int serviceType,int vechileType) {
         String seperateUnit[] = packageDistance.split(" ");
         if (packageDistance.contains("km")) {
             /*----------when this scenario will come like (1,900)-----------not work------------*/
             if (seperateUnit.length <= 3) {
                 float distance = Float.parseFloat(seperateUnit[0]);
-                if(serviceType==1)
+                if(vechileType ==1)
                 {
-                    return distance * numOfDays * 7;
+                    // condition for one sided or both sided
+                    if(serviceType==1)
+                    {
+                        return (distance * numOfDays )* 4;
+                    }
+                    else
+                    {
+                        return (distance * numOfDays )* 4*2;
+                    }
                 }
                 else
                 {
-                    return distance * numOfDays * 7*2;
+                    // condition for one sided or both sided
+                    if(serviceType==1)
+                    {
+                        return (distance * numOfDays) * 7;
+                    }
+                    else
+                    {
+                        return (distance * numOfDays) * 7*2;
+                    }
                 }
+
 
             } else {
 
@@ -668,6 +702,10 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
         if(adapterView.getAdapter().getItem(0).toString().equals("select service type"))
         {
          typeOfServiceAtPosition = position;
+        }
+        else if(adapterView.getAdapter().getItem(0).toString().equals("select vehicle type"))
+        {
+            vehicleTypePosition = position;
         }
         else
         {

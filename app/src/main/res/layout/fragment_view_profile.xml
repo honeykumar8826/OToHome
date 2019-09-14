@@ -51,16 +51,16 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="230dp"
+                    android:layout_height="210dp"
                     android:background="@color/grey_10"
                     android:orientation="vertical">
 
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/img_user"
-                        android:layout_width="120dp"
-                        android:layout_height="120dp"
+                        android:layout_width="@dimen/size_user_profile_pic"
+                        android:layout_height="@dimen/size_user_profile_pic"
                         android:layout_gravity="center"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="@dimen/spacing_16"
                         android:background="@drawable/background_profile_image"
                         android:src="@drawable/ic_person" />
 
@@ -89,14 +89,36 @@
                         <View
                             android:layout_width="@dimen/spacing_large"
                             android:layout_height="match_parent" />
-
-                        <TextView
-                            android:id="@+id/tv_name"
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/spacing_25"
-                            android:textColor="@color/black_color"
-                            android:text="Name" />
+                            android:layout_weight="2"
+                            android:orientation="horizontal">
+                            <TextView
+
+                                android:layout_width="0dp"
+                                android:layout_weight="0.8"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/spacing_25"
+                                android:textColor="@color/black_color"
+                                android:text="Name" />
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.2"
+                                android:text=": "
+                                android:layout_marginTop="@dimen/spacing_25"
+                                android:layout_height="wrap_content" />
+                            <TextView
+                                android:id="@+id/tv_name"
+                                android:layout_width="0.8dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:textStyle="bold"
+                                android:layout_marginTop="@dimen/spacing_25"
+                                android:textColor="@color/black_color"
+                                />
+                        </LinearLayout>
+
 
                     </LinearLayout>
 
@@ -126,15 +148,36 @@
                             <View
                                 android:layout_width="@dimen/spacing_large"
                                 android:layout_height="match_parent" />
-
-                            <TextView
-                                android:id="@+id/tv_mobile"
+                            <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="@dimen/spacing_25"
-                                android:textColor="@color/black_color"
+                                android:layout_weight="2"
+                                android:orientation="horizontal">
+                                <TextView
 
-                                android:text="Mobile " />
+                                    android:layout_width="0dp"
+                                    android:layout_weight="0.8"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/spacing_25"
+                                    android:textColor="@color/black_color"
+                                    android:text="@string/mobile" />
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_weight="0.2"
+                                    android:text=": "
+                                    android:layout_marginTop="@dimen/spacing_25"
+                                    android:layout_height="wrap_content" />
+                                <TextView
+                                    android:id="@+id/tv_mobile"
+                                    android:layout_width="0.8dp"
+                                    android:layout_weight="1"
+                                    android:textStyle="bold"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/spacing_25"
+                                    android:textColor="@color/black_color"
+                                    />
+                            </LinearLayout>
+
 
                         </LinearLayout>
 
@@ -149,35 +192,53 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
+
+
+                        <ImageButton
+                            android:layout_width="@dimen/spacing_25"
+                            android:layout_height="@dimen/spacing_25"
+                            android:layout_marginTop="@dimen/spacing_25"
+                            android:background="@android:color/transparent"
+                            android:tint="@color/grey_60"
+                            app:srcCompat="@drawable/ic_email" />
+
+                        <View
+                            android:layout_width="@dimen/spacing_large"
+                            android:layout_height="match_parent" />
+
+
                         <LinearLayout
-                            android:layout_width="0dp"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="3"
+                            android:layout_weight="2"
                             android:orientation="horizontal">
-
-                            <ImageButton
-                                android:layout_width="@dimen/spacing_25"
-                                android:layout_height="@dimen/spacing_25"
-                                android:layout_marginTop="@dimen/spacing_25"
-                                android:background="@android:color/transparent"
-                                android:tint="@color/grey_60"
-                                app:srcCompat="@drawable/ic_email" />
-
-                            <View
-                                android:layout_width="@dimen/spacing_large"
-                                android:layout_height="match_parent" />
-
-
                             <TextView
-                                android:id="@+id/tv_email"
-                                android:layout_width="match_parent"
+
+                                android:layout_width="0dp"
+                                android:layout_weight="0.8"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="@dimen/spacing_25"
                                 android:textColor="@color/black_color"
-
-                                android:text="Email" />
-
+                                android:text="@string/email" />
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.2"
+                                android:text=": "
+                                android:layout_marginTop="@dimen/spacing_25"
+                                android:layout_height="wrap_content" />
+                            <TextView
+                                android:id="@+id/tv_email"
+                                android:layout_width="0.8dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:textStyle="bold"
+                                android:layout_marginTop="@dimen/spacing_25"
+                                android:textColor="@color/black_color"
+                                />
                         </LinearLayout>
+
+
+
 
                     </LinearLayout>
 
@@ -205,15 +266,40 @@
                             android:layout_height="match_parent" />
 
 
-                        <TextView
-                            android:id="@+id/tv_address"
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/spacing_25"
-                            android:textColor="@color/black_color"
+                            android:layout_weight="2"
+                            android:orientation="horizontal">
+                            <TextView
 
-                            android:text="@string/address" />
+                                android:layout_width="0dp"
+                                android:layout_weight="0.8"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/spacing_25"
+                                android:textColor="@color/black_color"
+                                android:text="@string/address" />
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.2"
+                                android:text=": "
+                                android:layout_marginTop="@dimen/spacing_25"
+                                android:layout_height="wrap_content" />
+                            <TextView
+                                android:id="@+id/tv_address"
+                                android:layout_width="0.8dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:textStyle="bold"
+                                android:layout_marginTop="@dimen/spacing_25"
+                                android:textColor="@color/black_color"
+                                />
+                        </LinearLayout>
+
+
                     </LinearLayout>
+
+
 
                     <View
                         android:layout_width="match_parent"
@@ -235,22 +321,34 @@
                         <View
                             android:layout_width="@dimen/spacing_large"
                             android:layout_height="match_parent" />
-
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-
+                            android:layout_weight="2"
+                            android:orientation="horizontal">
                             <TextView
-                                android:id="@+id/tv_companyName"
-                                android:layout_width="match_parent"
+
+                                android:layout_width="0dp"
+                                android:layout_weight="0.8"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="@dimen/spacing_25"
                                 android:textColor="@color/black_color"
-
-                                android:text="Company Name" />
-
+                                android:text="@string/company_name" />
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.2"
+                                android:text=": "
+                                android:layout_marginTop="@dimen/spacing_25"
+                                android:layout_height="wrap_content" />
+                            <TextView
+                                android:id="@+id/tv_companyName"
+                                android:layout_width="0.8dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/spacing_25"
+                                android:textStyle="bold"
+                                android:textColor="@color/black_color"
+                                />
                         </LinearLayout>
 
                     </LinearLayout>

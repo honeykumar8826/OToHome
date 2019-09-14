@@ -145,11 +145,11 @@ public class VIewProfileFragment extends Fragment {
                     .centerCrop()
                     .into(imageView);
             //tvName.setText("Name            :   "+userProfileDetail.getName());
-            tvName.setText("Name            :   "+name);
-            tvMobile.setText("Mobile        :   "+mobile);
-            tvEmail.setText("Email          :   "+email);
-            tvAddress.setText("Address      :   "+address);
-            tvComapnyName.setText("Company  :   "+company);
+            tvName.setText(name);
+            tvMobile.setText(mobile);
+            tvEmail.setText(email);
+            tvAddress.setText(address);
+            tvComapnyName.setText(company);
         }
 
         progressBar.setVisibility(View.GONE);

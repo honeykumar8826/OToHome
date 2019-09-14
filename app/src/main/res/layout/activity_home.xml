@@ -5,7 +5,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.travel.cab.service.com.travels.cab.service.activity.HomeActivity">
+    tools:context=".activity.HomeActivity">
 <include layout="@layout/custom_toolbar"/>
 <FrameLayout
     android:layout_below="@+id/toolbar"

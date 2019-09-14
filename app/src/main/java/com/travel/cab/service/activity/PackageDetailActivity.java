@@ -17,7 +17,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
 import com.travel.cab.service.MainActivity;
 import com.travel.cab.service.R;
 import com.travel.cab.service.broadcast.InternetBroadcastReceiver;
@@ -26,7 +25,6 @@ import com.travel.cab.service.utils.preference.SharedPreference;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -36,9 +34,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class PackageDetailActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "PackageDetailActivity";
-    private String pickupAddress, dropAddress, distanceBetweenLoc, rideFare,serviceType ,startDate, goingTime, comingTime, numberOfDays;
-    private TextView tvPickupAddress,tvDropAddress,tvDistanceBetweenLoc,tvRideFare,tvServiceDays
-            ,tvStartDate,tvGoingTime,tvComingTime;
+    private String pickupAddress, dropAddress, distanceBetweenLoc, rideFare,serviceType ,vehicleType,startDate, goingTime, comingTime, numberOfDays;
+    private TextView tvPickupAddress,tvDropAddress,tvDistanceBetweenLoc,tvRideFare,tvServiceDays, tvVehicleType
+            ,tvStartDate,tvGoingTime,tvComingTime,tvServiceType;
     private Calendar myCalendar;
     private  DatePickerDialog.OnDateSetListener date;
     private  TimePickerDialog mTimePicker;
@@ -84,9 +82,11 @@ public class PackageDetailActivity extends AppCompatActivity implements View.OnC
         tvPickupAddress.setText(pickupAddress);
         tvDropAddress.setText(dropAddress);
         tvDistanceBetweenLoc.setText(distanceBetweenLoc);
-        tvRideFare.setText(rideFare);
+        tvRideFare.setText(rideFare+""+R.string.rupees);
         tvServiceDays.setText(numberOfDays);
-        btnSubmit.setText(getString(R.string.proceed_to_pay)+""+rideFare);
+        tvVehicleType.setText(vehicleType);
+        tvServiceType.setText(serviceType);
+        btnSubmit.setText(getString(R.string.proceed_to_pay)+""+Float.parseFloat(rideFare));
     }
 
     private void inItId() {
@@ -98,8 +98,11 @@ public class PackageDetailActivity extends AppCompatActivity implements View.OnC
         tvGoingTime = findViewById(R.id.tv_going_timing);
         tvComingTime = findViewById(R.id.tv_coming_timing);
         tvServiceDays = findViewById(R.id.tv_service_days);
+        tvVehicleType = findViewById(R.id.tv_vehicle_type);
+        tvServiceType = findViewById(R.id.tv_service_type);
         btnSubmit = findViewById(R.id.btn_submit);
         myCalendar = Calendar.getInstance();
+        internetBroadcastReceiver = new InternetBroadcastReceiver();
     }
 
     private void getValueFromIntent() {
@@ -113,6 +116,7 @@ public class PackageDetailActivity extends AppCompatActivity implements View.OnC
             rideFare = hashMap.get("fare");
             numberOfDays = hashMap.get("serviceDays");
             serviceType = hashMap.get("serviceType");
+            vehicleType = hashMap.get("vehicleType");
         }
 
        // Log.v("HashMapTest", hashMap.get("toLoc"));
@@ -157,12 +161,14 @@ public class PackageDetailActivity extends AppCompatActivity implements View.OnC
                    serviceDetailMap.put("service_fare", rideFare);
                    serviceDetailMap.put("service_starting_date", startDate);
                    serviceDetailMap.put("service_type", serviceType);
+                   serviceDetailMap.put("vehicle_type", vehicleType);
                    serviceDetailMap.put("going_time", tvGoingTime.getText().toString());
                    serviceDetailMap.put("coming_time", tvComingTime.getText().toString());
                    serviceDetailMap.put("service_created_at_time", Calendar.getInstance().getTime().toString());
                    mDatabaseReference.push().setValue(serviceDetailMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                        @Override
                        public void onSuccess(Void aVoid) {
+                           generateOrderNumber();
                            Toast.makeText(PackageDetailActivity.this, "Data Save Successfully", Toast.LENGTH_SHORT).show();
                            Intent intent = new Intent(PackageDetailActivity.this,MainActivity.class);
                            startActivity(intent);
@@ -192,6 +198,11 @@ public class PackageDetailActivity extends AppCompatActivity implements View.OnC
         {
             Toast.makeText(this, getString(R.string.select_date_field), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private int generateOrderNumber() {
+
+        return 0;
     }
 
     private void getGoingTime() {
@@ -282,4 +293,5 @@ public class PackageDetailActivity extends AppCompatActivity implements View.OnC
         super.onStop();
         unregisterReceiver(internetBroadcastReceiver);
     }
+
 }
