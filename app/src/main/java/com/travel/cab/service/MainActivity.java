@@ -32,6 +32,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.paytm.pgsdk.PaytmOrder;
 import com.paytm.pgsdk.PaytmPGService;
 import com.paytm.pgsdk.PaytmPaymentTransactionCallback;
+import com.travel.cab.service.network.ApiConstant;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,16 +43,20 @@ import java.util.HashMap;
 public class MainActivity extends AppCompatActivity implements PaytmPaymentTransactionCallback
 
 {
-    private String mid="axxflC61464899135819";
+    //private String mid="axxflC61464899135819";
+    private String mid=BuildConfig.MerchantId;
+
     private String orderId;
     private String customerId;
-    private String mobile_number="8882304203";
+    private String mobile_number="7042226632";
     private static final String TAG = "MainActivity";
+    private ApiConstant apiConstant;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+         apiConstant = new ApiConstant();
         Button paymentStart =  findViewById(R.id.start_transaction);
          EditText orderid =  findViewById(R.id.orderid);
          EditText custid = findViewById(R.id.custid);
@@ -69,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements PaytmPaymentTrans
 
     @Override
     public void onTransactionResponse(Bundle inResponse) {
+        // response code 01 during successfully transaction RESPCODE=330 STATUS = TXN_FALIURE
         Log.i(TAG, "onTransactionResponse: ");
     }
 
@@ -94,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements PaytmPaymentTrans
 
     @Override
     public void onBackPressedCancelTransaction() {
+        // when we click back button during transaction
         Log.i(TAG, "onBackPressedCancelTransaction: ");
     }
 
@@ -103,8 +110,8 @@ public class MainActivity extends AppCompatActivity implements PaytmPaymentTrans
     }
     public class sendUserDetailTOServerd extends AsyncTask<ArrayList<String>, Void, String> {
         //private String orderId , mid, custid, amt;
-        String url = "https://spotrack-form.000webhostapp.com/paymentsystem/Paytmkit/Paytmkit/generateChecksum.php";
-        String varifyurl = "https://pguat.paytm.com/paytmchecksum/paytmCallback.jsp";
+        String url = apiConstant.url;
+        String varifyUrl = apiConstant.varifyUrl;
         // "https://securegw-stage.paytm.in/theia/paytmCallback?ORDER_ID"+orderId;
         String CHECKSUMHASH = "";
         private ProgressDialog dialog = new ProgressDialog(MainActivity.this);
@@ -125,8 +132,9 @@ public class MainActivity extends AppCompatActivity implements PaytmPaymentTrans
                             //"&CHANNEL_ID=WAP&TXN_AMOUNT=1&WEBSITE=WEBSTAGING" +
                             // for production
                             "&CHANNEL_ID=WAP&TXN_AMOUNT=1&WEBSITE=DEFAULT" +
+                           // "EMAIL="+ "honeykumar8826@gmail.com"+
                             "&MOBILE_NO="+ mobile_number +
-                            "&CALLBACK_URL=" + varifyurl + "&INDUSTRY_TYPE_ID=Retail";
+                            "&CALLBACK_URL=" + varifyUrl + "&INDUSTRY_TYPE_ID=Retail";
             JSONObject jsonObject = jsonParser.makeHttpRequest(url, "POST", param);
             // yaha per checksum ke saht order id or status receive hoga..
             // Log.e("CheckSum result >>", jsonObject.toString());
@@ -161,9 +169,9 @@ public class MainActivity extends AppCompatActivity implements PaytmPaymentTrans
             paramMap.put("CHANNEL_ID", "WAP");
             paramMap.put("TXN_AMOUNT", "1");
             paramMap.put("WEBSITE", "DEFAULT");
-            paramMap.put("CALLBACK_URL", varifyurl);
-            //paramMap.put( "EMAIL" , "harishkumar8826@gmail.com");   // no need
-            paramMap.put( "MOBILE_NO" , "8882304203");  // no need
+            paramMap.put("CALLBACK_URL", varifyUrl);
+            //paramMap.put( "EMAIL" , "honeykumar8826@gmail.com");   // no need
+            paramMap.put( "MOBILE_NO" , mobile_number);  // no need
             paramMap.put("CHECKSUMHASH", CHECKSUMHASH);
             //paramMap.put("PAYMENT_TYPE_ID" ,"CC");    // no need
             paramMap.put("INDUSTRY_TYPE_ID", "Retail");

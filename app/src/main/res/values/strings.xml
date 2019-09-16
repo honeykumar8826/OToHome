@@ -86,5 +86,10 @@
     <string name="email">Email</string>
     <string name="company_name">Company Name</string>
     <string name="select_service_type_capital">Select Service Type</string>
+    <string name="transaction_complete">Transaction Successfully done!</string>
+    <string name="connection_slow">connection is too slow</string>
+    <string name="authentication_failed">Authentication Failed</string>
+    <string name="webpage_not_load">webPage not load</string>
+    <string name="dont_press_back_button">Please don\'t press back button</string>
 
 </resources>

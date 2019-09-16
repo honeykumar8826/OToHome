@@ -36,6 +36,7 @@ android {
 
         debug {
             buildConfigField 'String', "AllApiKey", My_Map_Place_Key
+            buildConfigField 'String', "MerchantId", Merchant_Id
             resValue 'string', "GoogleMapApiKey", google_maps_key
             minifyEnabled false
             debuggable true
@@ -92,7 +93,7 @@ dependencies {
     /*---------------------------for sp and dp management--------------*/
     implementation 'com.intuit.ssp:ssp-android:1.0.5'
     implementation 'com.intuit.sdp:sdp-android:1.0.5'
-   /* ----for room db----------------------*/
+    /* ----for room db----------------------*/
     //room
     implementation "android.arch.persistence.room:runtime:$room_version"
     annotationProcessor "android.arch.persistence.room:compiler:$room_version"
