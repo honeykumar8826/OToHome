@@ -3,7 +3,9 @@ package com.travel.cab.service.fragment;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -11,7 +13,10 @@ import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -122,6 +127,7 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
     private int numOfDays,typeOfServiceAtPosition,vehicleTypePosition;
     private RelativeLayout relativeLayout;
     private PackageInfo mPackageInfo;
+    private  ProgressDialog dialog;
 
     public FareCalculatorFragment() {
         // Required empty public constructor
@@ -181,10 +187,11 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(context,
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            buildAlertMessageNoLocationPermission();
             Toast.makeText(context, getString(R.string.permission_not_grant), Toast.LENGTH_SHORT).show();
             return;
         } else {
-
+            checkGpsState();
             mClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
                 @Override
                 public void onSuccess(Location location) {
@@ -216,6 +223,54 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
         }
         configureCameraIdle();
 
+    }
+
+    private void checkGpsState() {
+        final LocationManager manager = (LocationManager) context.getSystemService( Context.LOCATION_SERVICE );
+
+        if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+            buildAlertMessageNoGps();
+        }
+
+
+    }
+    private void buildAlertMessageNoGps() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
+    }
+    private void buildAlertMessageNoLocationPermission() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage("Enable Location permission for map, do you want to enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                       Intent intent = new Intent();
+                        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                        Uri uri = Uri.fromParts("package",getActivity().getPackageName(), null);
+                        intent.setData(uri);
+                        startActivity(intent);
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
     }
 
     private void configureCameraIdle() {
@@ -298,7 +353,7 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
     }
 
     private void checkForBuyPackage() {
-
+          dialog = new ProgressDialog(context);
         if (sourcePoint.getText().equals("")) {
             Toast.makeText(context, getString(R.string.select_pickup_location), Toast.LENGTH_SHORT).show();
             openPickupIntent();
@@ -315,6 +370,7 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
     }
 
     private void setUpDialogForShowingPackage() {
+        dialog.show();
         progressBar.setVisibility(View.VISIBLE);
         String distance = getDistanceBetweenTwoLocation();
         View alertLayout = LayoutInflater.from(context).inflate(R.layout.custom_dialog_for_package, null);
@@ -426,6 +482,7 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
                 Toast.makeText(context, "Service not available", Toast.LENGTH_SHORT).show();
             }*/
         if (distance != null) {
+            dialog.dismiss();
             progressBar.setVisibility(View.GONE);
             packageDistance.setText(distance);
             List<LatLng> decodedPath = PolyUtil.decode(result.routes[0].overviewPolyline.getEncodedPath());
@@ -513,6 +570,7 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
 
     private String getDistanceBetweenTwoLocation() {
         progressBar.setVisibility(View.VISIBLE);
+        dialog.show();
 
         DateTime now = new DateTime();
         try {
@@ -522,15 +580,18 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
         } catch (ApiException e) {
             e.printStackTrace();
             progressBar.setVisibility(View.GONE);
+            dialog.dismiss();
             Toast.makeText(context, getString(R.string.some_problem_occured) + e, Toast.LENGTH_LONG).show();
         } catch (InterruptedException e) {
             e.printStackTrace();
             progressBar.setVisibility(View.GONE);
+            dialog.dismiss();
             Toast.makeText(context, getString(R.string.some_problem_occured) + e, Toast.LENGTH_LONG).show();
 
         } catch (IOException e) {
             e.printStackTrace();
             progressBar.setVisibility(View.GONE);
+            dialog.dismiss();
             Toast.makeText(context, getString(R.string.some_problem_occured) + e, Toast.LENGTH_LONG).show();
         }
         if (result != null) {
@@ -538,6 +599,7 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
         } else {
             Toast.makeText(context, "Service not available", Toast.LENGTH_SHORT).show();
             progressBar.setVisibility(View.GONE);
+            dialog.dismiss();
         }
         //new DirectionResult().execute();
         return null;
@@ -545,6 +607,8 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
 
     /*geocontext is passed in a request api*/
     private GeoApiContext getGeoContext() {
+        dialog.show();
+        progressBar.setVisibility(View.VISIBLE);
         GeoApiContext geoApiContext = new GeoApiContext();
         return geoApiContext.setQueryRateLimit(3)
                 .setApiKey(directionKey).

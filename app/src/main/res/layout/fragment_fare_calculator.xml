@@ -80,9 +80,10 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/spacing_16"
         android:indeterminate="true"
+        android:visibility="gone"
         android:background="@android:color/transparent"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:visibility="gone"/>
+        />
     <Button
         android:id="@+id/btn_buy_package_fare"
         android:layout_width="match_parent"

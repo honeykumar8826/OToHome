@@ -12,6 +12,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +23,7 @@ import com.travel.cab.service.fragment.ProfileFragment;
 import com.travel.cab.service.fragment.VIewProfileFragment;
 import com.travel.cab.service.fragment.FareCalculatorFragment;
 import com.travel.cab.service.fragment.ShowPackageFragment;
+import com.travel.cab.service.interfaces.CheckPosition;
 import com.travel.cab.service.utils.baseactivity.BaseActivity;
 import com.travel.cab.service.utils.preference.SharedPreference;
 
@@ -34,7 +36,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements CheckPosition {
     private static final String TAG = "HomeActivity";
     private final String[] permissionList = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
     private FragmentManager fragmentManager;
@@ -42,6 +44,7 @@ public class HomeActivity extends AppCompatActivity {
     private Fragment fragment;
     private FirebaseAuth mAuth;
     private Toolbar toolbar;
+    private BottomNavigationView navigation;
     BaseActivity baseActivity = new BaseActivity();
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -64,6 +67,7 @@ public class HomeActivity extends AppCompatActivity {
             return false;
         }
     };
+
 
     private void setupFareCalculatorFragment() {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -118,7 +122,7 @@ public class HomeActivity extends AppCompatActivity {
     private void inItId() {
         fragmentManager = getSupportFragmentManager();
         mTextMessage = findViewById(R.id.message);
-        BottomNavigationView navigation = findViewById(R.id.navigation);
+         navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         mAuth = FirebaseAuth.getInstance();
         toolbar = findViewById(R.id.toolbar);
@@ -281,6 +285,14 @@ public class HomeActivity extends AppCompatActivity {
                 .setNegativeButton("Cancel", null)
                 .create()
                 .show();
+    }
+
+    @Override
+    public void setClickedPosition(String itemPosition) {
+    if(itemPosition !=null)
+    {
+        navigation.getMenu().findItem(R.id.navigation_profile).setChecked(true);
+    }
     }
 }
 

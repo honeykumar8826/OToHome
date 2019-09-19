@@ -21,6 +21,7 @@ import com.travel.cab.service.R;
 import com.travel.cab.service.broadcast.InternetBroadcastReceiver;
 import com.travel.cab.service.database.MyAppDatabase;
 import com.travel.cab.service.database.User;
+import com.travel.cab.service.interfaces.CheckPosition;
 import com.travel.cab.service.modal.UserProfileDetail;
 import com.travel.cab.service.ui.IntentFilterCondition;
 import com.travel.cab.service.utils.preference.SharedPreference;
@@ -45,6 +46,7 @@ public class VIewProfileFragment extends Fragment {
     private ProgressBar progressBar;
     private Context context;
     private MyAppDatabase myAppDatabase;
+    private CheckPosition checkPosition;
 
 
     @Override
@@ -66,6 +68,8 @@ public class VIewProfileFragment extends Fragment {
         imageView = view.findViewById(R.id.img_user);
         mDatabase = FirebaseDatabase.getInstance();
         progressBar = view.findViewById(R.id.show_progress);
+        checkPosition  = (CheckPosition) getActivity();
+        checkPosition.setClickedPosition("selected");
         myAppDatabase = Room.databaseBuilder(getActivity(), MyAppDatabase.class, "userdb").allowMainThreadQueries().build();
 
 

@@ -31,6 +31,7 @@ import com.travel.cab.service.R;
 import com.travel.cab.service.broadcast.InternetBroadcastReceiver;
 import com.travel.cab.service.database.MyAppDatabase;
 import com.travel.cab.service.database.User;
+import com.travel.cab.service.interfaces.CheckPosition;
 import com.travel.cab.service.modal.UserProfileDetail;
 import com.travel.cab.service.ui.IntentFilterCondition;
 import com.travel.cab.service.utils.preference.SharedPreference;
@@ -73,6 +74,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private ProgressBar progressBar;
     private MyAppDatabase myAppDatabase;
 
+
     public ProfileFragment() {
         // Required empty public constructor
     }
@@ -113,6 +115,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         fragmentManager = getChildFragmentManager();
         imageView.setOnClickListener(this);
         internetBroadcastReceiver = new InternetBroadcastReceiver();
+
         myAppDatabase = Room.databaseBuilder(getActivity(), MyAppDatabase.class, "userdb").allowMainThreadQueries().build();
 
 //         LinearLayout lyt_progress = view.findViewById(R.id.lyt_progress);
