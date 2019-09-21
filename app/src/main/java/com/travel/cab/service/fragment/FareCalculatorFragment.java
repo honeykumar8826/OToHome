@@ -15,6 +15,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -169,7 +170,7 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
         pickLoc.setOnClickListener(this);
         dropLoc.setOnClickListener(this);
         buyPackageFare.setOnClickListener(this);
-
+        dialog = new ProgressDialog(context);
         /*( ----regiion inwhich user can search the places)*/
         bounds = RectangularBounds.newInstance(
                 new LatLng(28.567865, 77.326182),
@@ -353,7 +354,7 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
     }
 
     private void checkForBuyPackage() {
-          dialog = new ProgressDialog(context);
+
         if (sourcePoint.getText().equals("")) {
             Toast.makeText(context, getString(R.string.select_pickup_location), Toast.LENGTH_SHORT).show();
             openPickupIntent();
@@ -362,7 +363,8 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
 
             openDropIntent();
         } else {
-            setUpDialogForShowingPackage();
+            new RunProgress().execute();
+            //setUpDialogForShowingPackage();
 
         }
 
@@ -370,8 +372,8 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
     }
 
     private void setUpDialogForShowingPackage() {
-        dialog.show();
-        progressBar.setVisibility(View.VISIBLE);
+
+
         String distance = getDistanceBetweenTwoLocation();
         View alertLayout = LayoutInflater.from(context).inflate(R.layout.custom_dialog_for_package, null);
         final AlertDialog.Builder mAlertBuilder = new AlertDialog.Builder(context);
@@ -446,6 +448,16 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         //Setting the ArrayAdapter data on the Spinner
         vehicleDropDown.setAdapter(arayAdapterForVehicleType);
+        if (distance != null) {
+           // dialog.dismiss();
+            packageDistance.setText(distance);
+            List<LatLng> decodedPath = PolyUtil.decode(result.routes[0].overviewPolyline.getEncodedPath());
+            mMap.addPolyline(new PolylineOptions().addAll(decodedPath).width(15).color(Color.GREEN));
+            mAlertBuilder.setView(alertLayout);
+            //progressBar.setVisibility(View.GONE);
+            show = mAlertBuilder.show();
+            show.setCancelable(true);
+        }
         showMoreContentForFrom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -475,23 +487,13 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
                 }
             }
         });
-         /*   if (isDirectionGet) {
+            if (isDirectionGet) {
                 mAlertBuilder.setView(alertLayout);
                 mAlertBuilder.show();
             } else {
                 Toast.makeText(context, "Service not available", Toast.LENGTH_SHORT).show();
-            }*/
-        if (distance != null) {
-            dialog.dismiss();
-            progressBar.setVisibility(View.GONE);
-            packageDistance.setText(distance);
-            List<LatLng> decodedPath = PolyUtil.decode(result.routes[0].overviewPolyline.getEncodedPath());
-            mMap.addPolyline(new PolylineOptions().addAll(decodedPath).width(15).color(Color.GREEN));
-            mAlertBuilder.setView(alertLayout);
-            show = mAlertBuilder.show();
-            show.setCancelable(false);
+            }
 
-        }
         closeBuyPackageDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -569,8 +571,8 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
     }
 
     private String getDistanceBetweenTwoLocation() {
-        progressBar.setVisibility(View.VISIBLE);
-        dialog.show();
+        //progressBar.setVisibility(View.VISIBLE);
+        //dialog.show();
 
         DateTime now = new DateTime();
         try {
@@ -579,19 +581,19 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
                     .destination(toAddress).departureTime(now).await();
         } catch (ApiException e) {
             e.printStackTrace();
-            progressBar.setVisibility(View.GONE);
-            dialog.dismiss();
+           progressBar.setVisibility(View.GONE);
+             //dialog.dismiss();
             Toast.makeText(context, getString(R.string.some_problem_occured) + e, Toast.LENGTH_LONG).show();
         } catch (InterruptedException e) {
             e.printStackTrace();
             progressBar.setVisibility(View.GONE);
-            dialog.dismiss();
+            //dialog.dismiss();
             Toast.makeText(context, getString(R.string.some_problem_occured) + e, Toast.LENGTH_LONG).show();
 
         } catch (IOException e) {
             e.printStackTrace();
             progressBar.setVisibility(View.GONE);
-            dialog.dismiss();
+            //dialog.dismiss();
             Toast.makeText(context, getString(R.string.some_problem_occured) + e, Toast.LENGTH_LONG).show();
         }
         if (result != null) {
@@ -599,7 +601,7 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
         } else {
             Toast.makeText(context, "Service not available", Toast.LENGTH_SHORT).show();
             progressBar.setVisibility(View.GONE);
-            dialog.dismiss();
+           // dialog.dismiss();
         }
         //new DirectionResult().execute();
         return null;
@@ -607,8 +609,8 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
 
     /*geocontext is passed in a request api*/
     private GeoApiContext getGeoContext() {
-        dialog.show();
-        progressBar.setVisibility(View.VISIBLE);
+       // dialog.show();
+        //progressBar.setVisibility(View.VISIBLE);
         GeoApiContext geoApiContext = new GeoApiContext();
         return geoApiContext.setQueryRateLimit(3)
                 .setApiKey(directionKey).
@@ -789,6 +791,153 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
         void getPackageDetail(Map<String, String> map);
     }
 
+    class RunProgress extends AsyncTask<Void,String,String>
+    {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            String distance = getDistanceBetweenTwoLocation();
+
+            return distance;
+        }
+
+        @Override
+        protected void onPostExecute(String distance) {
+            super.onPostExecute(distance);
+            View alertLayout = LayoutInflater.from(context).inflate(R.layout.custom_dialog_for_package, null);
+            final AlertDialog.Builder mAlertBuilder = new AlertDialog.Builder(context);
+            fromLoc = alertLayout.findViewById(R.id.tv_book_package_for_data_from);
+            toLoc = alertLayout.findViewById(R.id.tv_book_package_for_data_to);
+            packageDistance = alertLayout.findViewById(R.id.tv_distance);
+            fare = alertLayout.findViewById(R.id.tv_fare);
+            showFare = alertLayout.findViewById(R.id.tv_buy_select_package);
+            daysDropDown = alertLayout.findViewById(R.id.spinner);
+            serviceTypeDropDown = alertLayout.findViewById(R.id.spinner_select_service_type);
+            vehicleDropDown = alertLayout.findViewById(R.id.spinner_select_Vehicle_type);
+            showMoreContentForTo = alertLayout.findViewById(R.id.img_book_package_more_content_to);
+            showMoreContentForFrom = alertLayout.findViewById(R.id.img_book_package_more_content_from);
+            closeBuyPackageDialog = alertLayout.findViewById(R.id.img_close);
+            daysDropDown.setOnItemSelectedListener(FareCalculatorFragment.this);
+            serviceTypeDropDown.setOnItemSelectedListener(FareCalculatorFragment.this);
+            vehicleDropDown.setOnItemSelectedListener(FareCalculatorFragment.this);
+            String[] shortAddressFrom = getSplitAddressForShort(fromAddress);
+            setShortSelectedLocationByUser(shortAddressFrom, fromLoc);
+            String[] shortAddressTo = getSplitAddressForShort(toAddress);
+            setShortSelectedLocationByUser(shortAddressTo, toLoc);
+
+
+            showFare.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    if (!fromLoc.getText().toString().isEmpty()
+                            && !toLoc.getText().toString().isEmpty()
+                            && !packageDistance.getText().toString().isEmpty()) {
+                        if(typeOfServiceAtPosition>0)
+                        {
+                            if (numOfDays > 0) {
+                                if(vehicleTypePosition>0)
+                                {
+                                    float rideFare = calculateFare(packageDistance.getText().toString(), numOfDays,typeOfServiceAtPosition,typeOfServiceAtPosition);
+                                    fare.setText(String.valueOf(rideFare));
+                                    sendPackageDetailViaIntent();
+                                }
+                                else
+                                {
+                                    Toast.makeText(context, getString(R.string.select_vehicle_type), Toast.LENGTH_SHORT).show();
+                                }
+
+
+
+                            } else {
+                                Toast.makeText(context, getString(R.string.select_days), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        else {
+                            Toast.makeText(context, getString(R.string.select_service_type), Toast.LENGTH_SHORT).show();
+                        }
+
+                    } else {
+                        Toast.makeText(context, getString(R.string.click_on_buy_package), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+            // spinner for service required days
+            ArrayAdapter aa = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_item, days);
+            aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            //Setting the ArrayAdapter data on the Spinner
+            daysDropDown.setAdapter(aa);
+            // spinner for service type it may be of one sided or both sided
+            ArrayAdapter arayAdapterForServiceType = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_item, serviceType);
+            aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            //Setting the ArrayAdapter data on the Spinner
+            serviceTypeDropDown.setAdapter(arayAdapterForServiceType);
+            // spinner for vehicle type
+            ArrayAdapter arayAdapterForVehicleType = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_item, vehicleType);
+            aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            //Setting the ArrayAdapter data on the Spinner
+            vehicleDropDown.setAdapter(arayAdapterForVehicleType);
+            if (distance != null) {
+                // dialog.dismiss();
+                packageDistance.setText(distance);
+                List<LatLng> decodedPath = PolyUtil.decode(result.routes[0].overviewPolyline.getEncodedPath());
+                mMap.addPolyline(new PolylineOptions().addAll(decodedPath).width(15).color(Color.GREEN));
+                mAlertBuilder.setView(alertLayout);
+                progressBar.setVisibility(View.GONE);
+                show = mAlertBuilder.show();
+                show.setCancelable(true);
+            }
+            showMoreContentForFrom.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String getherDataFrom = fromAddress;
+                    String[] shortAddress = getSplitAddressForShort(getherDataFrom);
+                    if (!isButtonClickedFrom) {
+                        fromLoc.setText(fromAddress);
+                        isButtonClickedFrom = true;
+                    } else {
+                        setShortSelectedLocationByUser(shortAddress, fromLoc);
+                        //fromLoc.setText(R.string.content_from_show_package);
+                        isButtonClickedFrom = false;
+                    }
+                }
+            });
+            showMoreContentForTo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String getherDataTo = toAddress;
+                    String[] shortAddress = getSplitAddressForShort(getherDataTo);
+                    if (!isButtonClickedTo) {
+                        toLoc.setText(toAddress);
+                        isButtonClickedTo = true;
+                    } else {
+                        setShortSelectedLocationByUser(shortAddress, toLoc);
+                        isButtonClickedTo = false;
+                    }
+                }
+            });
+         /*   if (isDirectionGet) {
+                mAlertBuilder.setView(alertLayout);
+                mAlertBuilder.show();
+            } else {
+                Toast.makeText(context, "Service not available", Toast.LENGTH_SHORT).show();
+            }*/
+
+            closeBuyPackageDialog.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    packageDistance.setText("");
+                    show.dismiss();
+                }
+            });
+        }
+    }
     /* ------------------inner class to find the distance between two location ---------------------------*/
     /*class DirectionResult extends AsyncTask<Void, Void, String> {
         @Override
