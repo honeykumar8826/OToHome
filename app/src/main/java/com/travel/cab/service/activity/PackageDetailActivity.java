@@ -272,11 +272,11 @@ public class PackageDetailActivity extends AppCompatActivity implements View.OnC
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
                         if(selectedHour>=12)
                         {
-                            tvGoingTime.setText( selectedHour + ":" + selectedMinute+"AM"+"(going)");
+                            tvGoingTime.setText( selectedHour + ":" + selectedMinute+"PM"+"(going)");
                         }
                         else
                         {
-                            tvGoingTime.setText( selectedHour + ":" + selectedMinute+"PM"+"(going)");
+                            tvGoingTime.setText( selectedHour + ":" + selectedMinute+"AM"+"(going)");
 
                         }
                     }
@@ -296,11 +296,11 @@ public class PackageDetailActivity extends AppCompatActivity implements View.OnC
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
                         if(selectedHour>=12)
                         {
-                            tvComingTime.setText( selectedHour + ":" + selectedMinute+"AM"+"(coming)");
+                            tvComingTime.setText( selectedHour + ":" + selectedMinute+"PM"+"(coming)");
                         }
                         else
                         {
-                            tvComingTime.setText( selectedHour + ":" + selectedMinute+"PM+(coming)");
+                            tvComingTime.setText( selectedHour + ":" + selectedMinute+"AM"+"(coming)");
 
                         }
 

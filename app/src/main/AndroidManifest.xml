@@ -25,9 +25,7 @@
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/NoActionBar">
-
-        </activity>
+            android:theme="@style/NoActionBar"></activity>
         <activity
             android:name=".activity.IntroSliderActivity"
             android:screenOrientation="portrait" />
@@ -74,11 +72,17 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.PackageDetailActivity"
-            android:theme="@style/NoActionBar"></activity>
+            android:theme="@style/NoActionBar" />
         <activity
             android:name=".TestActivity"
-            android:theme="@style/NoActionBar"></activity>
-        <activity android:name=".activity.paymentGateway.PaymentTransactionActivity"></activity>
+            android:theme="@style/NoActionBar" />
+        <activity android:name=".activity.paymentGateway.PaymentTransactionActivity" />
+        <activity
+            android:name=".activity.NavigationActivity"
+            android:label="@string/title_activity_navigation"
+            android:theme="@style/NoActionBar">
+
+        </activity>
     </application>
 
 </manifest>

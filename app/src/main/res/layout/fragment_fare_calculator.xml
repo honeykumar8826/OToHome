@@ -32,7 +32,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/pin"
         android:layout_below="@+id/ll_drop"
-        android:layout_marginTop="@dimen/_45sdp"
+        android:layout_marginTop="@dimen/_46sdp"
         android:layout_centerHorizontal="true"/>
     <LinearLayout
         android:id="@+id/ll_pickup"

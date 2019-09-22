@@ -52,7 +52,8 @@
     <color name="pink_800">#AD1457</color>
     <color name="blue_grey_80">#37474F</color>
     <color name="pink_300">#F06292</color>
-
+    <color name="black_700">#616161</color>
+    <color name="black_800">#424242</color>
 
 
 </resources>

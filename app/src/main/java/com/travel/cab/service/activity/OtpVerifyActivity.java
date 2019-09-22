@@ -211,7 +211,7 @@ public class OtpVerifyActivity extends AppCompatActivity {
                     SharedPreference.getInstance().setFirstTimeForPhone(false);
                     showProgressBar.setVisibility(View.GONE);
                     Toast.makeText(OtpVerifyActivity.this, "Code Verified successfully", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(OtpVerifyActivity.this, HomeActivity.class);
+                    Intent intent = new Intent(OtpVerifyActivity.this, NavigationActivity.class);
                     startActivity(intent);
                     finish();
                 } else {

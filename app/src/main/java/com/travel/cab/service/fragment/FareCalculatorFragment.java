@@ -409,7 +409,7 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
                         if (numOfDays > 0) {
                             if(vehicleTypePosition>0)
                             {
-                                float rideFare = calculateFare(packageDistance.getText().toString(), numOfDays,typeOfServiceAtPosition,typeOfServiceAtPosition);
+                                float rideFare = calculateFare(packageDistance.getText().toString(), numOfDays,typeOfServiceAtPosition,vehicleTypePosition);
                                 fare.setText(String.valueOf(rideFare));
                                 sendPackageDetailViaIntent();
                             }
@@ -521,13 +521,13 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
 
     }
     // for calculating the fare for both bike and car
-    private float calculateFare(String packageDistance, int numOfDays,int serviceType,int vechileType) {
-        String seperateUnit[] = packageDistance.split(" ");
+    private float calculateFare(String packageDistance, int numOfDays,int serviceType,int vehicleType) {
+        String separatedUnit[] = packageDistance.split(" ");
         if (packageDistance.contains("km")) {
-            /*----------when this scenario will come like (1,900)-----------not work------------*/
-            if (seperateUnit.length <= 3) {
-                float distance = Float.parseFloat(seperateUnit[0]);
-                if(vechileType ==1)
+            /*---------- when this scenario will come like (1,900)-----------not work------------*/
+            if (separatedUnit.length <= 3) {
+                float distance = Float.parseFloat(separatedUnit[0]);
+                if(vehicleType ==1)
                 {
                     // condition for one sided or both sided
                     if(serviceType==1)
@@ -553,7 +553,8 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
                 }
 
 
-            } else {
+            }
+            else {
 
                 Snackbar snackbar = Snackbar
                         .make(relativeLayout, "Service not available", Snackbar.LENGTH_LONG);
@@ -715,16 +716,16 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
         }
     }
 
-    private void setShortSelectedLocationByUser(String[] address, TextView eitherSourceOrDesinationPoint) {
+    private void setShortSelectedLocationByUser(String[] address, TextView eitherSourceOrDestinationPoint) {
         switch (address.length) {
             case 1:
-                eitherSourceOrDesinationPoint.setText(address[0]);
+                eitherSourceOrDestinationPoint.setText(address[0]);
                 break;
             case 2:
-                eitherSourceOrDesinationPoint.setText(address[0] + address[1]);
+                eitherSourceOrDestinationPoint.setText(address[0] + address[1]);
                 break;
             case 3:
-                eitherSourceOrDesinationPoint.setText(address[0] + address[1]);
+                eitherSourceOrDestinationPoint.setText(address[0] + address[1]);
                 break;
             default:
                 break;
@@ -803,7 +804,6 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
         @Override
         protected String doInBackground(Void... voids) {
             String distance = getDistanceBetweenTwoLocation();
-
             return distance;
         }
 
@@ -844,7 +844,7 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
                             if (numOfDays > 0) {
                                 if(vehicleTypePosition>0)
                                 {
-                                    float rideFare = calculateFare(packageDistance.getText().toString(), numOfDays,typeOfServiceAtPosition,typeOfServiceAtPosition);
+                                    float rideFare = calculateFare(packageDistance.getText().toString(), numOfDays,typeOfServiceAtPosition,vehicleTypePosition);
                                     fare.setText(String.valueOf(rideFare));
                                     sendPackageDetailViaIntent();
                                 }

@@ -101,7 +101,7 @@ public class IntroSliderActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void launchForHomeScreen() {
-        Intent intent = new Intent(this, HomeActivity.class);
+        Intent intent = new Intent(this, NavigationActivity.class);
         startActivity(intent);
         finish();
     }
