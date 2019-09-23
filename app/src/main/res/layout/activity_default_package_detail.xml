@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+tools:context=".activity.DefaultPackageDetail"
+android:orientation="vertical">
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusableInTouchMode="false">
+
+    <ScrollView
+        android:id="@+id/nested_scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#ffffff"
+        android:clipToPadding="false"
+        android:scrollingCache="true"
+        android:layout_above="@+id/btn_submit"
+        android:layout_marginBottom="@dimen/_2sdp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:background="#BDBDBD"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/matrixLogo"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_200sdp"
+                android:adjustViewBounds="true"
+                android:background="#0059A5"
+                android:scaleType="fitXY"
+                android:src="@mipmap/cablogo" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:text="@string/pickup_point"
+                    android:textColor="#706e6b" />
+
+                <TextView
+                    android:id="@+id/tv_pickup_point"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:layout_marginTop="@dimen/_4sdp"
+                    android:layout_marginEnd="@dimen/_20sdp"
+                    android:background="@drawable/background_package_detail_view"
+                    android:ems="10"
+                    android:gravity="center_vertical"
+                    android:paddingStart="20dp"
+                    android:text="@string/pickup_address"
+                    android:textColor="#000000"
+                    android:textColorHint="#808080"
+                    android:paddingTop="@dimen/_6sdp"
+                    android:paddingBottom="@dimen/_6sdp"
+                    tools:ignore="RtlCompat" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:text="@string/drop_point"
+                    android:textColor="#706e6b" />
+
+                <TextView
+                    android:id="@+id/tv_drop_point"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:layout_marginTop="@dimen/_4sdp"
+                    android:layout_marginEnd="@dimen/_20sdp"
+                    android:background="@drawable/background_package_detail_view"
+                    android:ems="10"
+                    android:gravity="center_vertical"
+                    android:paddingStart="20dp"
+                    android:text="Drop Address"
+                    android:textColor="#000000"
+                    android:textColorHint="#808080"
+                    android:paddingTop="@dimen/_6sdp"
+                    android:paddingBottom="@dimen/_6sdp"
+                    tools:ignore="RtlCompat" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:text="@string/distance"
+                    android:textColor="#706e6b" />
+
+                <TextView
+                    android:id="@+id/tv_location_distance"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_30sdp"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:layout_marginTop="@dimen/_4sdp"
+                    android:layout_marginEnd="@dimen/_20sdp"
+                    android:background="@drawable/background_package_detail_view"
+                    android:ems="10"
+                    android:gravity="center_vertical"
+                    android:paddingStart="20dp"
+                    android:text="Distance from OToHome"
+                    android:textColor="#000000"
+                    android:textColorHint="#808080"
+                    tools:ignore="RtlCompat" />
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:text="@string/select_vehicle_type_capital"
+                    android:textColor="#706e6b" />
+                <Spinner
+                    android:id="@+id/spinner_select_vehicle_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_30sdp"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:layout_marginTop="@dimen/_4sdp"
+                    android:layout_marginEnd="@dimen/_20sdp"
+                    android:paddingStart="20dp"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/background_package_detail_view"
+                    android:text="@string/select_vehicle_type"
+                    android:textColor="@color/black_color"
+                    />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:text="@string/select_service_type_capital"
+                    android:textColor="#706e6b" />
+
+                <Spinner
+                    android:id="@+id/spinner_select_service_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_30sdp"
+                    android:layout_toEndOf="@+id/tv_select_service_type"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:layout_marginTop="@dimen/_4sdp"
+                    android:layout_marginEnd="@dimen/_20sdp"
+                    android:paddingStart="20dp"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/background_package_detail_view"
+                    android:text="@string/select_vehicle_type"
+                    android:textColor="@color/black_color"
+                    />
+
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:text="@string/select_days_for_service"
+                    android:textColor="#706e6b" />
+
+                <Spinner
+                    android:id="@+id/spinner_select_service_days"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_30sdp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:layout_marginTop="@dimen/_4sdp"
+                    android:layout_marginEnd="@dimen/_20sdp"
+                    android:paddingStart="20dp"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/background_package_detail_view"
+                    android:text="@string/select_vehicle_type"
+                    android:textColor="@color/black_color"
+                    />
+
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:text="@string/fare"
+                    android:textColor="#706e6b" />
+
+                <TextView
+                    android:id="@+id/tv_service_fare"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_30sdp"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:layout_marginTop="@dimen/_4sdp"
+                    android:layout_marginEnd="@dimen/_20sdp"
+                    android:background="@drawable/background_package_detail_view"
+                    android:ems="10"
+                    android:gravity="center_vertical"
+                    android:paddingStart="20dp"
+                    android:text="@string/check_fare"
+                    android:textColor="#000000"
+                    android:textColorHint="#808080"
+                    tools:ignore="RtlCompat" />
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:text="@string/service_start_date"
+                    android:textColor="#706e6b" />
+
+                <TextView
+                    android:id="@+id/tv_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_30sdp"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:layout_marginTop="@dimen/_4sdp"
+                    android:layout_marginEnd="@dimen/_20sdp"
+                    android:background="@drawable/background_package_detail_view"
+                    android:ems="10"
+                    android:gravity="center_vertical"
+                    android:paddingStart="20dp"
+                    android:hint="@string/select_service_starting_date"
+                    android:textColor="#000000"
+                    android:textColorHint="#808080"
+                    tools:ignore="RtlCompat" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:text="Timing"
+                    android:textColor="#706e6b" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_35sdp"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <TextView
+                        android:id="@+id/tv_going_timing"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="@dimen/_20sdp"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:layout_marginEnd="@dimen/_20sdp"
+                        android:layout_weight="1"
+                        android:background="@drawable/background_package_detail_view"
+                        android:ems="10"
+                        android:gravity="center_vertical"
+                        android:paddingStart="10dp"
+                        android:hint="@string/select_going_timing"
+                        android:textColor="#000000"
+                        android:textColorHint="#808080"
+                        tools:ignore="RtlCompat" />
+
+                    <TextView
+                        android:id="@+id/tv_coming_timing"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="@dimen/_5sdp"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:layout_marginEnd="@dimen/_20sdp"
+                        android:layout_weight="1"
+                        android:background="@drawable/background_package_detail_view"
+                        android:ems="10"
+                        android:gravity="center_vertical"
+                        android:paddingStart="10dp"
+                        android:hint="@string/select_coming_time"
+                        android:textColor="#000000"
+                        android:textColorHint="#808080"
+                        tools:ignore="RtlCompat" />
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+    <Button
+        android:id="@+id/btn_submit"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:background="@color/black_color"
+        android:text="@string/proceed_to_pay"
+        android:textAllCaps="false"
+        android:textColor="@color/white_color"
+        android:textSize="@dimen/_14ssp" />
+</RelativeLayout>
+
+</LinearLayout>

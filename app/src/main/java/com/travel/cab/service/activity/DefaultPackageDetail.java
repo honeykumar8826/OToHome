@@ -1,5 +1,8 @@
 package com.travel.cab.service.activity;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
@@ -9,8 +12,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -41,12 +46,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-public class PackageDetailActivity extends AppCompatActivity implements View.OnClickListener, PaytmPaymentTransactionCallback {
-    private static final String TAG = "PackageDetailActivity";
-    private String pickupAddress, dropAddress, distanceBetweenLoc, rideFare, serviceType, vehicleType, startDate, goingTime, comingTime, numberOfDays;
+public class DefaultPackageDetail extends AppCompatActivity implements View.OnClickListener, PaytmPaymentTransactionCallback {
+    private static final String TAG = "DefaultPackageDetail";
+    private String pickupAddress, dropAddress, distanceBetweenLoc, rideFare, startDate, goingTime, comingTime, numberOfDays;
     private TextView tvPickupAddress, tvDropAddress, tvDistanceBetweenLoc, tvRideFare, tvServiceDays, tvVehicleType, tvStartDate, tvGoingTime, tvComingTime, tvServiceType;
     private Calendar myCalendar;
     private DatePickerDialog.OnDateSetListener date;
@@ -63,52 +65,19 @@ public class PackageDetailActivity extends AppCompatActivity implements View.OnC
     private String customerId;
     private String mobile_number = "7042226632";
     private ApiConstant apiConstant;
-
-
+    private Spinner daysDropDown,serviceTypeDropDown,vehicleDropDown;
+    private String[] days = {"select service days", "1day", "2days", "3days", "4days", "5days"};
+    private String[] serviceType = {"select service type", "one sided", "both sided"};
+    private String[] vehicleType = {"select vehicle type", "Bike", "Car"};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_package_detail);
+        setContentView(R.layout.activity_default_package_detail);
         inItId();
         getValueFromIntent();
         setListener();
         setGettedValue();
-        setUpToStoreValueInDb();
     }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        intentFilter = IntentFilterCondition.getInstance().callIntentFilter();
-        registerReceiver(internetBroadcastReceiver, intentFilter);
-    }
-
-    private void setUpToStoreValueInDb() {
-        mDatabase = FirebaseDatabase.getInstance();
-        mDatabaseReference = mDatabase.getReference().child("applyForService").child(SharedPreference.getInstance().getUserId());
-
-    }
-
-    private void setListener() {
-        tvStartDate.setOnClickListener(this);
-        tvGoingTime.setOnClickListener(this);
-        tvComingTime.setOnClickListener(this);
-        btnSubmit.setOnClickListener(this);
-        //initialize the date object first and set it with blank value
-        setDateSelected();
-    }
-
-    private void setGettedValue() {
-        tvPickupAddress.setText(pickupAddress);
-        tvDropAddress.setText(dropAddress);
-        tvDistanceBetweenLoc.setText(distanceBetweenLoc);
-        tvRideFare.setText(rideFare + "" + R.string.rupees);
-        tvServiceDays.setText(numberOfDays);
-        tvVehicleType.setText(vehicleType);
-        tvServiceType.setText(serviceType);
-        btnSubmit.setText(getString(R.string.proceed_to_pay) + "" + Float.parseFloat(rideFare));
-    }
-
     private void inItId() {
         tvPickupAddress = findViewById(R.id.tv_pickup_point);
         tvDropAddress = findViewById(R.id.tv_drop_point);
@@ -117,9 +86,9 @@ public class PackageDetailActivity extends AppCompatActivity implements View.OnC
         tvStartDate = findViewById(R.id.tv_date);
         tvGoingTime = findViewById(R.id.tv_going_timing);
         tvComingTime = findViewById(R.id.tv_coming_timing);
-        tvServiceDays = findViewById(R.id.tv_service_days);
-        tvVehicleType = findViewById(R.id.tv_vehicle_type);
-        tvServiceType = findViewById(R.id.tv_service_type);
+        daysDropDown = findViewById(R.id.spinner_select_service_days);
+        vehicleDropDown = findViewById(R.id.spinner_select_vehicle_type);
+        serviceTypeDropDown = findViewById(R.id.spinner_select_service_type);
         btnSubmit = findViewById(R.id.btn_submit);
         myCalendar = Calendar.getInstance();
         internetBroadcastReceiver = new InternetBroadcastReceiver();
@@ -135,14 +104,50 @@ public class PackageDetailActivity extends AppCompatActivity implements View.OnC
             pickupAddress = hashMap.get("fromLocation");
             dropAddress = hashMap.get("toLocation");
             distanceBetweenLoc = hashMap.get("distanceDiff");
-            rideFare = hashMap.get("fare");
-            numberOfDays = hashMap.get("serviceDays");
-            serviceType = hashMap.get("serviceType");
-            vehicleType = hashMap.get("vehicleType");
         }
 
         // Log.v("HashMapTest", hashMap.get("toLoc"));
 
+    }
+    private void setListener() {
+        tvStartDate.setOnClickListener(this);
+        tvGoingTime.setOnClickListener(this);
+        tvComingTime.setOnClickListener(this);
+        btnSubmit.setOnClickListener(this);
+        // spinner for service required days
+        ArrayAdapter aa = new ArrayAdapter(this, android.R.layout.simple_spinner_item, days);
+        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //Setting the ArrayAdapter data on the Spinner
+        daysDropDown.setAdapter(aa);
+        // spinner for service type it may be of one sided or both sided
+        ArrayAdapter arayAdapterForServiceType = new ArrayAdapter(this, android.R.layout.simple_spinner_item, serviceType);
+        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //Setting the ArrayAdapter data on the Spinner
+        serviceTypeDropDown.setAdapter(arayAdapterForServiceType);
+        // spinner for vehicle type
+        ArrayAdapter arayAdapterForVehicleType = new ArrayAdapter(this, android.R.layout.simple_spinner_item, vehicleType);
+        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //Setting the ArrayAdapter data on the Spinner
+        vehicleDropDown.setAdapter(arayAdapterForVehicleType);
+        //initialize the date object first and set it with blank value
+        setDateSelected();
+    }
+
+    private void setGettedValue() {
+        tvPickupAddress.setText(pickupAddress);
+        tvDropAddress.setText(dropAddress);
+        tvDistanceBetweenLoc.setText(distanceBetweenLoc);
+        tvRideFare.setText(rideFare + "" + R.string.rupees);
+        tvServiceDays.setText(numberOfDays);
+       /* tvVehicleType.setText(vehicleType);
+        tvServiceType.setText(serviceType);*/
+        btnSubmit.setText(getString(R.string.proceed_to_pay) + "" + Float.parseFloat(rideFare));
+    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        intentFilter = IntentFilterCondition.getInstance().callIntentFilter();
+        registerReceiver(internetBroadcastReceiver, intentFilter);
     }
 
 
@@ -164,6 +169,7 @@ public class PackageDetailActivity extends AppCompatActivity implements View.OnC
             default:
                 break;
         }
+
     }
 
     private void storeServiceRequiredDetail() {
@@ -178,8 +184,8 @@ public class PackageDetailActivity extends AppCompatActivity implements View.OnC
                     serviceDetailMap.put("service_days", numberOfDays);
                     serviceDetailMap.put("service_fare", rideFare);
                     serviceDetailMap.put("service_starting_date", startDate);
-                    serviceDetailMap.put("service_type", serviceType);
-                    serviceDetailMap.put("vehicle_type", vehicleType);
+                    /*serviceDetailMap.put("service_type", serviceType);
+                    serviceDetailMap.put("vehicle_type", vehicleType);*/
                     serviceDetailMap.put("going_time", tvGoingTime.getText().toString());
                     serviceDetailMap.put("coming_time", tvComingTime.getText().toString());
                     serviceDetailMap.put("service_created_at_time", Calendar.getInstance().getTime().toString());
@@ -193,7 +199,7 @@ public class PackageDetailActivity extends AppCompatActivity implements View.OnC
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(PackageDetailActivity.this, "" + e, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(DefaultPackageDetail.this, "" + e, Toast.LENGTH_SHORT).show();
                             Log.i(TAG, "onSuccess: " + e);
                         }
                     });
@@ -217,7 +223,7 @@ public class PackageDetailActivity extends AppCompatActivity implements View.OnC
     }
 
     private void sendOrderNumberAndCustomerId(String orderNumber, String customerId) {
-        Toast.makeText(PackageDetailActivity.this, "Data Save Successfully", Toast.LENGTH_SHORT).show();
+        Toast.makeText(DefaultPackageDetail.this, "Data Save Successfully", Toast.LENGTH_SHORT).show();
         startTransaction(orderNumber, customerId);
       /*  Intent intent = new Intent(PackageDetailActivity.this,PaymentTransactionActivity.class);
         intent.putExtra("orderNumber",orderNumber);
@@ -229,11 +235,10 @@ public class PackageDetailActivity extends AppCompatActivity implements View.OnC
     private void startTransaction(String orderNumber, String cstId) {
         orderId = orderNumber;
         customerId = cstId;
-        sendUserDetailTOServerd dl = new sendUserDetailTOServerd();
+        DefaultPackageDetail.sendUserDetailTOServerd dl = new DefaultPackageDetail.sendUserDetailTOServerd();
         dl.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
     }
-
     private String splitDate(String startDate) {
         String[] date = startDate.split("-");
         return date[1] + date[0];
@@ -248,7 +253,13 @@ public class PackageDetailActivity extends AppCompatActivity implements View.OnC
         return rand_six_digit;
     }
 
-
+    private void getDateFromUser() {
+        DatePickerDialog datePickerDialog = new DatePickerDialog(DefaultPackageDetail.this, date, myCalendar.get(Calendar.YEAR),
+                myCalendar.get(Calendar.MONTH),
+                myCalendar.get(Calendar.DAY_OF_MONTH));
+        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+        datePickerDialog.show();
+    }
     private void getGoingTime() {
 
 
@@ -256,7 +267,7 @@ public class PackageDetailActivity extends AppCompatActivity implements View.OnC
 
         int hour = myCalendar.get(Calendar.HOUR_OF_DAY);
         int minute = myCalendar.get(Calendar.MINUTE);
-        mTimePicker = new TimePickerDialog(PackageDetailActivity.this, new TimePickerDialog.OnTimeSetListener() {
+        mTimePicker = new TimePickerDialog(DefaultPackageDetail.this, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
                 if (selectedHour >= 12) {
@@ -278,7 +289,7 @@ public class PackageDetailActivity extends AppCompatActivity implements View.OnC
         // TODO Auto-generated method stub
         int hour = myCalendar.get(Calendar.HOUR_OF_DAY);
         int minute = myCalendar.get(Calendar.MINUTE);
-        mTimePicker = new TimePickerDialog(PackageDetailActivity.this, new TimePickerDialog.OnTimeSetListener() {
+        mTimePicker = new TimePickerDialog(DefaultPackageDetail.this, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
                 if (selectedHour >= 12) {
@@ -294,8 +305,40 @@ public class PackageDetailActivity extends AppCompatActivity implements View.OnC
         mTimePicker.show();
 
     }
+    @Override
+    public void onTransactionResponse(Bundle inResponse) {
 
+    }
 
+    @Override
+    public void networkNotAvailable() {
+
+    }
+
+    @Override
+    public void clientAuthenticationFailed(String inErrorMessage) {
+
+    }
+
+    @Override
+    public void someUIErrorOccurred(String inErrorMessage) {
+
+    }
+
+    @Override
+    public void onErrorLoadingWebPage(int iniErrorCode, String inErrorMessage, String inFailingUrl) {
+
+    }
+
+    @Override
+    public void onBackPressedCancelTransaction() {
+
+    }
+
+    @Override
+    public void onTransactionCancel(String inErrorMessage, Bundle inResponse) {
+
+    }
     //initialize the date object first and set it with blank value
     private void setDateSelected() {
         date = new DatePickerDialog.OnDateSetListener() {
@@ -317,63 +360,6 @@ public class PackageDetailActivity extends AppCompatActivity implements View.OnC
 
         };
     }
-
-    private void getDateFromUser() {
-        DatePickerDialog datePickerDialog = new DatePickerDialog(PackageDetailActivity.this, date, myCalendar.get(Calendar.YEAR),
-                myCalendar.get(Calendar.MONTH),
-                myCalendar.get(Calendar.DAY_OF_MONTH));
-        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
-        datePickerDialog.show();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        unregisterReceiver(internetBroadcastReceiver);
-    }
-
-    // all paytm callback method
-    @Override
-    public void onTransactionResponse(Bundle inResponse) {
-        // if(inResponse.get(0)
-        // RESPCODE=330
-        Toast.makeText(this, getString(R.string.transaction_complete) + inResponse, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void networkNotAvailable() {
-        Toast.makeText(this, getString(R.string.connection_slow), Toast.LENGTH_SHORT).show();
-        Log.i(TAG, "networkNotAvailable: ");
-    }
-
-    @Override
-    public void clientAuthenticationFailed(String inErrorMessage) {
-        Toast.makeText(this, "" + inErrorMessage, Toast.LENGTH_SHORT).show();
-        Log.i(TAG, "clientAuthenticationFailed: ");
-    }
-
-    @Override
-    public void someUIErrorOccurred(String inErrorMessage) {
-        Toast.makeText(this, getString(R.string.webpage_not_load), Toast.LENGTH_SHORT).show();
-        Log.i(TAG, "someUIErrorOccurred: ");
-    }
-
-    @Override
-    public void onErrorLoadingWebPage(int iniErrorCode, String inErrorMessage, String inFailingUrl) {
-        Toast.makeText(this, "" + inErrorMessage, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onBackPressedCancelTransaction() {
-        Toast.makeText(this, getString(R.string.dont_press_back_button), Toast.LENGTH_SHORT).show();
-        Log.i(TAG, "onBackPressedCancelTransaction: ");
-    }
-
-    @Override
-    public void onTransactionCancel(String inErrorMessage, Bundle inResponse) {
-        Toast.makeText(this, "" + inErrorMessage, Toast.LENGTH_SHORT).show();
-    }
-
     // async class for paytmTransaction
     public class sendUserDetailTOServerd extends AsyncTask<ArrayList<String>, Void, String> {
         //private String orderId , mid, custid, amt;
@@ -381,7 +367,7 @@ public class PackageDetailActivity extends AppCompatActivity implements View.OnC
         String verifyUrl = apiConstant.varifyUrl;
         // "https://securegw-stage.paytm.in/theia/paytmCallback?ORDER_ID"+orderId;
         String CHECKSUMHASH = "";
-        private ProgressDialog dialog = new ProgressDialog(PackageDetailActivity.this);
+        private ProgressDialog dialog = new ProgressDialog(DefaultPackageDetail.this);
 
         @Override
         protected void onPreExecute() {
@@ -390,7 +376,7 @@ public class PackageDetailActivity extends AppCompatActivity implements View.OnC
         }
 
         protected String doInBackground(ArrayList<String>... alldata) {
-            JsonParsing jsonParser = new JsonParsing(PackageDetailActivity.this);
+            JsonParsing jsonParser = new JsonParsing(DefaultPackageDetail.this);
             String param =
                     "MID=" + mid +
                             "&ORDER_ID=" + orderId +
@@ -446,9 +432,15 @@ public class PackageDetailActivity extends AppCompatActivity implements View.OnC
             Log.e("checksum ", "param " + paramMap.toString());
             Service.initialize(Order, null);
             // start payment service call here
-            Service.startPaymentTransaction(PackageDetailActivity.this, true, true,
-                    PackageDetailActivity.this);
+            Service.startPaymentTransaction(DefaultPackageDetail.this, true, true,
+                    DefaultPackageDetail.this);
             Log.i(TAG, "onPostExecute: ");
         }
     }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(internetBroadcastReceiver);
+    }
+
 }
