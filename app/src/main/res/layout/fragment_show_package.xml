@@ -117,6 +117,7 @@
                     android:textStyle="bold"
                     />
                 <TextView
+                    android:id="@+id/tv_distance_default_package"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/under_20km"
@@ -127,7 +128,7 @@
 
                     />
             </RelativeLayout>
-            <RelativeLayout
+           <!-- <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:weightSum="2"
@@ -153,11 +154,12 @@
                     android:layout_marginStart="16dp"
 
                     />
-            </RelativeLayout>
+            </RelativeLayout>-->
             <Button
+                android:id="@+id/btn_buy_plan"
                 android:layout_width="@dimen/width_btn_buy"
                 android:layout_height="@dimen/height_btn_buy"
-                android:text="@string/buy_now"
+                android:text="@string/buy_plan"
                 android:layout_gravity="end"
                 android:textColor="@color/white_color"
                 android:background="@drawable/background_button_buy"

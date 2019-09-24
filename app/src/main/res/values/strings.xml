@@ -41,15 +41,15 @@
     <string name="calculator">Calculator</string>
     <string name="edit_profile">Edit Profile</string>
     <string name="logout">Logout</string>
-    <string name="under_20km">under 20km</string>
+    <string name="under_20km">under 20 km</string>
     <string name="_12000">select days first</string>
     <string name="buy_now">Buy Now</string>
     <string name="buy_package">Buy Package</string>
     <string name="enter_pickup_point">Enter pickup point</string>
     <string name="enter_drop_point">Enter drop point</string>
     <string name="address">Address</string>
-    <string name="content_to_show_package">New Gandhi Nagar Ghaziabad</string>
-    <string name="content_from_show_package">New Gandhi Nagar Ghaziabad</string>
+    <string name="content_to_show_package">Hcl Technologies, Tower-2</string>
+    <string name="content_from_show_package">Shipra Suncity, Indirapuram</string>
     <string name="content_from_book_package">New Gandhi Nagar Ghaziabad</string>
     <string name="fullName">Full Name</string>
     <string name="offline">You are Offline</string>
@@ -99,5 +99,6 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
     <string name="check_fare">Check Fare</string>
+    <string name="buy_plan">Buy Plan</string>
 
 </resources>

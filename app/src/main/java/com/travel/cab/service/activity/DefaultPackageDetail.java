@@ -1,8 +1,5 @@
 package com.travel.cab.service.activity;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
@@ -12,9 +9,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -22,6 +21,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.paytm.pgsdk.PaytmOrder;
@@ -46,7 +46,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 
-public class DefaultPackageDetail extends AppCompatActivity implements View.OnClickListener, PaytmPaymentTransactionCallback {
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+public class DefaultPackageDetail extends AppCompatActivity implements View.OnClickListener
+        , AdapterView.OnItemSelectedListener, PaytmPaymentTransactionCallback {
     private static final String TAG = "DefaultPackageDetail";
     private String pickupAddress, dropAddress, distanceBetweenLoc, rideFare, startDate, goingTime, comingTime, numberOfDays;
     private TextView tvPickupAddress, tvDropAddress, tvDistanceBetweenLoc, tvRideFare, tvServiceDays, tvVehicleType, tvStartDate, tvGoingTime, tvComingTime, tvServiceType;
@@ -65,10 +69,13 @@ public class DefaultPackageDetail extends AppCompatActivity implements View.OnCl
     private String customerId;
     private String mobile_number = "7042226632";
     private ApiConstant apiConstant;
-    private Spinner daysDropDown,serviceTypeDropDown,vehicleDropDown;
+    private Spinner daysDropDown, serviceTypeDropDown, vehicleDropDown;
     private String[] days = {"select service days", "1day", "2days", "3days", "4days", "5days"};
     private String[] serviceType = {"select service type", "one sided", "both sided"};
     private String[] vehicleType = {"select vehicle type", "Bike", "Car"};
+    private int numOfDays, typeOfServiceAtPosition, vehicleTypePosition;
+    private LinearLayout llMain;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +85,7 @@ public class DefaultPackageDetail extends AppCompatActivity implements View.OnCl
         setListener();
         setGettedValue();
     }
+
     private void inItId() {
         tvPickupAddress = findViewById(R.id.tv_pickup_point);
         tvDropAddress = findViewById(R.id.tv_drop_point);
@@ -86,9 +94,10 @@ public class DefaultPackageDetail extends AppCompatActivity implements View.OnCl
         tvStartDate = findViewById(R.id.tv_date);
         tvGoingTime = findViewById(R.id.tv_going_timing);
         tvComingTime = findViewById(R.id.tv_coming_timing);
-        daysDropDown = findViewById(R.id.spinner_select_service_days);
-        vehicleDropDown = findViewById(R.id.spinner_select_vehicle_type);
-        serviceTypeDropDown = findViewById(R.id.spinner_select_service_type);
+        daysDropDown = findViewById(R.id.spinner_select_service_days_default);
+        vehicleDropDown = findViewById(R.id.spinner_select_vehicle_type_default);
+        serviceTypeDropDown = findViewById(R.id.spinner_select_service_type_default);
+        llMain = findViewById(R.id.ll_mainLayout);
         btnSubmit = findViewById(R.id.btn_submit);
         myCalendar = Calendar.getInstance();
         internetBroadcastReceiver = new InternetBroadcastReceiver();
@@ -109,11 +118,16 @@ public class DefaultPackageDetail extends AppCompatActivity implements View.OnCl
         // Log.v("HashMapTest", hashMap.get("toLoc"));
 
     }
+
     private void setListener() {
         tvStartDate.setOnClickListener(this);
         tvGoingTime.setOnClickListener(this);
         tvComingTime.setOnClickListener(this);
         btnSubmit.setOnClickListener(this);
+        tvRideFare.setOnClickListener(this);
+        daysDropDown.setOnItemSelectedListener(this);
+        serviceTypeDropDown.setOnItemSelectedListener(this);
+        vehicleDropDown.setOnItemSelectedListener( this);
         // spinner for service required days
         ArrayAdapter aa = new ArrayAdapter(this, android.R.layout.simple_spinner_item, days);
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -137,12 +151,12 @@ public class DefaultPackageDetail extends AppCompatActivity implements View.OnCl
         tvPickupAddress.setText(pickupAddress);
         tvDropAddress.setText(dropAddress);
         tvDistanceBetweenLoc.setText(distanceBetweenLoc);
-        tvRideFare.setText(rideFare + "" + R.string.rupees);
-        tvServiceDays.setText(numberOfDays);
+//        tvRideFare.setText(rideFare + "" + R.string.rupees);
        /* tvVehicleType.setText(vehicleType);
         tvServiceType.setText(serviceType);*/
-        btnSubmit.setText(getString(R.string.proceed_to_pay) + "" + Float.parseFloat(rideFare));
+//        btnSubmit.setText(getString(R.string.proceed_to_pay) + "" + Float.parseFloat(rideFare));
     }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -166,8 +180,78 @@ public class DefaultPackageDetail extends AppCompatActivity implements View.OnCl
             case R.id.btn_submit:
                 storeServiceRequiredDetail();
                 break;
+            case R.id.tv_service_fare:
+                checkValueExistForFareCheck();
+                break;
             default:
                 break;
+        }
+
+    }
+
+    private void checkValueExistForFareCheck() {
+        if (pickupAddress != null
+                && dropAddress != null
+                && distanceBetweenLoc != null) {
+            if (typeOfServiceAtPosition > 0) {
+                if (numOfDays > 0) {
+                    if (vehicleTypePosition > 0) {
+                        float rideFare = calculateFare(distanceBetweenLoc, numOfDays, typeOfServiceAtPosition, vehicleTypePosition);
+                        tvRideFare.setText(String.valueOf(rideFare));
+                    } else {
+                        Toast.makeText(this, getString(R.string.select_vehicle_type), Toast.LENGTH_SHORT).show();
+                    }
+
+
+                } else {
+                    Toast.makeText(this, getString(R.string.select_days), Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(this, getString(R.string.select_service_type), Toast.LENGTH_SHORT).show();
+            }
+
+        } else {
+            Toast.makeText(this, getString(R.string.click_on_buy_package), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // for calculating the fare for both bike and car
+    private float calculateFare(String packageDistance, int numOfDays, int serviceType, int vehicleType) {
+        String separatedUnit[] = packageDistance.split(" ");
+        if (packageDistance.contains("km")) {
+            /*---------- when this scenario will come like (1,900)-----------not work------------*/
+            if (separatedUnit.length <= 3) {
+                float distance = Float.parseFloat(separatedUnit[1]);
+                if (vehicleType == 1) {
+                    // condition for one sided or both sided
+                    if (serviceType == 1) {
+                        return (distance * numOfDays) * 4;
+                    } else {
+                        return (distance * numOfDays) * 4 * 2;
+                    }
+                } else {
+                    // condition for one sided or both sided
+                    if (serviceType == 1) {
+                        return (distance * numOfDays) * 7;
+                    } else {
+                        return (distance * numOfDays) * 7 * 2;
+                    }
+                }
+
+
+            } else {
+
+                Snackbar snackbar = Snackbar
+                        .make(llMain, "Service not available", Snackbar.LENGTH_LONG);
+                snackbar.show();
+
+                return 0;
+            }
+
+        } else if (packageDistance.equals("m")) {
+            return 10;
+        } else {
+            return 0;
         }
 
     }
@@ -239,6 +323,7 @@ public class DefaultPackageDetail extends AppCompatActivity implements View.OnCl
         dl.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
     }
+
     private String splitDate(String startDate) {
         String[] date = startDate.split("-");
         return date[1] + date[0];
@@ -260,6 +345,7 @@ public class DefaultPackageDetail extends AppCompatActivity implements View.OnCl
         datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
         datePickerDialog.show();
     }
+
     private void getGoingTime() {
 
 
@@ -305,6 +391,7 @@ public class DefaultPackageDetail extends AppCompatActivity implements View.OnCl
         mTimePicker.show();
 
     }
+
     @Override
     public void onTransactionResponse(Bundle inResponse) {
 
@@ -339,6 +426,7 @@ public class DefaultPackageDetail extends AppCompatActivity implements View.OnCl
     public void onTransactionCancel(String inErrorMessage, Bundle inResponse) {
 
     }
+
     //initialize the date object first and set it with blank value
     private void setDateSelected() {
         date = new DatePickerDialog.OnDateSetListener() {
@@ -360,6 +448,32 @@ public class DefaultPackageDetail extends AppCompatActivity implements View.OnCl
 
         };
     }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+        if (adapterView.getAdapter().getItem(0).toString().equals("select service type")) {
+            typeOfServiceAtPosition = position;
+        } else if (adapterView.getAdapter().getItem(0).toString().equals("select vehicle type")) {
+            vehicleTypePosition = position;
+        } else {
+            numOfDays = position;
+            // Toast.makeText(getActivity(), days[position], Toast.LENGTH_LONG).show();
+        }
+
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(internetBroadcastReceiver);
+    }
+
     // async class for paytmTransaction
     public class sendUserDetailTOServerd extends AsyncTask<ArrayList<String>, Void, String> {
         //private String orderId , mid, custid, amt;
@@ -436,11 +550,6 @@ public class DefaultPackageDetail extends AppCompatActivity implements View.OnCl
                     DefaultPackageDetail.this);
             Log.i(TAG, "onPostExecute: ");
         }
-    }
-    @Override
-    protected void onStop() {
-        super.onStop();
-        unregisterReceiver(internetBroadcastReceiver);
     }
 
 }
