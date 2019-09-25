@@ -100,5 +100,6 @@
     <string name="action_settings">Settings</string>
     <string name="check_fare">Check Fare</string>
     <string name="buy_plan">Buy Plan</string>
+    <string name="select_fare">Select fare</string>
 
 </resources>

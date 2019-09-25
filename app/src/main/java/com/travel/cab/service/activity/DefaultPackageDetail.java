@@ -84,6 +84,7 @@ public class DefaultPackageDetail extends AppCompatActivity implements View.OnCl
         getValueFromIntent();
         setListener();
         setGettedValue();
+        setUpToStoreValueInDb();
     }
 
     private void inItId() {
@@ -127,7 +128,7 @@ public class DefaultPackageDetail extends AppCompatActivity implements View.OnCl
         tvRideFare.setOnClickListener(this);
         daysDropDown.setOnItemSelectedListener(this);
         serviceTypeDropDown.setOnItemSelectedListener(this);
-        vehicleDropDown.setOnItemSelectedListener( this);
+        vehicleDropDown.setOnItemSelectedListener(this);
         // spinner for service required days
         ArrayAdapter aa = new ArrayAdapter(this, android.R.layout.simple_spinner_item, days);
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -193,25 +194,24 @@ public class DefaultPackageDetail extends AppCompatActivity implements View.OnCl
         if (pickupAddress != null
                 && dropAddress != null
                 && distanceBetweenLoc != null) {
-            if (typeOfServiceAtPosition > 0) {
-                if (numOfDays > 0) {
-                    if (vehicleTypePosition > 0) {
+            if (vehicleTypePosition > 0) {
+                if (typeOfServiceAtPosition > 0) {
+                    if (numOfDays > 0) {
                         float rideFare = calculateFare(distanceBetweenLoc, numOfDays, typeOfServiceAtPosition, vehicleTypePosition);
                         tvRideFare.setText(String.valueOf(rideFare));
+                        btnSubmit.setText("Proceed to pay"+ "" + rideFare + "Rupees");
                     } else {
-                        Toast.makeText(this, getString(R.string.select_vehicle_type), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.select_days), Toast.LENGTH_SHORT).show();
                     }
-
-
                 } else {
-                    Toast.makeText(this, getString(R.string.select_days), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.select_service_type), Toast.LENGTH_SHORT).show();
                 }
+
             } else {
-                Toast.makeText(this, getString(R.string.select_service_type), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.select_vehicle_type), Toast.LENGTH_SHORT).show();
             }
 
-        } else {
-            Toast.makeText(this, getString(R.string.click_on_buy_package), Toast.LENGTH_SHORT).show();
+
         }
     }
 
@@ -256,48 +256,60 @@ public class DefaultPackageDetail extends AppCompatActivity implements View.OnCl
 
     }
 
-    private void storeServiceRequiredDetail() {
-        if (!tvStartDate.getText().toString().equals("")) {
-            if (!tvGoingTime.getText().toString().equals("")) {
-                if (!tvComingTime.getText().toString().equals("")) {
+    private void setUpToStoreValueInDb() {
+        mDatabase = FirebaseDatabase.getInstance();
+        mDatabaseReference = mDatabase.getReference().child("applyForService").child(SharedPreference.getInstance().getUserId());
 
-                    Map<String, String> serviceDetailMap = new HashMap<>();
-                    serviceDetailMap.put("pickup_location", pickupAddress);
-                    serviceDetailMap.put("drop_location", dropAddress);
-                    serviceDetailMap.put("distance_home_office", distanceBetweenLoc);
-                    serviceDetailMap.put("service_days", numberOfDays);
-                    serviceDetailMap.put("service_fare", rideFare);
-                    serviceDetailMap.put("service_starting_date", startDate);
+    }
+
+    private void storeServiceRequiredDetail() {
+        if (!tvRideFare.getText().toString().equals("")) {
+            if (!tvStartDate.getText().toString().equals("")) {
+                if (!tvGoingTime.getText().toString().equals("")) {
+                    if (!tvComingTime.getText().toString().equals("")) {
+
+                        Map<String, String> serviceDetailMap = new HashMap<>();
+                        serviceDetailMap.put("pickup_location", pickupAddress);
+                        serviceDetailMap.put("drop_location", dropAddress);
+                        serviceDetailMap.put("distance_home_office", distanceBetweenLoc);
+                        serviceDetailMap.put("service_days", numberOfDays);
+                        serviceDetailMap.put("service_fare", rideFare);
+                        serviceDetailMap.put("service_starting_date", startDate);
                     /*serviceDetailMap.put("service_type", serviceType);
                     serviceDetailMap.put("vehicle_type", vehicleType);*/
-                    serviceDetailMap.put("going_time", tvGoingTime.getText().toString());
-                    serviceDetailMap.put("coming_time", tvComingTime.getText().toString());
-                    serviceDetailMap.put("service_created_at_time", Calendar.getInstance().getTime().toString());
-                    mDatabaseReference.push().setValue(serviceDetailMap).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            generateOrderNumber(countryCode, startDate);
+                        serviceDetailMap.put("going_time", tvGoingTime.getText().toString());
+                        serviceDetailMap.put("coming_time", tvComingTime.getText().toString());
+                        serviceDetailMap.put("service_created_at_time", Calendar.getInstance().getTime().toString());
+                        mDatabaseReference.push().setValue(serviceDetailMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                generateOrderNumber(countryCode, startDate);
 
-                        }
+                            }
 
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(DefaultPackageDetail.this, "" + e, Toast.LENGTH_SHORT).show();
-                            Log.i(TAG, "onSuccess: " + e);
-                        }
-                    });
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(DefaultPackageDetail.this, "" + e, Toast.LENGTH_SHORT).show();
+                                Log.i(TAG, "onSuccess: " + e);
+                            }
+                        });
 
+                    } else {
+                        Toast.makeText(this, getString(R.string.coming_time), Toast.LENGTH_SHORT).show();
+                    }
                 } else {
-                    Toast.makeText(this, getString(R.string.coming_time), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.going_time), Toast.LENGTH_SHORT).show();
                 }
             } else {
-                Toast.makeText(this, getString(R.string.going_time), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.select_date_field), Toast.LENGTH_SHORT).show();
             }
         } else {
-            Toast.makeText(this, getString(R.string.select_date_field), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.select_fare), Toast.LENGTH_SHORT).show();
+
         }
     }
+
 
     private void generateOrderNumber(String countryCode, String startDate) {
         int sixDigitRandomNumber = getSixDigitRandomNumber();
@@ -553,3 +565,4 @@ public class DefaultPackageDetail extends AppCompatActivity implements View.OnCl
     }
 
 }
+
