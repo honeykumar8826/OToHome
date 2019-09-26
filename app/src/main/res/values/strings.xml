@@ -101,5 +101,6 @@
     <string name="check_fare">Check Fare</string>
     <string name="buy_plan">Buy Plan</string>
     <string name="select_fare">Select fare</string>
+    <string name="my_plans">My Plans</string>
 
 </resources>

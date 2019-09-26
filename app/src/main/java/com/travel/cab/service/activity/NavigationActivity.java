@@ -25,6 +25,7 @@ import com.travel.cab.service.R;
 import com.travel.cab.service.database.MyAppDatabase;
 import com.travel.cab.service.database.User;
 import com.travel.cab.service.fragment.FareCalculatorFragment;
+import com.travel.cab.service.fragment.MyPlanFragment;
 import com.travel.cab.service.fragment.ProfileFragment;
 import com.travel.cab.service.fragment.ShowPackageFragment;
 import com.travel.cab.service.fragment.VIewProfileFragment;
@@ -92,6 +93,14 @@ public class NavigationActivity extends AppCompatActivity
         checkPermission();
 
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        }
     }
 
     private void mainScreenLoad() {
@@ -167,6 +176,7 @@ public class NavigationActivity extends AppCompatActivity
                 if (drawer.isDrawerOpen(GravityCompat.START)) {
                     drawer.closeDrawer(GravityCompat.START);
                 }
+                setBottomNavigationVisibility(1);
                 displaySelectedScreen(R.id.navigation_home);
                 navigation.getMenu().findItem(R.id.navigation_home).setChecked(true);
                 return true;
@@ -174,6 +184,7 @@ public class NavigationActivity extends AppCompatActivity
                 if (drawer.isDrawerOpen(GravityCompat.START)) {
                     drawer.closeDrawer(GravityCompat.START);
                 }
+                setBottomNavigationVisibility(1);
                 displaySelectedScreen(R.id.navigation_fare_calci);
                 navigation.getMenu().findItem(R.id.navigation_fare_calci).setChecked(true);
                 //  setupFareCalculatorFragment();
@@ -182,12 +193,34 @@ public class NavigationActivity extends AppCompatActivity
                 if (drawer.isDrawerOpen(GravityCompat.START)) {
                     drawer.closeDrawer(GravityCompat.START);
                 }
+                setBottomNavigationVisibility(1);
                 displaySelectedScreen(R.id.navigation_profile);
                 navigation.getMenu().findItem(R.id.navigation_profile).setChecked(true);
                 // setupHomeFragment();
                 return true;
+                case R.id.navigation_my_plan:
+                if (drawer.isDrawerOpen(GravityCompat.START)) {
+                    drawer.closeDrawer(GravityCompat.START);
+                }
+                    // set the visibility of the bottom navigation view
+                    setBottomNavigationVisibility(0);
+                displaySelectedScreen(R.id.navigation_my_plan);
+
+                // setupHomeFragment();
+                return true;
         }
         return true;
+    }
+
+    private void setBottomNavigationVisibility(int status) {
+        if(status==0)
+        {
+            navigation.setVisibility(View.GONE);
+        }
+        else
+        {
+            navigation.setVisibility(View.VISIBLE);
+        }
     }
 
     private void displaySelectedScreen(int itemViewId) {
@@ -205,6 +238,11 @@ public class NavigationActivity extends AppCompatActivity
                 break;
             case R.id.view_profile:
                 fragment = new VIewProfileFragment();
+                break;
+                case R.id.navigation_my_plan:
+                    toolbar.setTitle(R.string.my_plans);
+                fragment = new MyPlanFragment();
+
                 break;
 
             default:
