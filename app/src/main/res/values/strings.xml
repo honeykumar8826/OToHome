@@ -60,7 +60,9 @@
     <string name="select_pickup_location">Please select pickup location</string>
     <string name="select_drop_location">Please select drop location</string>
     <string name="pickup_point">Pickup Point</string>
+    <string name="pickup_point_colon">Pickup Point:</string>
     <string name="drop_point">Drop Point</string>
+    <string name="drop_point_colon">Drop Point:</string>
     <string name="distance">Distance</string>
     <string name="fare">Ride Fare</string>
     <string name="service_start_date">Service Starting Date</string>
@@ -102,5 +104,7 @@
     <string name="buy_plan">Buy Plan</string>
     <string name="select_fare">Select fare</string>
     <string name="my_plans">My Plans</string>
+    <string name="pending">Pending</string>
+    <string name="order_number">Order Number</string>
 
 </resources>

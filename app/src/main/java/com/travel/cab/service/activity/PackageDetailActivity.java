@@ -176,7 +176,8 @@ public class PackageDetailActivity extends AppCompatActivity implements View.OnC
                     serviceDetailMap.put("drop_location", dropAddress);
                     serviceDetailMap.put("distance_home_office", distanceBetweenLoc);
                     serviceDetailMap.put("service_days", numberOfDays);
-                    serviceDetailMap.put("service_fare", rideFare);
+                    serviceDetailMap.put("ride_fare", rideFare);
+                    serviceDetailMap.put("order_number", "");
                     serviceDetailMap.put("service_starting_date", startDate);
                     serviceDetailMap.put("service_type", serviceType);
                     serviceDetailMap.put("vehicle_type", vehicleType);

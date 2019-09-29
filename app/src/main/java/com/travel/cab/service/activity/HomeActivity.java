@@ -20,6 +20,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.travel.cab.service.R;
 import com.travel.cab.service.fragment.ProfileFragment;
+import com.travel.cab.service.fragment.TestFragment;
 import com.travel.cab.service.fragment.VIewProfileFragment;
 import com.travel.cab.service.fragment.FareCalculatorFragment;
 import com.travel.cab.service.fragment.ShowPackageFragment;
@@ -68,17 +69,6 @@ public class HomeActivity extends AppCompatActivity implements CheckPosition {
         }
     };
 
-
-    private void setupFareCalculatorFragment() {
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.framLayout_container, new FareCalculatorFragment()).commit();
-    }
-
-    private void setupHomeFragment() {
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.framLayout_container, new ProfileFragment()).commit();
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,8 +76,23 @@ public class HomeActivity extends AppCompatActivity implements CheckPosition {
         inItId();
         //baseActivity.checkPermission(HomeActivity.this);
         checkPermission();
-        displaySelectedScreen(R.id.navigation_home);
+        changeLayout(new TestFragment());
+        //displaySelectedScreen(R.id.navigation_home);
 
+    }
+
+    public void changeLayout(Fragment fragment) {
+        this.fragment = fragment;
+        Bundle args = new Bundle();
+        args.putString("YourKey", "YourValue");
+        fragment.setArguments(args);
+        //replacing the fragment
+        if (fragment != null) {
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.setCustomAnimations(R.anim.slide_up, 0);
+            ft.replace(R.id.framLayout_container, fragment);
+            ft.commit();
+        }
     }
 
     private void displaySelectedScreen(int itemViewId) {
@@ -289,10 +294,14 @@ public class HomeActivity extends AppCompatActivity implements CheckPosition {
 
     @Override
     public void setClickedPosition(String itemPosition) {
-    if(itemPosition !=null)
+     if(itemPosition.equals("hello"))
+     {
+         changeLayout(new ShowPackageFragment());
+     }
+/*    if(itemPosition !=null)
     {
         navigation.getMenu().findItem(R.id.navigation_profile).setChecked(true);
-    }
+    }*/
     }
 }
 

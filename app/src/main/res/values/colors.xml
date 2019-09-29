@@ -3,6 +3,8 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">@color/black_color</color>
     <color name="colorAccent">#D81B60</color>
+    <color name="blue_color">#2278d4</color>
+
     <!-- Screens background color-->
     <color name="bg_screen1">#f64c73</color>
     <color name="bg_screen2">#20d2bb</color>
@@ -32,6 +34,7 @@
         <item>@color/dot_dark_screen1</item>
         <item>@color/dot_dark_screen2</item>
         <item>@color/dot_dark_screen3</item>
+
         <item>@color/dot_dark_screen4</item>
     </array>
     <color name="grey_3">#f7f7f7</color>

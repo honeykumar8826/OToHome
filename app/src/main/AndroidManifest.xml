@@ -41,7 +41,9 @@
             android:name=".activity.HomeActivity"
             android:label="@string/title_activity_home"
             android:screenOrientation="portrait"
-            android:theme="@style/NoActionBar" />
+            android:theme="@style/NoActionBar">
+
+        </activity>
         <activity
             android:name=".activity.SplashActivity"
             android:screenOrientation="portrait"
@@ -49,7 +51,6 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
@@ -76,7 +77,10 @@
             android:theme="@style/NoActionBar" />
         <activity
             android:name=".TestActivity"
-            android:theme="@style/NoActionBar" />
+            android:theme="@style/NoActionBar">
+
+        </activity>
+
         <activity android:name=".activity.paymentGateway.PaymentTransactionActivity" />
         <activity
             android:name=".activity.NavigationActivity"
