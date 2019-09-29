@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="vertical">
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/height_package_card"
+            android:layout_margin="@dimen/spacing_"
+            app:cardCornerRadius="@dimen/spacing_5"
+            android:padding="@dimen/spacing_8"
+            app:cardElevation="@dimen/spacing_15">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_16">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Spark"
+                        android:textColor="@color/black_color"
+                        android:textSize="@dimen/size_20"
+                        android:layout_centerHorizontal="true"
+                        />
+                    <ImageView
+                        android:id="@+id/img_close"
+                        android:layout_width="40dp"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentEnd="true"
+                        android:src="@drawable/ic_close_red"/>
+
+                </RelativeLayout>
+
+                <!--  <TextView
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:text="Spark"
+                      android:textColor="@color/black_color"
+                      android:textSize="@dimen/size_20"
+                      android:gravity="center_horizontal"
+                      android:layout_marginTop="@dimen/spacing_16"
+                      />-->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_16"
+                    android:layout_marginStart="@dimen/spacing_3">
+                    <TextView
+                        android:id="@+id/tv_From"
+                        android:layout_width="@dimen/width_textView_package_detail"
+                        android:layout_height="wrap_content"
+                        android:text="From"
+                        android:layout_weight="1"
+                        android:textColor="@color/black_color"
+                        android:textStyle="bold"
+                        />
+                    <!--     <TextView
+                             android:id="@+id/tv_from"
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:text="New Gandhi Nagar Ghaziabad"
+                             android:gravity="center_horizontal"
+                             android:layout_weight="1"
+                             android:layout_toEndOf="@+id/tv_From"
+                             android:layout_marginStart="@dimen/spacing_16"
+
+                             />-->
+
+                    <TextView
+                        android:id="@+id/tv_book_package_for_data_from"
+                        android:layout_width="190dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/content_from_book_package"
+                        android:gravity="start"
+                        android:layout_toEndOf="@+id/tv_From"
+                        android:layout_marginStart="@dimen/spacing_5"
+                        />
+                    <ImageView
+                        android:id="@+id/img_book_package_more_content_from"
+                        android:layout_width="40dp"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@+id/tv_book_package_for_data_from"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="@dimen/spacing_3"
+                        android:src="@drawable/expandlist"/>
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_16"
+
+                    android:layout_marginStart="@dimen/spacing_3">
+                    <TextView
+                        android:id="@+id/tv_To"
+                        android:layout_width="@dimen/width_textView_package_detail"
+                        android:layout_height="wrap_content"
+                        android:text="To"
+                        android:textStyle="bold"
+                        android:textColor="@color/black_color"
+                        />
+                    <TextView
+                        android:id="@+id/tv_book_package_for_data_to"
+                        android:layout_width="190dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/content_from_book_package"
+                        android:gravity="start"
+                        android:layout_toEndOf="@+id/tv_To"
+                        android:layout_marginStart="@dimen/spacing_5"
+                        />
+                    <ImageView
+                        android:id="@+id/img_book_package_more_content_to"
+                        android:layout_width="40dp"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@+id/tv_book_package_for_data_to"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="@dimen/spacing_3"
+                        android:src="@drawable/expandlist"/>
+                    <!--        <TextView
+                                android:id="@+id/tv_to"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="New Gandhi Nagar Ghaziabad"
+                                android:gravity="center_horizontal"
+                                android:layout_toEndOf="@+id/tv_To"
+                                android:layout_marginStart="@dimen/spacing_16"
+
+                                />-->
+                </RelativeLayout>
+
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </ScrollView>
+</RelativeLayout>
