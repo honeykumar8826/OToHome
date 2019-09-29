@@ -1,6 +1,7 @@
 package com.travel.cab.service.fragment;
 
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -48,6 +49,7 @@ public class MyPlanFragment extends Fragment {
     private List<MyOrderDetailModel> orderDetailModelList;
     private RecyclerView myOrderRecyclerView;
     private MyOrderDetailAdapter myOrderDetailAdapter;
+    private ProgressDialog progressDialog;
     public MyPlanFragment() {
         // Required empty public constructor
     }
@@ -73,6 +75,15 @@ public class MyPlanFragment extends Fragment {
         myOrderRecyclerView = view.findViewById(R.id.rv_my_order) ;
         mDatabase = FirebaseDatabase.getInstance();
         orderDetailModelList = new ArrayList<>();
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setTitle("Please wait");
+        progressDialog.setMessage("Data Loading...");
+       /* mDatabase.getReference().child("applyForService").
+                child(SharedPreference.getInstance().getUserId()).child()
+                child("order_number").setValue("123456");*/
+        /*mDatabase.getReference().child("applyForService"). child(SharedPreference.getInstance().getUserId())
+                .push().getKey();*/
+
         setUpRecyclerView();
 
     }
@@ -90,6 +101,7 @@ public class MyPlanFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
        /* View child = getLayoutInflater().inflate(R.layout.custom_layout_no_data_found, null);
         myFrameLayout.addView(child);*/
+       progressDialog.show();
         try {
             DatabaseReference databaseReference= mDatabase.getReference().child("applyForService").child(SharedPreference.getInstance().getUserId());
             databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -103,7 +115,8 @@ public class MyPlanFragment extends Fragment {
                     else
                     {
                        // progressBar.setVisibility(View.GONE);
-                        Toast.makeText(context, getString(R.string.create_profile), Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
+                        Toast.makeText(context, "Data not found", Toast.LENGTH_SHORT).show();
                     }
                     Log.i(TAG, "onDataChange: ");
                     // This method is called once with the initial value and again
@@ -141,7 +154,7 @@ public class MyPlanFragment extends Fragment {
             orderDetailModelList.add(orderDetailModel);
         }
         myOrderDetailAdapter.notifyDataSetChanged();
-
+        progressDialog.dismiss();
 
     }
 }

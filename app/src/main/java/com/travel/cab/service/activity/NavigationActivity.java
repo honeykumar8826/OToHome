@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -416,6 +417,7 @@ public class NavigationActivity extends AppCompatActivity
             Glide.with(this)
                     .load(image)
                     .centerCrop()
+                    .apply(RequestOptions.circleCropTransform())
                     .into(imgProfile);
             //tvName.setText("Name            :   "+userProfileDetail.getName());
             tvProfileName.setText(name);

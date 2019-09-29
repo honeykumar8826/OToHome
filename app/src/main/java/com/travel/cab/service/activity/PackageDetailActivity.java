@@ -63,6 +63,7 @@ public class PackageDetailActivity extends AppCompatActivity implements View.OnC
     private String customerId;
     private String mobile_number = "7042226632";
     private ApiConstant apiConstant;
+    private String pushKey;
 
 
     @Override
@@ -86,6 +87,10 @@ public class PackageDetailActivity extends AppCompatActivity implements View.OnC
     private void setUpToStoreValueInDb() {
         mDatabase = FirebaseDatabase.getInstance();
         mDatabaseReference = mDatabase.getReference().child("applyForService").child(SharedPreference.getInstance().getUserId());
+        // get the push key
+         pushKey = mDatabase.getReference().child("applyForService"). child(SharedPreference.getInstance().getUserId())
+                .push().getKey();
+        Log.i(TAG, "uploadUserDetail: "+pushKey);
 
     }
 
@@ -184,6 +189,10 @@ public class PackageDetailActivity extends AppCompatActivity implements View.OnC
                     serviceDetailMap.put("going_time", tvGoingTime.getText().toString());
                     serviceDetailMap.put("coming_time", tvComingTime.getText().toString());
                     serviceDetailMap.put("service_created_at_time", Calendar.getInstance().getTime().toString());
+                   /* mDatabase.getReference().child("applyForService").
+                            child(SharedPreference.getInstance().getUserId()).
+                            child(pushKey).child("order_number").setValue(orderId);*/
+
                     mDatabaseReference.push().setValue(serviceDetailMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
@@ -338,6 +347,9 @@ public class PackageDetailActivity extends AppCompatActivity implements View.OnC
     public void onTransactionResponse(Bundle inResponse) {
         // if(inResponse.get(0)
         // RESPCODE=330
+         mDatabase.getReference().child("applyForService").
+                child(SharedPreference.getInstance().getUserId()).
+                child(pushKey).child("order_number").setValue(orderId);
         Toast.makeText(this, getString(R.string.transaction_complete) + inResponse, Toast.LENGTH_SHORT).show();
     }
 

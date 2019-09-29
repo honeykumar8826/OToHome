@@ -18,6 +18,7 @@
         android:layout_height="wrap_content"
         android:focusable="true"
         android:focusableInTouchMode="true"
+        android:padding="@dimen/_4sdp"
         android:orientation="vertical">
         <LinearLayout
             android:layout_width="match_parent"
@@ -389,18 +390,20 @@
                     android:paddingBottom="@dimen/_2sdp"
                     tools:ignore="RtlCompat" />
             </LinearLayout>
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="@dimen/_12sdp"
-                android:background="@color/blue_color"
-                android:layout_marginStart="@dimen/_16sdp"
-                android:layout_marginBottom="@dimen/_3sdp"
-                android:layout_marginEnd="@dimen/_16sdp"
-                />
+
 
         </LinearLayout>
 
     </LinearLayout>
+
     </androidx.cardview.widget.CardView>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:background="@color/grey_10"
+        android:layout_marginStart="@dimen/_16sdp"
+        android:layout_marginBottom="@dimen/_3sdp"
+        android:layout_marginEnd="@dimen/_16sdp"
+        />
 </LinearLayout>
