@@ -25,6 +25,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.travel.cab.service.R;
 import com.travel.cab.service.database.MyAppDatabase;
 import com.travel.cab.service.database.User;
+import com.travel.cab.service.fragment.CouponFragment;
 import com.travel.cab.service.fragment.FareCalculatorFragment;
 import com.travel.cab.service.fragment.MyPlanFragment;
 import com.travel.cab.service.fragment.ProfileFragment;
@@ -209,6 +210,16 @@ public class NavigationActivity extends AppCompatActivity
 
                 // setupHomeFragment();
                 return true;
+                case R.id.navigation_coupon:
+                if (drawer.isDrawerOpen(GravityCompat.START)) {
+                    drawer.closeDrawer(GravityCompat.START);
+                }
+                    // set the visibility of the bottom navigation view
+                    setBottomNavigationVisibility(0);
+                displaySelectedScreen(R.id.navigation_coupon);
+
+                // setupHomeFragment();
+                return true;
         }
         return true;
     }
@@ -243,6 +254,11 @@ public class NavigationActivity extends AppCompatActivity
                 case R.id.navigation_my_plan:
                     toolbar.setTitle(R.string.my_plans);
                 fragment = new MyPlanFragment();
+
+                break;
+                case R.id.navigation_coupon:
+                    toolbar.setTitle(R.string.coupons);
+                fragment = new CouponFragment();
 
                 break;
 

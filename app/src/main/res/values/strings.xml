@@ -106,5 +106,6 @@
     <string name="my_plans">My Plans</string>
     <string name="pending">Pending</string>
     <string name="order_number">Order Number</string>
+    <string name="coupons">Coupons</string>
 
 </resources>
