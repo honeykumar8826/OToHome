@@ -1,6 +1,7 @@
 package com.travel.cab.service.activity;
 
 import android.Manifest;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -25,6 +26,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.travel.cab.service.R;
 import com.travel.cab.service.database.MyAppDatabase;
 import com.travel.cab.service.database.User;
+import com.travel.cab.service.fragment.ContactUsFragment;
 import com.travel.cab.service.fragment.CouponFragment;
 import com.travel.cab.service.fragment.FareCalculatorFragment;
 import com.travel.cab.service.fragment.MyPlanFragment;
@@ -220,6 +222,20 @@ public class NavigationActivity extends AppCompatActivity
 
                 // setupHomeFragment();
                 return true;
+                case R.id.navigation_rate_us:
+                if (drawer.isDrawerOpen(GravityCompat.START)) {
+                    drawer.closeDrawer(GravityCompat.START);
+                }
+                    displaySelectedScreen(R.id.navigation_rate_us);
+                    return true;
+                    case R.id.navigation_contact_us:
+                if (drawer.isDrawerOpen(GravityCompat.START)) {
+                    drawer.closeDrawer(GravityCompat.START);
+                }
+                    displaySelectedScreen(R.id.navigation_contact_us);
+                        // set the visibility of the bottom navigation view
+                        setBottomNavigationVisibility(0);
+                    return true;
         }
         return true;
     }
@@ -259,7 +275,12 @@ public class NavigationActivity extends AppCompatActivity
                 case R.id.navigation_coupon:
                     toolbar.setTitle(R.string.coupons);
                 fragment = new CouponFragment();
-
+                break;
+                case R.id.navigation_rate_us:
+                openForRating();
+                break;
+                case R.id.navigation_contact_us:
+               fragment = new ContactUsFragment();
                 break;
 
             default:
@@ -271,6 +292,22 @@ public class NavigationActivity extends AppCompatActivity
             ft.setCustomAnimations(R.anim.slide_up, 0);
             ft.replace(R.id.framLayout_container, fragment);
             ft.commit();
+        }
+    }
+
+    private void openForRating() {
+        Uri uri = Uri.parse("market://details?id=" + getPackageName());
+        Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+        // To count with Play market backstack, After pressing back button,
+        // to taken back to our application, we need to add following flags to intent.
+        goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
+                Intent.FLAG_ACTIVITY_NEW_DOCUMENT |
+                Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+        try {
+            startActivity(goToMarket);
+        } catch (ActivityNotFoundException e) {
+            startActivity(new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("http://play.google.com/store/apps/details?id=" + getPackageName())));
         }
     }
 

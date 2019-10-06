@@ -21,6 +21,14 @@
             android:icon="@drawable/ic_my_plan"
             android:title="@string/my_plans" />
         <item
+            android:id="@+id/navigation_rate_us"
+            android:icon="@drawable/ic_rate_black"
+            android:title="@string/rate_us" />
+        <item
+            android:id="@+id/navigation_contact_us"
+            android:icon="@drawable/ic_call_black"
+            android:title="@string/contact_us" />
+        <item
             android:id="@+id/navigation_coupon"
             android:icon="@drawable/ic_my_plan"
             android:title="@string/coupons" />

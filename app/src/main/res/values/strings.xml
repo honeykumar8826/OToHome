@@ -107,5 +107,11 @@
     <string name="pending">Pending</string>
     <string name="order_number">Order Number</string>
     <string name="coupons">Coupons</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">Ok</string>
+    <string name="status">Status</string>
+    <string name="transaction_number">Transaction ID:</string>
+    <string name="rate_us">Rate Us</string>
+    <string name="contact_us">Contact Us</string>
 
 </resources>

@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -47,6 +48,7 @@ import java.util.Map;
 import java.util.Random;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class DefaultPackageDetail extends AppCompatActivity implements View.OnClickListener
@@ -75,6 +77,7 @@ public class DefaultPackageDetail extends AppCompatActivity implements View.OnCl
     private String[] vehicleType = {"select vehicle type", "Bike", "Car"};
     private int numOfDays, typeOfServiceAtPosition, vehicleTypePosition;
     private LinearLayout llMain;
+    private String pushKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -280,7 +283,12 @@ public class DefaultPackageDetail extends AppCompatActivity implements View.OnCl
                         serviceDetailMap.put("going_time", tvGoingTime.getText().toString());
                         serviceDetailMap.put("coming_time", tvComingTime.getText().toString());
                         serviceDetailMap.put("service_created_at_time", Calendar.getInstance().getTime().toString());
-                        mDatabaseReference.push().setValue(serviceDetailMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        // get push key
+                         pushKey = mDatabaseReference.push().getKey();
+                        Log.i(TAG, "storeServiceRequiredDetail: "+pushKey);
+                        // default
+                        //mDatabaseReference.push().setValue(serviceDetailMap)
+                        mDatabaseReference.child(pushKey).setValue(serviceDetailMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 generateOrderNumber(countryCode, startDate);
@@ -406,7 +414,44 @@ public class DefaultPackageDetail extends AppCompatActivity implements View.OnCl
 
     @Override
     public void onTransactionResponse(Bundle inResponse) {
+        mDatabase.getReference().child("applyForService").
+                child(SharedPreference.getInstance().getUserId()).
+                child(pushKey).child("order_number").setValue(orderId);
+        String ORDERID = inResponse.getString("ORDERID");
+        String TXNAMOUNT = inResponse.getString("TXNAMOUNT");
+        String RESPCODE = inResponse.getString("RESPCODE");
+        String STATUS = inResponse.getString("STATUS");
+        if(STATUS.equals("TXN_SUCCESS"))
+        {
+            generateDialogForTransactionStatus(ORDERID,TXNAMOUNT,RESPCODE);
+        }
+        else
+        {
+            generateDialogForTransactionStatus(ORDERID,TXNAMOUNT,RESPCODE);
 
+        }
+
+
+    }
+
+    private void generateDialogForTransactionStatus(String orderid, String txnamount, String respcode) {
+        TextView tvTransactionStatus,tvTransactionFare,tvTransactionNumber;
+        Button btnCancel;
+        AlertDialog show;
+        View alertLayout = LayoutInflater.from(this).inflate(R.layout.custom_dialog_transaction_status, null);
+        final AlertDialog.Builder mAlertBuilder = new AlertDialog.Builder(this);
+        tvTransactionFare = alertLayout.findViewById(R.id.tv_transaction_fare);
+        tvTransactionStatus = alertLayout.findViewById(R.id.tv_transaction_status);
+        tvTransactionNumber = alertLayout.findViewById(R.id.tv_transaction_number);
+        btnCancel = alertLayout.findViewById(R.id.btn_cancel);
+        mAlertBuilder.setView(alertLayout);
+        tvTransactionStatus.setText(respcode);
+        tvTransactionFare.setText(txnamount);
+        tvTransactionNumber.setText(orderid);
+        //progressBar.setVisibility(View.GONE);
+        show = mAlertBuilder.show();
+        show.setCancelable(false);
+        btnCancel.setOnClickListener(view -> show.dismiss());
     }
 
     @Override
@@ -436,7 +481,7 @@ public class DefaultPackageDetail extends AppCompatActivity implements View.OnCl
 
     @Override
     public void onTransactionCancel(String inErrorMessage, Bundle inResponse) {
-
+        Log.i(TAG, "onTransactionCancel: "+inResponse);
     }
 
     //initialize the date object first and set it with blank value
