@@ -40,7 +40,7 @@ public class MyOrderDetailAdapter extends RecyclerView.Adapter<MyOrderDetailAdap
         viewHolder.tvServiceDays.setText(myOrderDetailModel.getService_days());
         viewHolder.tvServiceType.setText(myOrderDetailModel.getService_type());
         viewHolder.tvVehicleType.setText(myOrderDetailModel.getVehicle_type());
-        viewHolder.tvRideFare.setText(myOrderDetailModel.getRide_fare());
+        viewHolder.tvRideFare.setText(myOrderDetailModel.getService_fare());
         viewHolder.tvServiceStartDate.setText(myOrderDetailModel.getService_starting_date());
         viewHolder.tvGoingTime.setText(myOrderDetailModel.getGoing_time());
         viewHolder.tvComingTime.setText(myOrderDetailModel.getComing_time());
@@ -48,9 +48,6 @@ public class MyOrderDetailAdapter extends RecyclerView.Adapter<MyOrderDetailAdap
         viewHolder.tvOrderNumber.setText(myOrderDetailModel.getOrder_number());
         else
             viewHolder.tvOrderNumber.setText("pending");
-
-
-
     }
 
     @Override

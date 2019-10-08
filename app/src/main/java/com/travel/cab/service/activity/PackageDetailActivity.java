@@ -8,9 +8,14 @@ import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -42,12 +47,15 @@ import java.util.Map;
 import java.util.Random;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class PackageDetailActivity extends AppCompatActivity implements View.OnClickListener, PaytmPaymentTransactionCallback {
     private static final String TAG = "PackageDetailActivity";
-    private String pickupAddress, dropAddress, distanceBetweenLoc, rideFare, serviceType, vehicleType, startDate, goingTime, comingTime, numberOfDays;
-    private TextView tvPickupAddress, tvDropAddress, tvDistanceBetweenLoc, tvRideFare, tvServiceDays, tvVehicleType, tvStartDate, tvGoingTime, tvComingTime, tvServiceType;
+    private String pickupAddress, dropAddress, distanceBetweenLoc, rideFare, serviceType, vehicleType,
+            startDate, goingTime, comingTime, numberOfDays, appliedCoupon;
+    private TextView tvPickupAddress, tvDropAddress, tvDistanceBetweenLoc, tvRideFare, tvServiceDays,
+            tvVehicleType, tvStartDate, tvGoingTime, tvComingTime, tvServiceType, tvCoupon;
     private Calendar myCalendar;
     private DatePickerDialog.OnDateSetListener date;
     private TimePickerDialog mTimePicker;
@@ -87,10 +95,10 @@ public class PackageDetailActivity extends AppCompatActivity implements View.OnC
     private void setUpToStoreValueInDb() {
         mDatabase = FirebaseDatabase.getInstance();
         mDatabaseReference = mDatabase.getReference().child("applyForService").child(SharedPreference.getInstance().getUserId());
-        // get the push key
+       /* // get the push key
          pushKey = mDatabase.getReference().child("applyForService"). child(SharedPreference.getInstance().getUserId())
                 .push().getKey();
-        Log.i(TAG, "uploadUserDetail: "+pushKey);
+        Log.i(TAG, "uploadUserDetail: "+pushKey);*/
 
     }
 
@@ -98,6 +106,7 @@ public class PackageDetailActivity extends AppCompatActivity implements View.OnC
         tvStartDate.setOnClickListener(this);
         tvGoingTime.setOnClickListener(this);
         tvComingTime.setOnClickListener(this);
+        tvCoupon.setOnClickListener(this);
         btnSubmit.setOnClickListener(this);
         //initialize the date object first and set it with blank value
         setDateSelected();
@@ -125,6 +134,7 @@ public class PackageDetailActivity extends AppCompatActivity implements View.OnC
         tvServiceDays = findViewById(R.id.tv_service_days);
         tvVehicleType = findViewById(R.id.tv_vehicle_type);
         tvServiceType = findViewById(R.id.tv_service_type);
+        tvCoupon = findViewById(R.id.tv_coupon);
         btnSubmit = findViewById(R.id.btn_submit);
         myCalendar = Calendar.getInstance();
         internetBroadcastReceiver = new InternetBroadcastReceiver();
@@ -166,9 +176,43 @@ public class PackageDetailActivity extends AppCompatActivity implements View.OnC
             case R.id.btn_submit:
                 storeServiceRequiredDetail();
                 break;
+            case R.id.tv_coupon:
+                dialogForCouponApply();
+                break;
             default:
                 break;
         }
+    }
+
+    private void dialogForCouponApply() {
+        EditText etApplyCode;
+        Button btnCancel, btnApply;
+        AlertDialog show;
+        View alertLayout = LayoutInflater.from(this).inflate(R.layout.custom_dialog_for_apply_coupon, null);
+        final AlertDialog.Builder mAlertBuilder = new AlertDialog.Builder(this);
+        etApplyCode = alertLayout.findViewById(R.id.et_coupon_code);
+        btnCancel = alertLayout.findViewById(R.id.btn_cancel);
+        btnApply = alertLayout.findViewById(R.id.btn_apply);
+        mAlertBuilder.setView(alertLayout);
+        //progressBar.setVisibility(View.GONE);
+        show = mAlertBuilder.show();
+        show.setCancelable(false);
+        Window window = show.getWindow();
+        WindowManager.LayoutParams wlp = window.getAttributes();
+
+        wlp.gravity = Gravity.BOTTOM;
+        wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+        window.setAttributes(wlp);
+
+        btnApply.setOnClickListener(view -> {
+            appliedCoupon = etApplyCode.getText().toString();
+            if (appliedCoupon != null && !appliedCoupon.equals("")) {
+
+            } else {
+                Toast.makeText(this, getString(R.string.enter_coupon), Toast.LENGTH_SHORT).show();
+            }
+        });
+        btnCancel.setOnClickListener(view -> show.dismiss());
     }
 
     private void storeServiceRequiredDetail() {
@@ -181,7 +225,7 @@ public class PackageDetailActivity extends AppCompatActivity implements View.OnC
                     serviceDetailMap.put("drop_location", dropAddress);
                     serviceDetailMap.put("distance_home_office", distanceBetweenLoc);
                     serviceDetailMap.put("service_days", numberOfDays);
-                    serviceDetailMap.put("ride_fare", rideFare);
+                    serviceDetailMap.put("service_fare", rideFare);
                     serviceDetailMap.put("order_number", "");
                     serviceDetailMap.put("service_starting_date", startDate);
                     serviceDetailMap.put("service_type", serviceType);
@@ -192,8 +236,13 @@ public class PackageDetailActivity extends AppCompatActivity implements View.OnC
                    /* mDatabase.getReference().child("applyForService").
                             child(SharedPreference.getInstance().getUserId()).
                             child(pushKey).child("order_number").setValue(orderId);*/
+                    // get push key
+                    pushKey = mDatabaseReference.push().getKey();
+                    Log.i(TAG, "storeServiceRequiredDetail: " + pushKey);
+                    // default
+                    //mDatabaseReference.push().setValue(serviceDetailMap)
 
-                    mDatabaseReference.push().setValue(serviceDetailMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    mDatabaseReference.child(pushKey).setValue(serviceDetailMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
                             generateOrderNumber(countryCode, startDate);
@@ -239,7 +288,7 @@ public class PackageDetailActivity extends AppCompatActivity implements View.OnC
     private void startTransaction(String orderNumber, String cstId) {
         orderId = orderNumber;
         customerId = cstId;
-        sendUserDetailTOServerd dl = new sendUserDetailTOServerd();
+        sendUserDetailTOServer dl = new sendUserDetailTOServer();
         dl.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
     }
@@ -345,9 +394,7 @@ public class PackageDetailActivity extends AppCompatActivity implements View.OnC
     // all paytm callback method
     @Override
     public void onTransactionResponse(Bundle inResponse) {
-        // if(inResponse.get(0)
-        // RESPCODE=330
-         mDatabase.getReference().child("applyForService").
+        mDatabase.getReference().child("applyForService").
                 child(SharedPreference.getInstance().getUserId()).
                 child(pushKey).child("order_number").setValue(orderId);
         Toast.makeText(this, getString(R.string.transaction_complete) + inResponse, Toast.LENGTH_SHORT).show();
@@ -388,7 +435,7 @@ public class PackageDetailActivity extends AppCompatActivity implements View.OnC
     }
 
     // async class for paytmTransaction
-    public class sendUserDetailTOServerd extends AsyncTask<ArrayList<String>, Void, String> {
+    public class sendUserDetailTOServer extends AsyncTask<ArrayList<String>, Void, String> {
         //private String orderId , mid, custid, amt;
         String url = apiConstant.url;
         String verifyUrl = apiConstant.varifyUrl;

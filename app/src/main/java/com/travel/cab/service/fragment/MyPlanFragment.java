@@ -150,7 +150,7 @@ public class MyPlanFragment extends Fragment {
             orderDetailModel.setService_days(orderDetailModel.getService_days());
             orderDetailModel.setService_type(orderDetailModel.getService_type());
             orderDetailModel.setVehicle_type(orderDetailModel.getVehicle_type());
-            orderDetailModel.setRide_fare(orderDetailModel.getRide_fare());
+            orderDetailModel.setService_fare(orderDetailModel.getService_fare());
             orderDetailModelList.add(orderDetailModel);
         }
         myOrderDetailAdapter.notifyDataSetChanged();

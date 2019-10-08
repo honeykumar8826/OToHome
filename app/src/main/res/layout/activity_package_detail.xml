@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     tools:context=".activity.PackageDetailActivity"
     android:orientation="vertical">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -14,18 +15,18 @@
             android:id="@+id/nested_scroll_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_above="@+id/btn_submit"
+            android:layout_marginBottom="@dimen/_2sdp"
             android:background="#ffffff"
             android:clipToPadding="false"
-            android:scrollingCache="true"
-            android:layout_above="@+id/btn_submit"
-            android:layout_marginBottom="@dimen/_2sdp">
+            android:scrollingCache="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="#BDBDBD"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
-                android:background="#BDBDBD"
                 android:orientation="vertical">
 
                 <ImageView
@@ -62,11 +63,11 @@
                         android:ems="10"
                         android:gravity="center_vertical"
                         android:paddingStart="20dp"
+                        android:paddingTop="@dimen/_6sdp"
+                        android:paddingBottom="@dimen/_6sdp"
                         android:text="@string/pickup_address"
                         android:textColor="#000000"
                         android:textColorHint="#808080"
-                        android:paddingTop="@dimen/_6sdp"
-                        android:paddingBottom="@dimen/_6sdp"
                         tools:ignore="RtlCompat" />
 
                 </LinearLayout>
@@ -96,11 +97,11 @@
                         android:ems="10"
                         android:gravity="center_vertical"
                         android:paddingStart="20dp"
+                        android:paddingTop="@dimen/_6sdp"
+                        android:paddingBottom="@dimen/_6sdp"
                         android:text="Drop Address"
                         android:textColor="#000000"
                         android:textColorHint="#808080"
-                        android:paddingTop="@dimen/_6sdp"
-                        android:paddingBottom="@dimen/_6sdp"
                         tools:ignore="RtlCompat" />
 
                 </LinearLayout>
@@ -166,6 +167,7 @@
                         tools:ignore="RtlCompat" />
 
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -196,6 +198,7 @@
                         tools:ignore="RtlCompat" />
 
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -226,6 +229,7 @@
                         tools:ignore="RtlCompat" />
 
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -280,8 +284,8 @@
                         android:background="@drawable/background_package_detail_view"
                         android:ems="10"
                         android:gravity="center_vertical"
-                        android:paddingStart="20dp"
                         android:hint="@string/select_service_starting_date"
+                        android:paddingStart="20dp"
                         android:textColor="#000000"
                         android:textColorHint="#808080"
                         tools:ignore="RtlCompat" />
@@ -318,8 +322,8 @@
                             android:background="@drawable/background_package_detail_view"
                             android:ems="10"
                             android:gravity="center_vertical"
-                            android:paddingStart="10dp"
                             android:hint="@string/select_going_timing"
+                            android:paddingStart="10dp"
                             android:textColor="#000000"
                             android:textColorHint="#808080"
                             tools:ignore="RtlCompat" />
@@ -335,8 +339,8 @@
                             android:background="@drawable/background_package_detail_view"
                             android:ems="10"
                             android:gravity="center_vertical"
-                            android:paddingStart="10dp"
                             android:hint="@string/select_coming_time"
+                            android:paddingStart="10dp"
                             android:textColor="#000000"
                             android:textColorHint="#808080"
                             tools:ignore="RtlCompat" />
@@ -344,25 +348,54 @@
 
 
                 </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_12sdp"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="@dimen/_12sdp">
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_20sdp"
+                        android:text="@string/coupon"
+                        android:textColor="#706e6b" />
 
+                    <TextView
+                        android:id="@+id/tv_coupon"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_30sdp"
+                        android:layout_marginStart="@dimen/_20sdp"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:layout_marginEnd="@dimen/_20sdp"
+                        android:background="@drawable/background_package_detail_view"
+                        android:ems="10"
+                        android:gravity="center_vertical"
+                        android:hint="@string/apply_coupon"
+                        android:paddingStart="20dp"
+                        android:textColor="#000000"
+                        android:textColorHint="#808080"
+                        tools:ignore="RtlCompat" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
         </ScrollView>
 
 
-            <Button
-                android:id="@+id/btn_submit"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:background="@color/black_color"
-                android:text="@string/proceed_to_pay"
-                android:textAllCaps="false"
-                android:textColor="@color/white_color"
-                android:textSize="@dimen/_14ssp" />
-        </RelativeLayout>
+        <Button
+            android:id="@+id/btn_submit"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:background="@color/black_color"
+            android:text="@string/proceed_to_pay"
+            android:textAllCaps="false"
+            android:textColor="@color/white_color"
+            android:textSize="@dimen/_14ssp" />
+    </RelativeLayout>
 
 </LinearLayout>

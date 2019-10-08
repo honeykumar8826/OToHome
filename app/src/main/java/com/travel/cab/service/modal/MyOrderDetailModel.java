@@ -7,6 +7,23 @@ public class MyOrderDetailModel {
     private String vehicle_type;
     private String service_type;
     private String service_days;
+    private String service_starting_date;
+    private String coming_time;
+    private String going_time;
+    private String order_number;
+    private String service_fare;
+
+    public MyOrderDetailModel() {
+
+    }
+
+    public String getService_fare() {
+        return service_fare;
+    }
+
+    public void setService_fare(String service_fare) {
+        this.service_fare = service_fare;
+    }
 
     public String getService_starting_date() {
         return service_starting_date;
@@ -16,25 +33,6 @@ public class MyOrderDetailModel {
         this.service_starting_date = service_starting_date;
     }
 
-    private String service_starting_date;
-    private String coming_time;
-    private String going_time;
-    private String order_number;
-
-
-    public String getRide_fare() {
-        return ride_fare;
-    }
-
-    public void setRide_fare(String ride_fare) {
-        this.ride_fare = ride_fare;
-    }
-
-    private String ride_fare;
-
-    public MyOrderDetailModel() {
-
-    }
 
     public String getOrder_number() {
         return order_number;

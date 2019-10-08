@@ -8,12 +8,16 @@ import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -54,13 +58,14 @@ import androidx.appcompat.app.AppCompatActivity;
 public class DefaultPackageDetail extends AppCompatActivity implements View.OnClickListener
         , AdapterView.OnItemSelectedListener, PaytmPaymentTransactionCallback {
     private static final String TAG = "DefaultPackageDetail";
-    private String pickupAddress, dropAddress, distanceBetweenLoc, rideFare, startDate, goingTime, comingTime, numberOfDays;
-    private TextView tvPickupAddress, tvDropAddress, tvDistanceBetweenLoc, tvRideFare, tvServiceDays, tvVehicleType, tvStartDate, tvGoingTime, tvComingTime, tvServiceType;
+    private String pickupAddress, dropAddress, distanceBetweenLoc, rideAmount, startDate, appliedCoupon, goingTime, comingTime;
+    private TextView tvPickupAddress, tvDropAddress, tvDistanceBetweenLoc, tvRideFare, tvServiceDays, tvVehicleType,
+            tvStartDate, tvGoingTime, tvComingTime, tvServiceType, tvCoupon;
     private Calendar myCalendar;
     private DatePickerDialog.OnDateSetListener date;
     private TimePickerDialog mTimePicker;
     private FirebaseDatabase mDatabase;
-    private DatabaseReference mDatabaseReference;
+    private DatabaseReference mDatabaseReference, mDatabaseReferenceForCoupon;
     private Button btnSubmit;
     private InternetBroadcastReceiver internetBroadcastReceiver;
     private IntentFilter intentFilter;
@@ -98,6 +103,7 @@ public class DefaultPackageDetail extends AppCompatActivity implements View.OnCl
         tvStartDate = findViewById(R.id.tv_date);
         tvGoingTime = findViewById(R.id.tv_going_timing);
         tvComingTime = findViewById(R.id.tv_coming_timing);
+        tvCoupon = findViewById(R.id.tv_coupon_default);
         daysDropDown = findViewById(R.id.spinner_select_service_days_default);
         vehicleDropDown = findViewById(R.id.spinner_select_vehicle_type_default);
         serviceTypeDropDown = findViewById(R.id.spinner_select_service_type_default);
@@ -127,6 +133,7 @@ public class DefaultPackageDetail extends AppCompatActivity implements View.OnCl
         tvStartDate.setOnClickListener(this);
         tvGoingTime.setOnClickListener(this);
         tvComingTime.setOnClickListener(this);
+        tvCoupon.setOnClickListener(this);
         btnSubmit.setOnClickListener(this);
         tvRideFare.setOnClickListener(this);
         daysDropDown.setOnItemSelectedListener(this);
@@ -187,10 +194,64 @@ public class DefaultPackageDetail extends AppCompatActivity implements View.OnCl
             case R.id.tv_service_fare:
                 checkValueExistForFareCheck();
                 break;
+            case R.id.tv_coupon_default:
+                dialogForCouponApply();
+                break;
             default:
                 break;
         }
 
+    }
+
+    private void dialogForCouponApply() {
+        EditText etApplyCode;
+        Button btnCancel, btnApply;
+        AlertDialog show;
+        View alertLayout = LayoutInflater.from(this).inflate(R.layout.custom_dialog_for_apply_coupon, null);
+        final AlertDialog.Builder mAlertBuilder = new AlertDialog.Builder(this);
+        etApplyCode = alertLayout.findViewById(R.id.et_coupon_code);
+        btnCancel = alertLayout.findViewById(R.id.btn_cancel);
+        btnApply = alertLayout.findViewById(R.id.btn_apply);
+        mAlertBuilder.setView(alertLayout);
+        //progressBar.setVisibility(View.GONE);
+        show = mAlertBuilder.show();
+        show.setCancelable(false);
+        Window window = show.getWindow();
+        WindowManager.LayoutParams wlp = window.getAttributes();
+
+        wlp.gravity = Gravity.BOTTOM;
+        wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+        window.setAttributes(wlp);
+
+        btnApply.setOnClickListener(view -> {
+            appliedCoupon = etApplyCode.getText().toString();
+            if (!rideAmount.equals("") && rideAmount != null) {
+                if (appliedCoupon != null && !appliedCoupon.equals("")) {
+                    Map<String, String> couponMap = new HashMap<>();
+                    couponMap.put("coupon_code", appliedCoupon);
+                    mDatabaseReferenceForCoupon.push().setValue(couponMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            show.dismiss();
+                            Toast.makeText(DefaultPackageDetail.this, "Coupon Applied Successfully", Toast.LENGTH_SHORT).show();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+
+                        }
+                    });
+                } else {
+
+                    Toast.makeText(this, getString(R.string.enter_coupon), Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                show.dismiss();
+                Toast.makeText(this, "Select fare first", Toast.LENGTH_SHORT).show();
+            }
+
+        });
+        btnCancel.setOnClickListener(view -> show.dismiss());
     }
 
     private void checkValueExistForFareCheck() {
@@ -202,7 +263,8 @@ public class DefaultPackageDetail extends AppCompatActivity implements View.OnCl
                     if (numOfDays > 0) {
                         float rideFare = calculateFare(distanceBetweenLoc, numOfDays, typeOfServiceAtPosition, vehicleTypePosition);
                         tvRideFare.setText(String.valueOf(rideFare));
-                        btnSubmit.setText("Proceed to pay"+ "" + rideFare + "Rupees");
+                        rideAmount = String.valueOf(rideFare);
+                        btnSubmit.setText("Proceed to pay" + "" + rideFare + "Rupees");
                     } else {
                         Toast.makeText(this, getString(R.string.select_days), Toast.LENGTH_SHORT).show();
                     }
@@ -262,6 +324,8 @@ public class DefaultPackageDetail extends AppCompatActivity implements View.OnCl
     private void setUpToStoreValueInDb() {
         mDatabase = FirebaseDatabase.getInstance();
         mDatabaseReference = mDatabase.getReference().child("applyForService").child(SharedPreference.getInstance().getUserId());
+        mDatabaseReferenceForCoupon = mDatabase.getReference().child("appliedCoupon").child(SharedPreference.getInstance().getUserId());
+
 
     }
 
@@ -275,17 +339,18 @@ public class DefaultPackageDetail extends AppCompatActivity implements View.OnCl
                         serviceDetailMap.put("pickup_location", pickupAddress);
                         serviceDetailMap.put("drop_location", dropAddress);
                         serviceDetailMap.put("distance_home_office", distanceBetweenLoc);
-                        serviceDetailMap.put("service_days", numberOfDays);
-                        serviceDetailMap.put("service_fare", rideFare);
+                        serviceDetailMap.put("service_days", days[numOfDays]);
+                        serviceDetailMap.put("service_fare", rideAmount);
                         serviceDetailMap.put("service_starting_date", startDate);
-                    /*serviceDetailMap.put("service_type", serviceType);
-                    serviceDetailMap.put("vehicle_type", vehicleType);*/
+                        serviceDetailMap.put("service_type", serviceType[typeOfServiceAtPosition]);
+                        serviceDetailMap.put("vehicle_type", vehicleType[vehicleTypePosition]);
                         serviceDetailMap.put("going_time", tvGoingTime.getText().toString());
                         serviceDetailMap.put("coming_time", tvComingTime.getText().toString());
+                        serviceDetailMap.put("order_number", "");
                         serviceDetailMap.put("service_created_at_time", Calendar.getInstance().getTime().toString());
                         // get push key
-                         pushKey = mDatabaseReference.push().getKey();
-                        Log.i(TAG, "storeServiceRequiredDetail: "+pushKey);
+                        pushKey = mDatabaseReference.push().getKey();
+                        Log.i(TAG, "storeServiceRequiredDetail: " + pushKey);
                         // default
                         //mDatabaseReference.push().setValue(serviceDetailMap)
                         mDatabaseReference.child(pushKey).setValue(serviceDetailMap).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -339,7 +404,7 @@ public class DefaultPackageDetail extends AppCompatActivity implements View.OnCl
     private void startTransaction(String orderNumber, String cstId) {
         orderId = orderNumber;
         customerId = cstId;
-        DefaultPackageDetail.sendUserDetailTOServerd dl = new DefaultPackageDetail.sendUserDetailTOServerd();
+        sendUserDetailTOServer dl = new sendUserDetailTOServer();
         dl.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
     }
@@ -421,13 +486,10 @@ public class DefaultPackageDetail extends AppCompatActivity implements View.OnCl
         String TXNAMOUNT = inResponse.getString("TXNAMOUNT");
         String RESPCODE = inResponse.getString("RESPCODE");
         String STATUS = inResponse.getString("STATUS");
-        if(STATUS.equals("TXN_SUCCESS"))
-        {
-            generateDialogForTransactionStatus(ORDERID,TXNAMOUNT,RESPCODE);
-        }
-        else
-        {
-            generateDialogForTransactionStatus(ORDERID,TXNAMOUNT,RESPCODE);
+        if (STATUS.equals("TXN_SUCCESS")) {
+            generateDialogForTransactionStatus(ORDERID, TXNAMOUNT, RESPCODE);
+        } else {
+            generateDialogForTransactionStatus(ORDERID, TXNAMOUNT, RESPCODE);
 
         }
 
@@ -435,7 +497,7 @@ public class DefaultPackageDetail extends AppCompatActivity implements View.OnCl
     }
 
     private void generateDialogForTransactionStatus(String orderid, String txnamount, String respcode) {
-        TextView tvTransactionStatus,tvTransactionFare,tvTransactionNumber;
+        TextView tvTransactionStatus, tvTransactionFare, tvTransactionNumber;
         Button btnCancel;
         AlertDialog show;
         View alertLayout = LayoutInflater.from(this).inflate(R.layout.custom_dialog_transaction_status, null);
@@ -481,7 +543,7 @@ public class DefaultPackageDetail extends AppCompatActivity implements View.OnCl
 
     @Override
     public void onTransactionCancel(String inErrorMessage, Bundle inResponse) {
-        Log.i(TAG, "onTransactionCancel: "+inResponse);
+        Log.i(TAG, "onTransactionCancel: " + inResponse);
     }
 
     //initialize the date object first and set it with blank value
@@ -532,7 +594,7 @@ public class DefaultPackageDetail extends AppCompatActivity implements View.OnCl
     }
 
     // async class for paytmTransaction
-    public class sendUserDetailTOServerd extends AsyncTask<ArrayList<String>, Void, String> {
+    public class sendUserDetailTOServer extends AsyncTask<ArrayList<String>, Void, String> {
         //private String orderId , mid, custid, amt;
         String url = apiConstant.url;
         String verifyUrl = apiConstant.varifyUrl;

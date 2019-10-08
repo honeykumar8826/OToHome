@@ -341,7 +341,37 @@ android:orientation="vertical"
                         tools:ignore="RtlCompat" />
                 </LinearLayout>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_12sdp"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="@dimen/_12sdp">
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_20sdp"
+                        android:text="@string/coupon"
+                        android:textColor="#706e6b" />
+
+                    <TextView
+                        android:id="@+id/tv_coupon_default"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_30sdp"
+                        android:layout_marginStart="@dimen/_20sdp"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:layout_marginEnd="@dimen/_20sdp"
+                        android:background="@drawable/background_package_detail_view"
+                        android:ems="10"
+                        android:gravity="center_vertical"
+                        android:hint="@string/apply_coupon"
+                        android:paddingStart="20dp"
+                        android:textColor="#000000"
+                        android:textColorHint="#808080"
+                        tools:ignore="RtlCompat" />
+
+                </LinearLayout>
             </LinearLayout>
 
 

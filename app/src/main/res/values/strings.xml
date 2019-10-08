@@ -113,5 +113,10 @@
     <string name="transaction_number">Transaction ID:</string>
     <string name="rate_us">Rate Us</string>
     <string name="contact_us">Contact Us</string>
+    <string name="apply_coupon">Apply Coupon</string>
+    <string name="coupon">Coupon</string>
+    <string name="apply">Apply</string>
+    <string name="enter_coupon_code">Enter Coupon Code</string>
+    <string name="enter_coupon">Enter coupon code</string>
 
 </resources>
