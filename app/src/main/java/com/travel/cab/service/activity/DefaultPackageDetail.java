@@ -27,8 +27,11 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.paytm.pgsdk.PaytmOrder;
 import com.paytm.pgsdk.PaytmPGService;
 import com.paytm.pgsdk.PaytmPaymentTransactionCallback;
@@ -36,6 +39,7 @@ import com.travel.cab.service.BuildConfig;
 import com.travel.cab.service.JsonParsing;
 import com.travel.cab.service.R;
 import com.travel.cab.service.broadcast.InternetBroadcastReceiver;
+import com.travel.cab.service.modal.AppliedCouponModel;
 import com.travel.cab.service.network.ApiConstant;
 import com.travel.cab.service.ui.IntentFilterCondition;
 import com.travel.cab.service.utils.preference.SharedPreference;
@@ -47,6 +51,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
@@ -58,7 +63,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class DefaultPackageDetail extends AppCompatActivity implements View.OnClickListener
         , AdapterView.OnItemSelectedListener, PaytmPaymentTransactionCallback {
     private static final String TAG = "DefaultPackageDetail";
-    private String pickupAddress, dropAddress, distanceBetweenLoc, rideAmount, startDate, appliedCoupon, goingTime, comingTime;
+    private String pickupAddress, dropAddress, distanceBetweenLoc, rideAmount = "", startDate, appliedCoupon, goingTime, comingTime;
     private TextView tvPickupAddress, tvDropAddress, tvDistanceBetweenLoc, tvRideFare, tvServiceDays, tvVehicleType,
             tvStartDate, tvGoingTime, tvComingTime, tvServiceType, tvCoupon;
     private Calendar myCalendar;
@@ -227,20 +232,127 @@ public class DefaultPackageDetail extends AppCompatActivity implements View.OnCl
             appliedCoupon = etApplyCode.getText().toString();
             if (!rideAmount.equals("") && rideAmount != null) {
                 if (appliedCoupon != null && !appliedCoupon.equals("")) {
-                    Map<String, String> couponMap = new HashMap<>();
-                    couponMap.put("coupon_code", appliedCoupon);
-                    mDatabaseReferenceForCoupon.push().setValue(couponMap).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            show.dismiss();
-                            Toast.makeText(DefaultPackageDetail.this, "Coupon Applied Successfully", Toast.LENGTH_SHORT).show();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
+                    if (appliedCoupon.equals("FIRST50") || appliedCoupon.equals("FIRST10")) {
+                        // getting all values from the database
+                        List<AppliedCouponModel> couponList = new ArrayList<>();
+                        mDatabase.getReference().addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                if (dataSnapshot.hasChild("appliedCoupon")) {
+                                    mDatabaseReferenceForCoupon.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            Log.i(TAG, "onDataChange: " + dataSnapshot);
+                                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
 
-                        }
-                    });
+                                                AppliedCouponModel appliedCouponModel = ds.getValue(AppliedCouponModel.class);
+                                                appliedCouponModel.setCoupon_code(appliedCouponModel.getCoupon_code());
+                                                int coupon_count = Integer.parseInt(appliedCouponModel.getCoupon_count()) + 1;
+                                                appliedCouponModel.setCoupon_count(String.valueOf(coupon_count));
+                                                appliedCouponModel.setPush_key_coupon(appliedCouponModel.getPush_key_coupon());
+                                                couponList.add(appliedCouponModel);
+                                            }
+                                            updateCouponCount(couponList);
+                                            show.dismiss();
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                                            Log.i(TAG, "onCancelled: ");
+                                        }
+                                    });
+                                } else {
+                                    String pushKeyForCoupon = mDatabaseReferenceForCoupon.push().getKey();
+                                    Map<String, String> couponMap = new HashMap<>();
+                                    couponMap.put("coupon_code", appliedCoupon);
+                                    couponMap.put("coupon_count", "1");
+                                    couponMap.put("push_key_coupon", pushKeyForCoupon);
+                                    //default way is given below
+                                    //mDatabaseReferenceForCoupon.push().setValue(couponMap)
+                                    //pushkey way is given below
+                                    mDatabaseReferenceForCoupon.child(pushKeyForCoupon).setValue(couponMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            float getRideAmount = Float.parseFloat(rideAmount);
+                                            float finalAmount = getRideAmount - (getRideAmount * 10) / 100;
+                                            tvRideFare.setText(String.valueOf(finalAmount));
+                                            btnSubmit.setText("Proceed to pay" + "" + String.valueOf(finalAmount) + "Rupees");
+                                            rideAmount = String.valueOf(finalAmount);
+                                            tvCoupon.setText(appliedCoupon);
+                                            tvCoupon.setClickable(false);
+                                            show.dismiss();
+                                            Toast.makeText(DefaultPackageDetail.this, "Coupon Applied Successfully", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+
+                                        }
+                                    });
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                 /*       mDatabaseReferenceForCoupon.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                Log.i(TAG, "onDataChange: " + dataSnapshot);
+                                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+
+                                    AppliedCouponModel appliedCouponModel = ds.getValue(AppliedCouponModel.class);
+                                    appliedCouponModel.setCoupon_code(appliedCouponModel.getCoupon_code());
+                                    int coupon_count = Integer.parseInt(appliedCouponModel.getCoupon_count()) + 1;
+                                    appliedCouponModel.setCoupon_count(String.valueOf(coupon_count));
+                                    appliedCouponModel.setPush_key_coupon(appliedCouponModel.getPush_key_coupon());
+                                    couponList.add(appliedCouponModel);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                Log.i(TAG, "onCancelled: ");
+                            }
+                        });*/
+                   /*     if (couponList.size() > 0) {
+                            if (Integer.parseInt(couponList.get(0).getCoupon_count()) <= 3) {
+                                mDatabase.getReference().child("appliedCoupon").
+                                        child(SharedPreference.getInstance().getUserId()).
+                                        child(couponList.get(0).getPush_key_coupon()).child("coupon_count").setValue(couponList.get(0).getCoupon_count());
+                            } else {
+                                Toast.makeText(this, "Coupon Limit exceed", Toast.LENGTH_SHORT).show();
+                            }
+
+                        }*/ /*else {
+                            String pushKeyForCoupon = mDatabaseReferenceForCoupon.push().getKey();
+                            Map<String, String> couponMap = new HashMap<>();
+                            couponMap.put("coupon_code", appliedCoupon);
+                            couponMap.put("coupon_count", "1");
+                            couponMap.put("push_key_coupon", pushKeyForCoupon);
+                            //default way is given below
+                            //mDatabaseReferenceForCoupon.push().setValue(couponMap)
+                            //pushkey way is given below
+                            mDatabaseReferenceForCoupon.child(pushKeyForCoupon).setValue(couponMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    show.dismiss();
+                                    Toast.makeText(DefaultPackageDetail.this, "Coupon Applied Successfully", Toast.LENGTH_SHORT).show();
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+
+                                }
+                            });
+                        }*/
+                    } else {
+                        Toast.makeText(this, "Wrong Coupon code", Toast.LENGTH_SHORT).show();
+                    }
+
+
                 } else {
 
                     Toast.makeText(this, getString(R.string.enter_coupon), Toast.LENGTH_SHORT).show();
@@ -252,6 +364,23 @@ public class DefaultPackageDetail extends AppCompatActivity implements View.OnCl
 
         });
         btnCancel.setOnClickListener(view -> show.dismiss());
+    }
+
+    private void updateCouponCount(List<AppliedCouponModel> couponList) {
+        if (Integer.parseInt(couponList.get(0).getCoupon_count()) <= 3) {
+            mDatabase.getReference().child("appliedCoupon").
+                    child(SharedPreference.getInstance().getUserId()).
+                    child(couponList.get(0).getPush_key_coupon()).child("coupon_count").setValue(couponList.get(0).getCoupon_count());
+            float getRideAmount = Float.parseFloat(rideAmount);
+            float finalAmount = getRideAmount - (getRideAmount * 10) / 100;
+            tvRideFare.setText(String.valueOf(finalAmount));
+            btnSubmit.setText("Proceed to pay" + "" + String.valueOf(finalAmount) + "Rupees");
+            rideAmount = String.valueOf(finalAmount);
+            tvCoupon.setText(appliedCoupon);
+            tvCoupon.setClickable(false);
+        } else {
+            Toast.makeText(this, "Coupon Limit exceed", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void checkValueExistForFareCheck() {
@@ -479,14 +608,15 @@ public class DefaultPackageDetail extends AppCompatActivity implements View.OnCl
 
     @Override
     public void onTransactionResponse(Bundle inResponse) {
-        mDatabase.getReference().child("applyForService").
-                child(SharedPreference.getInstance().getUserId()).
-                child(pushKey).child("order_number").setValue(orderId);
+
         String ORDERID = inResponse.getString("ORDERID");
         String TXNAMOUNT = inResponse.getString("TXNAMOUNT");
         String RESPCODE = inResponse.getString("RESPCODE");
         String STATUS = inResponse.getString("STATUS");
         if (STATUS.equals("TXN_SUCCESS")) {
+            mDatabase.getReference().child("applyForService").
+                    child(SharedPreference.getInstance().getUserId()).
+                    child(pushKey).child("order_number").setValue(orderId);
             generateDialogForTransactionStatus(ORDERID, TXNAMOUNT, RESPCODE);
         } else {
             generateDialogForTransactionStatus(ORDERID, TXNAMOUNT, RESPCODE);

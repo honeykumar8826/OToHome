@@ -287,8 +287,17 @@ public class NavigationActivity extends AppCompatActivity
                 break;
         }
         //replacing the fragment
-        if (fragment != null) {
+        if (fragment != null && (fragment instanceof FareCalculatorFragment || fragment instanceof VIewProfileFragment)) {
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction().addToBackStack(null);
+            ft.setCustomAnimations(R.anim.slide_up, 0);
+            //ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+            ft.replace(R.id.framLayout_container, fragment);
+            ft.commit();
+        }
+        else if(fragment !=null)
+        {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            //ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
             ft.setCustomAnimations(R.anim.slide_up, 0);
             ft.replace(R.id.framLayout_container, fragment);
             ft.commit();
@@ -477,6 +486,5 @@ public class NavigationActivity extends AppCompatActivity
             tvProfileNumber.setText(mobile);
 
         }
-
     }
 }
