@@ -5,7 +5,8 @@ android:layout_width="match_parent"
 android:layout_height="match_parent"
 tools:context=".activity.DefaultPackageDetail"
 android:orientation="vertical"
-    android:id="@+id/ll_mainLayout">
+    android:id="@+id/ll_mainLayout"
+    tools:contentDescription="no content">
 <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -36,7 +37,7 @@ android:orientation="vertical"
                 android:adjustViewBounds="true"
                 android:background="#0059A5"
                 android:scaleType="fitXY"
-                android:src="@mipmap/cablogo" />
+                android:src="@mipmap/taxi" />
 
 
             <LinearLayout

@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -363,6 +364,8 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
 
             openDropIntent();
         } else {
+            getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             new RunProgress().execute();
             //setUpDialogForShowingPackage();
 
@@ -936,8 +939,11 @@ public class FareCalculatorFragment extends Fragment implements OnMapReadyCallba
                     show.dismiss();
                 }
             });
+            getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
         }
     }
+
     /* ------------------inner class to find the distance between two location ---------------------------*/
     /*class DirectionResult extends AsyncTask<Void, Void, String> {
         @Override

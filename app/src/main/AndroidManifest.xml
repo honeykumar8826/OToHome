@@ -9,15 +9,15 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.READ_SMS" />
-    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+ <!--   <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />-->
 
     <application
         android:name=".application.CustomApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/cablogo"
+        android:icon="@mipmap/taxi"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/cablogo"
+        android:roundIcon="@mipmap/taxi"
         android:supportsRtl="true"
         android:theme="@style/NoActionBar"
         android:usesCleartextTraffic="true"

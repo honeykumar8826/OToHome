@@ -36,7 +36,7 @@
                     android:adjustViewBounds="true"
                     android:background="#0059A5"
                     android:scaleType="fitXY"
-                    android:src="@mipmap/cablogo" />
+                    android:src="@mipmap/taxi" />
 
 
                 <LinearLayout

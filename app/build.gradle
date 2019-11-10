@@ -22,8 +22,8 @@ android {
         applicationId "com.travel.cab.service"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
+        versionCode 8
+        versionName "1.07"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         // Enabling multidex support.
         multiDexEnabled true
@@ -46,6 +46,7 @@ android {
         }
         release {
             buildConfigField 'String', "AllApiKey", My_Map_Place_Key
+            buildConfigField 'String', "MerchantId", Merchant_Id
             resValue 'string', "GoogleMapApiKey", google_maps_key
             minifyEnabled false
             debuggable false
